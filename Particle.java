@@ -14,6 +14,7 @@ public class Particle {
 		velocity = new Vector3D(0, 0, 0);
 		force = new Vector3D(0, 0, 0);
 		newPos = new Vector3D(0, 0, 0);
+		neighbors = new ArrayList<Particle>();
 	}
 
 	public Vector3D getOldPos() {
@@ -40,6 +41,6 @@ public class Particle {
 		return pConstraint;
 	}
 
-	
+
 
 }
