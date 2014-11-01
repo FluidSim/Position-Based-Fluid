@@ -25,6 +25,14 @@ public class Particle {
 		return newPos;
 	}
 
+	public Vector3D getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector3D velocity) {
+		this.velocity = velocity;
+	}
+
 	public Vector3D getForce() {
 		return force;
 	}
@@ -37,10 +45,11 @@ public class Particle {
 		return neighbors;
 	}
 
+	public void setNeighbors(ArrayList<Particle> neighbors) {
+		this.neighbors = neighbors;
+	}
+
 	public double getPConstraint() {
 		return pConstraint;
 	}
-
-
-
 }
