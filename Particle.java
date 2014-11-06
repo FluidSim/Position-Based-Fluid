@@ -3,9 +3,10 @@ public class Particle {
 	private Vector3D newPos;
 	private Vector3D velocity;
 	private Vector3D force;
-	private double mass;
-	private double lambda;
-	private double pConstraint;
+	private float mass;
+	private float density;
+	private float lambda;
+	private float pConstraint;
 	private ArrayList<Particle> neighbors;
 
 	public Particle(Vector3D pos, float mass) {
@@ -37,8 +38,16 @@ public class Particle {
 		return force;
 	}
 
-	public double getMass() {
+	public float getMass() {
 		return mass;
+	}
+
+	private float getDensity() {
+		return density;
+	}
+
+	private void setDensity(float density) {
+		this.density = density;
 	}
 
 	public ArrayList<Particle> getNeighbors() {
@@ -49,7 +58,7 @@ public class Particle {
 		this.neighbors = neighbors;
 	}
 
-	public double getPConstraint() {
+	public float getPConstraint() {
 		return pConstraint;
 	}
 }
