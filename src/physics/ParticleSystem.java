@@ -15,7 +15,7 @@ public class ParticleSystem {
 
 	public ParticleSystem() {
 		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+			for (int j = 10; j < 20; j++) {
 				for (int k = 0; k < 10; k++) {
 					particles.add(new Particle(new Vector3(i, j, k), 1));
 				}
@@ -23,7 +23,7 @@ public class ParticleSystem {
 		}
 
 		//create cell cube
-		CellGrid cube = new CellGrid(10, 10, 10); //should be whatever the size of our box is
+		CellGrid cube = new CellGrid(15, 15, 15); //should be whatever the size of our box is
 	}
 
 	public void update() {
