@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class ParticleSystem {
 	private ArrayList<Particle> particles;
-	//private CellCube cube;
+	private CellGrid cube;
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private static final float deltaT = 0.1f;
@@ -11,7 +11,7 @@ public class ParticleSystem {
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
 	//We may want to damp the spikey density
 	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
-	private static final float REST_DENSITY = 1f; //not sure what this should be
+	private static final float REST_DENSITY = 1f;
 
 	public ParticleSystem() {
 		for (int i = 0; i < 10; i++) {
@@ -23,6 +23,7 @@ public class ParticleSystem {
 		}
 
 		//create cell cube
+		CellGrid cube = new CellGrid(10, 10, 10); //should be whatever the size of our box is
 	}
 
 	public void update() {
@@ -30,6 +31,15 @@ public class ParticleSystem {
 		//predict position x* = xi + delta T * vi
 
 		//get neighbors
+		cube.updateCells(particles);
+		for (Particle p: particles) {
+			ArrayList<Particle> neighbors = new ArrayList<Particle>();
+			ArrayList<Cell> nCells = p.getCell().getNeighbors();
+			for (Cell c: nCells) {
+				neighbors.addAll(c.getParticles());
+			}
+			p.setNeighbors(neighbors);
+		}
 
 		//while sovler < iterations (they say that 2-4 is enough in the paper)
 		for (int i = 0; i < 4; i++) {

@@ -12,13 +12,15 @@ public class Particle {
 	private float lambda;
 	private float pConstraint;
 	private ArrayList<Particle> neighbors;
+	private Cell cell;
 
 	public Particle(Vector3 pos, float mass) {
 		this.oldPos = pos;
 		this.mass = mass;
+		newPos = new Vector3(0f, 0f, 0f);
 		velocity = new Vector3(0f, 0f, 0f);
 		force = new Vector3(0f, 0f, 0f);
-		newPos = new Vector3(0f, 0f, 0f);
+		deltaP = new Vector3(0f, 0f, 0f);
 		neighbors = new ArrayList<Particle>();
 	}
 
@@ -92,5 +94,13 @@ public class Particle {
 
 	public void setLambda(float lambda) {
 		this.lambda = lambda;
+	}
+
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
 	}
 }
