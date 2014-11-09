@@ -1,5 +1,7 @@
 package physics;
 
+import java.util.ArrayList;
+
 public class CellGrid {
 	private int width;
 	private int height;

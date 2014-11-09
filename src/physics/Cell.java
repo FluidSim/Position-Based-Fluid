@@ -12,7 +12,7 @@ public class Cell {
 		particles.add(particle);
 	}
 
-	public void clearParticle() {
+	public void clearParticles() {
 		particles.clear();
 	}
 
