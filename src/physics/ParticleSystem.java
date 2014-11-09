@@ -38,7 +38,7 @@ public class ParticleSystem {
 				float density = 0;
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
-					density += kernelCalc(p.getNewPos(), n.getNewPos());
+					density += WPoly6(p.getNewPos(), n.getNewPos());
 				}
 				p.setDensity(density);
 				p.setPConstraint((density / REST_DENSITY) - 1);
@@ -56,6 +56,13 @@ public class ParticleSystem {
 
 			for (Particle p : particles) {
 				//update position - delta Pi - requires lambda
+				Vector3 deltaP = new Vector3 (0f, 0f, 0f);
+				ArrayList<Particle> neighbors = p.getNeighbors();
+				for (Particle n : neighbors) {
+					float lambdaSum = p.getLambda() + n.getLambda();
+					deltaP = (deltaP.add(WSpiky(p.getNewPos(), n.getNewPos()))).mul(lambdaSum);
+				}
+				p.setDeltaP(deltaP.div(REST_DENSITY));
 				//collision detection including with box
 			}
 
@@ -81,10 +88,19 @@ public class ParticleSystem {
 	}
 
 	//Poly6 Kernel
-	private float kernelCalc(Vector3 pi, Vector3 pj) {
+	private float WPoly6(Vector3 pi, Vector3 pj) {
 		float rSquared = (float) Math.pow(pi.sub(pj).magnitude(), 2);
 		if (rSquared > H) return 0;
 		return (float) (KPOLY * Math.pow((H - rSquared), 3));
+	}
+	
+	//Spiky Kernel
+	private Vector3 WSpiky (Vector3 pi, Vector3 pj) {
+		Vector3 radius = pi.sub(pj);
+		float coeff = (float) Math.pow(H - radius.magnitude(), 2);
+		coeff *= SPIKY;
+		coeff /= radius.magnitude();
+		return radius.mul(coeff);
 	}
 
 	//TODO

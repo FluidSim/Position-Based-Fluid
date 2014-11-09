@@ -85,4 +85,12 @@ public class Particle {
 	public void setDeltaP(Vector3 deltaP) {
 		this.deltaP = deltaP;
 	}
+
+	public float getLambda() {
+		return lambda;
+	}
+
+	public void setLambda(float lambda) {
+		this.lambda = lambda;
+	}
 }
