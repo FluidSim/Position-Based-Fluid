@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Cell {
 	private ArrayList<Particle> particles;
 	private ArrayList<Cell> neighbors;
@@ -19,7 +21,7 @@ public class Cell {
 		neighbors.add(cell);
 	}
 
-	public List<Cell> getNeighbors() {
+	public ArrayList<Cell> getNeighbors() {
 		return neighbors;
 	}
 

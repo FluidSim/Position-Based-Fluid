@@ -1,40 +1,42 @@
+import java.util.ArrayList;
+
 public class Particle {
-	private Vector3D oldPos;
-	private Vector3D newPos;
-	private Vector3D velocity;
-	private Vector3D force;
+	private Vector3 oldPos;
+	private Vector3 newPos;
+	private Vector3 velocity;
+	private Vector3 force;
 	private float mass;
 	private float density;
 	private float lambda;
 	private float pConstraint;
 	private ArrayList<Particle> neighbors;
 
-	public Particle(Vector3D pos, float mass) {
+	public Particle(Vector3 pos, float mass) {
 		this.oldPos = pos;
 		this.mass = mass;
-		velocity = new Vector3D(0, 0, 0);
-		force = new Vector3D(0, 0, 0);
-		newPos = new Vector3D(0, 0, 0);
+		velocity = new Vector3(0f, 0f, 0f);
+		force = new Vector3(0f, 0f, 0f);
+		newPos = new Vector3(0f, 0f, 0f);
 		neighbors = new ArrayList<Particle>();
 	}
 
-	public Vector3D getOldPos() {
+	public Vector3 getOldPos() {
 		return oldPos;
 	}
 
-	public Vector3D getNewPos() {
+	public Vector3 getNewPos() {
 		return newPos;
 	}
 
-	public Vector3D getVelocity() {
+	public Vector3 getVelocity() {
 		return velocity;
 	}
 
-	public void setVelocity(Vector3D velocity) {
+	public void setVelocity(Vector3 velocity) {
 		this.velocity = velocity;
 	}
 
-	public Vector3D getForce() {
+	public Vector3 getForce() {
 		return force;
 	}
 
@@ -42,11 +44,11 @@ public class Particle {
 		return mass;
 	}
 
-	private float getDensity() {
+	public float getDensity() {
 		return density;
 	}
 
-	private void setDensity(float density) {
+	public void setDensity(float density) {
 		this.density = density;
 	}
 
@@ -60,5 +62,9 @@ public class Particle {
 
 	public float getPConstraint() {
 		return pConstraint;
+	}
+
+	public void setPConstraint(float f) {
+		pConstraint = f;
 	}
 }
