@@ -6,6 +6,7 @@ public class ParticleSystem {
 	//private CellCube cube;
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
+	private static final float deltaT = 0.1f;
 	private static final float H = 1f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
 	//We may want to damp the spikey density
@@ -39,7 +40,6 @@ public class ParticleSystem {
 				for (Particle n : neighbors) {
 					density += kernelCalc(p.getNewPos(), n.getNewPos());
 				}
-
 				p.setDensity(density);
 				p.setPConstraint((density / REST_DENSITY) - 1);
 			}
@@ -61,13 +61,16 @@ public class ParticleSystem {
 
 			for (Particle p : particles) {
 				//update x*i = x*i + delta Pi
+				p.setNewPos(p.getNewPos().add(p.getDeltaP()));
 			}
 		}
 
 		for (Particle p : particles) {
 			//set new velocity vi = (1/delta T) * (x*i - xi)
-			//apply vorticity confinement and XSPH viscosity
+			p.setVelocity(p.getNewPos().sub(p.getOldPos()).div(deltaT));
+			//TODO: apply vorticity confinement and XSPH viscosity
 			//update position xi = x*i
+			p.setOldPos(p.getNewPos());
 		}
 	}
 

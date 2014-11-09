@@ -6,6 +6,7 @@ public class Particle {
 	private Vector3 newPos;
 	private Vector3 velocity;
 	private Vector3 force;
+	private Vector3 deltaP;
 	private float mass;
 	private float density;
 	private float lambda;
@@ -67,5 +68,21 @@ public class Particle {
 
 	public void setPConstraint(float f) {
 		pConstraint = f;
+	}
+
+	public void setNewPos(Vector3 v) {
+		newPos = v;
+	}
+	
+	public void setOldPos(Vector3 v) {
+		oldPos = v;
+	}
+
+	public Vector3 getDeltaP() {
+		return deltaP;
+	}
+
+	public void setDeltaP(Vector3 deltaP) {
+		this.deltaP = deltaP;
 	}
 }
