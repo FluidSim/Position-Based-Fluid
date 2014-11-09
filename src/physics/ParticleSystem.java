@@ -33,12 +33,7 @@ public class ParticleSystem {
 		//get neighbors
 		cube.updateCells(particles);
 		for (Particle p: particles) {
-			ArrayList<Particle> neighbors = new ArrayList<Particle>();
-			ArrayList<Cell> nCells = p.getCell().getNeighbors();
-			for (Cell c: nCells) {
-				neighbors.addAll(c.getParticles());
-			}
-			p.setNeighbors(neighbors);
+			p.setNeighbors(p.getCell().getParticles());
 		}
 
 		//while sovler < iterations (they say that 2-4 is enough in the paper)
