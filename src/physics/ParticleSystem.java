@@ -28,11 +28,17 @@ public class ParticleSystem {
 
 	public void update() {
 		applyGravity();
-		//predict position x* = xi + delta T * vi
+		for (Particle p : particles) {
+			//update velocity vi = vi + delta T * fext
+			p.setVelocity(p.getVelocity() + p.getForce().mul(deltaT));
+
+			//predict position x* = xi + delta T * vi
+			p.setNewPos(p + p.getVelocity().mul(deltaT));
+		}
 
 		//get neighbors
 		cube.updateCells(particles);
-		for (Particle p: particles) {
+		for (Particle p : particles) {
 			p.setNeighbors(p.getCell().getParticles());
 		}
 
@@ -80,7 +86,16 @@ public class ParticleSystem {
 		for (Particle p : particles) {
 			//set new velocity vi = (1/delta T) * (x*i - xi)
 			p.setVelocity(p.getNewPos().sub(p.getOldPos()).div(deltaT));
-			//TODO: apply vorticity confinement and XSPH viscosity
+
+			//apply vorticity confinement
+			curl(p);
+			applyVorticity(p);
+			
+			p.setVelocity(p.getVelocity() + p.getForce().mul(deltaT));
+			p.setNewPos(p + p.getVelocity().mul(deltaT));
+
+			//apply XSPH viscosity
+
 			//update position xi = x*i
 			p.setOldPos(p.getNewPos());
 		}
@@ -94,8 +109,9 @@ public class ParticleSystem {
 
 	//Poly6 Kernel
 	private float WPoly6(Vector3 pi, Vector3 pj) {
-		float rSquared = (float) Math.pow(pi.sub(pj).magnitude(), 2);
+		float rSquared = (float) pi.sub(pj).magnitude();
 		if (rSquared > H) return 0;
+		rSquared = Math.pow(rSquared, 2);
 		return (float) (KPOLY * Math.pow((H - rSquared), 3));
 	}
 	
@@ -133,5 +149,40 @@ public class ParticleSystem {
 
 	private void lambda(Particle p) {
 
+	}
+
+	private void curl(Particle p) {
+		Vector3 w = new Vector3(0, 0, 0);
+		Vector3 velocityDiff;
+		Vector3 gradient;
+		ArrayList<Particle> neighbors = p.getNeighbors();
+		for (Particle n : neighbors) {
+			velocityDiff = n.getVelocity().sub(p.getVelocity());
+			gradient = WSpiky(p, n);
+			w.add(velocityDiff.cross(gradient));
+		}
+
+		p.setCurl(w);
+	}
+
+	private void applyVorticity(Particle p) {
+		Vector3 N;
+		Vector3 w = p.getCurl();
+		Vector3 r;
+		Vector3 gradient = new Vector3(0, 0, 0);
+		Vector3 vorticity;
+		ArrayList<Particle> neighbors = p.getNeighbors();
+		for (Particle n : neighbors) {
+			d = n.sub(p);
+			Vector3 mw = n.getCurl().sub();
+			float magnitudeW = mw.magnitude();
+			gradient.x += magnitudeW / d.x;
+			gradient.y += magnitudeW / d.y;
+			gradient.z += magnitudeW / d.z;
+		}
+
+		N = gradient.div(gradient.magnitude());
+		vorticity = epsilon * (N.cross(w));
+		p.getForce().add(vorticity);
 	}
 }

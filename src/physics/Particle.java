@@ -7,6 +7,7 @@ public class Particle {
 	private Vector3 velocity;
 	private Vector3 force;
 	private Vector3 deltaP;
+	private Vector3 curl;
 	private float mass;
 	private float density;
 	private float lambda;
@@ -102,5 +103,13 @@ public class Particle {
 
 	public void setCell(Cell cell) {
 		this.cell = cell;
+	}
+
+	public Vector3 getCurl() {
+		return curl;
+	}
+
+	public void setCurl(Vector3 curl) {
+		this.curl = curl;
 	}
 }
