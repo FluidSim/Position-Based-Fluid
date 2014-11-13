@@ -12,6 +12,8 @@ public class ParticleSystem {
 	//We may want to damp the spikey density
 	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
+	private static final float EPSILON; // what value?
+	private static final float C = 0.01f;
 
 	public ParticleSystem() {
 		for (int i = 0; i < 10; i++) {
@@ -174,7 +176,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			d = n.sub(p);
-			Vector3 mw = n.getCurl().sub();
+			Vector3 mw = n.getCurl().sub(w);
 			float magnitudeW = mw.magnitude();
 			gradient.x += magnitudeW / d.x;
 			gradient.y += magnitudeW / d.y;
@@ -182,7 +184,7 @@ public class ParticleSystem {
 		}
 
 		N = gradient.div(gradient.magnitude());
-		vorticity = epsilon * (N.cross(w));
+		vorticity = EPSILON * (N.cross(w));
 		p.getForce().add(vorticity);
 	}
 }
