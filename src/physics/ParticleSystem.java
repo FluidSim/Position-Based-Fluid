@@ -46,26 +46,12 @@ public class ParticleSystem {
 
 		//while sovler < iterations (they say that 2-4 is enough in the paper)
 		for (int i = 0; i < 4; i++) {
-			for (Particle p : particles) {
-				//calculate c (density constraint)
-				float density = 0;
-				ArrayList<Particle> neighbors = p.getNeighbors();
-				for (Particle n : neighbors) {
-					density += WPoly6(p.getNewPos(), n.getNewPos());
-				}
-				p.setDensity(density);
-				p.setPConstraint((density / REST_DENSITY) - 1);
-			}
 
-			//calculate gradient constraint
+			//Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
-				for (Particle n : neighbors) {
-					Vector3 gradient = gradientConstraint(p, n);
-				}
+				p.setLambda(lambda(p, neighbors));
 			}
-
-			//calculate lambda
 
 			for (Particle p : particles) {
 				//update position - delta Pi - requires lambda
@@ -126,33 +112,30 @@ public class ParticleSystem {
 		return radius.mul(coeff);
 	}
 
-	//TODO
-	private Vector3 gradientConstraint(Particle p, Particle neighbor) {
-		//first case k == i
-		if (p.equals(neighbor)) {
-			Vector3 sum = new Vector3(0f, 0f, 0f);
-			ArrayList<Particle> neighbors = p.getNeighbors();
-			for (Particle n : neighbors) {
-				if (!n.equals(p)) {
-					//Vector3D gradient = 
-					//sum.add(gradient);
-				}
-			}
-
-			sum = sum.div(REST_DENSITY);
-			return sum;
-		} else { //second case k == j
-
+	private float lambda(Particle p, ArrayList<Particle> neighbors) {
+		float densityConstraint = calcDensityConstraint (p, neighbors);
+		Vector3 gradientI = new Vector3 (0f, 0f, 0f);
+		float sumGradients = 0;
+		for (Particle n : neighbors) {
+			//Calculate gradient with respect to j
+			Vector3 gradientJ = WSpiky (p.getNewPos(), n.getNewPos()).div(REST_DENSITY);
+			//Add magnitude squared to sum
+			sumGradients += Math.pow(gradientJ.magnitude(), 2);
+			//Continue calculating particle i gradient
+			gradientI = gradientI.add (gradientJ);
 		}
-		
-		//Suppress errors
-		return null;
+		//Add the particle i gradient magnitude squared to sum
+		sumGradients += Math.pow(gradientI.magnitude(), 2);
+		return  ((-1f) * densityConstraint) / (sumGradients + EPSILON);
 	}
 
-	private void lambda(Particle p) {
-
+	private float calcDensityConstraint (Particle p, ArrayList<Particle> neighbors) {
+		float sum = 0f;
+		for (Particle n : neighbors) {
+			sum += n.getMass() * WPoly6(p.getNewPos(), n.getNewPos());
+		}
+		return sum / p.getDensity();
 	}
-
 	private void curl(Particle p) {
 		Vector3 w = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
