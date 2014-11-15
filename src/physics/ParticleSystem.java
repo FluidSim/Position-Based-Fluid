@@ -12,7 +12,7 @@ public class ParticleSystem {
 	//We may want to damp the spikey density
 	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
-	private static final float EPSILON; // what value?
+	private static final float EPSILON = .1f; // what value?
 	private static final float C = 0.01f;
 
 	public ParticleSystem() {
@@ -32,10 +32,10 @@ public class ParticleSystem {
 		applyGravity();
 		for (Particle p : particles) {
 			//update velocity vi = vi + delta T * fext
-			p.setVelocity(p.getVelocity() + p.getForce().mul(deltaT));
+			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
 
 			//predict position x* = xi + delta T * vi
-			p.setNewPos(p + p.getVelocity().mul(deltaT));
+			p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
 		}
 
 		//get neighbors
@@ -93,8 +93,8 @@ public class ParticleSystem {
 			curl(p);
 			applyVorticity(p);
 			
-			p.setVelocity(p.getVelocity() + p.getForce().mul(deltaT));
-			p.setNewPos(p + p.getVelocity().mul(deltaT));
+			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
+			p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
 
 			//apply XSPH viscosity
 
@@ -113,7 +113,7 @@ public class ParticleSystem {
 	private float WPoly6(Vector3 pi, Vector3 pj) {
 		float rSquared = (float) pi.sub(pj).magnitude();
 		if (rSquared > H) return 0;
-		rSquared = Math.pow(rSquared, 2);
+		rSquared = (float)Math.pow(rSquared, 2);
 		return (float) (KPOLY * Math.pow((H - rSquared), 3));
 	}
 	
@@ -160,7 +160,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			velocityDiff = n.getVelocity().sub(p.getVelocity());
-			gradient = WSpiky(p, n);
+			gradient = WSpiky(p.getNewPos(), n.getNewPos());
 			w.add(velocityDiff.cross(gradient));
 		}
 
@@ -170,12 +170,11 @@ public class ParticleSystem {
 	private void applyVorticity(Particle p) {
 		Vector3 N;
 		Vector3 w = p.getCurl();
-		Vector3 r;
 		Vector3 gradient = new Vector3(0, 0, 0);
 		Vector3 vorticity;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
-			d = n.sub(p);
+			Vector3 d = n.getNewPos().sub(p.getNewPos());
 			Vector3 mw = n.getCurl().sub(w);
 			float magnitudeW = mw.magnitude();
 			gradient.x += magnitudeW / d.x;
@@ -184,7 +183,7 @@ public class ParticleSystem {
 		}
 
 		N = gradient.div(gradient.magnitude());
-		vorticity = EPSILON * (N.cross(w));
+		vorticity = (N.cross(w)).mul(EPSILON);
 		p.getForce().add(vorticity);
 	}
 }
