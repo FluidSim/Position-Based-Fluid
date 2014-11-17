@@ -32,6 +32,7 @@ public class Vector3 {
 		return (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
 	}
 
+	//Outputs (this) X (v)
 	public Vector3 cross(Vector3 v) {
 		float x = this.y * v.z - this.z * v.y;
 		float y = this.z * v.x - this.x * v.z;

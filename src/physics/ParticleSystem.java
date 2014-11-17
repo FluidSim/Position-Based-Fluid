@@ -5,11 +5,11 @@ public class ParticleSystem {
 	private ArrayList<Particle> particles;
 	private CellGrid cube;
 
-	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
+	//private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private static final float deltaT = 0.1f;
 	private static final float H = 1f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
-	//We may want to damp the spikey density
+	//We may want to damp the spiky density
 	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
 	private static final float EPSILON = .1f; // what value?
@@ -29,8 +29,13 @@ public class ParticleSystem {
 	}
 
 	public void update() {
-		applyGravity();
+		//Removed apply gravity in favor of p.resetToGravity()
+		//applyGravity();
 		for (Particle p : particles) {
+			
+			//Reset force and apply gravity which is constant
+			p.resetToGravity();
+			
 			//update velocity vi = vi + delta T * fext
 			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
 
@@ -52,9 +57,9 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				p.setLambda(lambda(p, neighbors));
 			}
-
+			//Calculate deltaP
+			//TODO:Perform collision and detection response
 			for (Particle p : particles) {
-				//update position - delta Pi - requires lambda
 				Vector3 deltaP = new Vector3 (0f, 0f, 0f);
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
@@ -62,18 +67,17 @@ public class ParticleSystem {
 					deltaP = (deltaP.add(WSpiky(p.getNewPos(), n.getNewPos()))).mul(lambdaSum);
 				}
 				p.setDeltaP(deltaP.div(REST_DENSITY));
-				//collision detection including with box
+				
 			}
-
+			//Update position x*i = x*i + delta Pi
 			for (Particle p : particles) {
-				//update x*i = x*i + delta Pi
 				p.setNewPos(p.getNewPos().add(p.getDeltaP()));
 			}
 		}
 
 		for (Particle p : particles) {
 			//set new velocity vi = (1/delta T) * (x*i - xi)
-			p.setVelocity(p.getNewPos().sub(p.getOldPos()).div(deltaT));
+			p.setVelocity((p.getNewPos().sub(p.getOldPos())).div(deltaT));
 
 			//apply vorticity confinement
 			curl(p);
@@ -88,13 +92,14 @@ public class ParticleSystem {
 			p.setOldPos(p.getNewPos());
 		}
 	}
-
+/*
+ * Replaced in favor of p.resetToGravity()
 	private void applyGravity() {
 		for (Particle p : particles) {
 			p.getForce().add(GRAVITY);
 		}
 	}
-
+*/
 	//Poly6 Kernel
 	private float WPoly6(Vector3 pi, Vector3 pj) {
 		float rSquared = (float) pi.sub(pj).magnitude();
@@ -136,6 +141,7 @@ public class ParticleSystem {
 		}
 		return sum / p.getDensity();
 	}
+	//Can we rename this something other than curl? It's a curl estimate used to approximate a property of the system
 	private void curl(Particle p) {
 		Vector3 w = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
@@ -146,10 +152,13 @@ public class ParticleSystem {
 			gradient = WSpiky(p.getNewPos(), n.getNewPos());
 			w.add(velocityDiff.cross(gradient));
 		}
-
+		//I don't think there's a reason for this
+		//let's just output the answer or abstract all of vorticity force into a function
+		//Also I really still don't want to call it the curl
 		p.setCurl(w);
 	}
 
+	//I don't really follow the reasoning for this method -Steve
 	private void applyVorticity(Particle p) {
 		Vector3 N;
 		Vector3 w = p.getCurl();
@@ -158,6 +167,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			Vector3 d = n.getNewPos().sub(p.getNewPos());
+			//Why do you need the curl?
 			Vector3 mw = n.getCurl().sub(w);
 			float magnitudeW = mw.magnitude();
 			gradient.x += magnitudeW / d.x;
