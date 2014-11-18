@@ -122,8 +122,6 @@ public class ParticleSystem {
 			// update position xi = x*i
 			p.imposeConstraints();
 			
-			System.out.println(p.getNewPos().x < 0 || p.getNewPos().y < 0 || p.getNewPos().z < 0);
-			
 			p.setOldPos(p.getNewPos().clone());			
 		}
 	}

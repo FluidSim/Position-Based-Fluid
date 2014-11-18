@@ -19,9 +19,20 @@ import egl.math.*;
  
 public class ShaderExample 
 {
-	public static ArrayList<Vector3> initialPoints = createBox(15,15,15,1);
+	
+	//CONSTANTS
+	public static float xrot = 0.3f;
+	public static float yrot = 0.3f;
+	public static float scale = (float)1/30;
+	public static float trans = 0f;
+	public static float transback = -5; 
+	
+	public static ArrayList<Vector3> initialPoints = createBox(10,10,10,1);
 	public static ArrayList<Vector3> points = new ArrayList<Vector3>(initialPoints.size());
 	public static double time = 0;
+	
+
+	
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -31,7 +42,7 @@ public class ShaderExample
 		
 		// width and height of window and view port
 		int width = 640;
-		int height = 480;
+		int height = 640;
  
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
@@ -63,7 +74,7 @@ public class ShaderExample
  
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/shade/simple.vertex", "src/shade/simple.fragment");	
+		shader.init("src/rendering/simple.vertex", "src/rendering/simple.fragment");	
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
  
@@ -81,10 +92,10 @@ public class ShaderExample
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
 			//Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float)0,(float)0,(float)-5);
-			Matrix4 R = Matrix4.createRotationY((float)0.3);
-			Matrix4 R2 = Matrix4.createRotationX((float)0.3);
-			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)3,(float)0);
+			Matrix4 M = Matrix4.createTranslation((float)0,(float)0,transback);
+			Matrix4 R = Matrix4.createRotationY(yrot);
+			Matrix4 R2 = Matrix4.createRotationX(xrot);
+			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)4,(float)1);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram( shader.getProgramId() );
@@ -124,8 +135,8 @@ public class ShaderExample
 	 */
 	private int constructVertexArrayObject(ArrayList<Vector3> points)
 	{
-		Matrix4 S = Matrix4.createScale((float)1/15);
-		Matrix4 T = Matrix4.createTranslation((float)-0.5,(float)-0.5,(float)-0.5);
+		Matrix4 S = Matrix4.createScale(scale);
+		Matrix4 T = Matrix4.createTranslation(trans,trans,trans);
 		float[] buffer = new float[points.size()*3];
 		int i = 0;
 		for(Vector3 point: points){
