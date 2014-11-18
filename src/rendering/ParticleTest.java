@@ -22,7 +22,7 @@ import egl.math.*;
  
 public class ParticleTest 
 {
-	public static ParticleSystem system = new ParticleSystem(0.1f);
+	public static ParticleSystem system = new ParticleSystem(.1f);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -113,6 +113,7 @@ public class ParticleTest
 			Display.update();
 			Display.sync(60);
 			
+			System.out.println("about to update");
 			system.update();
 			points = system.getPositions();
 			vaoHandle = constructVertexArrayObject(points);

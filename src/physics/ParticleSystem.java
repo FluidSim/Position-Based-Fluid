@@ -119,6 +119,7 @@ public class ParticleSystem {
 			// apply XSPH viscosity
 
 			// update position xi = x*i
+			p.imposeConstraints();
 			p.setOldPos(p.getNewPos().clone());
 			System.out.println(p.getNewPos().toString());
 			
