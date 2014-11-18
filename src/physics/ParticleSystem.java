@@ -2,7 +2,7 @@ package physics;
 import java.util.ArrayList;
 
 public class ParticleSystem {
-	private ArrayList<Particle> particles;
+	private ArrayList<Particle> particles = new ArrayList<Particle>();
 	private CellGrid cube;
 
 	//private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
@@ -14,7 +14,16 @@ public class ParticleSystem {
 	private static final float REST_DENSITY = 1f;
 	private static final float EPSILON = .1f; // what value?
 	private static final float C = 0.01f;
-
+	
+	public ArrayList<egl.math.Vector3> getPositions(){
+		ArrayList<egl.math.Vector3> positions = new ArrayList<egl.math.Vector3>();
+		for (Particle part: particles){
+			Vector3 pos = part.getOldPos();
+			positions.add(new egl.math.Vector3(pos.x,pos.y,pos.z));
+		}
+		return positions;
+	}
+	
 	public ParticleSystem() {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 10; j < 20; j++) {
@@ -25,7 +34,7 @@ public class ParticleSystem {
 		}
 
 		//create cell cube
-		CellGrid cube = new CellGrid(15, 15, 15); //should be whatever the size of our box is
+		cube = new CellGrid(15, 15, 15); //should be whatever the size of our box is
 	}
 
 	public void update() {

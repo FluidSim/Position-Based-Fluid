@@ -1,0 +1,20 @@
+#version 400
+ 
+layout (location = 0) in vec3 VertexPosition;
+layout (location = 1) in vec3 VertexColor;
+ 
+uniform mat4 V;
+uniform mat4 M;
+uniform mat4 R;
+uniform mat4 R2;
+uniform mat4 S;
+uniform mat4 T;
+
+out vec3 Color;
+ 
+void main()
+{
+	gl_PointSize = 30;
+	Color = VertexColor;
+    gl_Position = M*V*R2*R*vec4(VertexPosition, 1.0);
+}

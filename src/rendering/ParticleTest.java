@@ -2,6 +2,8 @@ package rendering;
 
 import physics.ParticleSystem;
 
+import egl.math.Matrix4;
+import egl.math.Vector3;
 
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
 import static org.lwjgl.opengl.GL11.glGetError;
@@ -59,7 +61,7 @@ public class ParticleTest
  
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/shade/simple.vertex", "src/shade/simple.fragment");	
+		shader.init("src/rendering/simple.vertex", "src/rendering/simple.fragment");	
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
  
