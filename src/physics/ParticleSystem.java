@@ -14,7 +14,7 @@ public class ParticleSystem {
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
 			.pow(H, 9)));
 	// We may want to damp the spiky density
-	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
+	private static final float SPIKY = (float) ((0.01f)*(45f / (Math.PI * Math.pow(H, 6))));
 	private static final float REST_DENSITY = 1f;
 	private static final float EPSILON = .1f; // what value?
 	private static final float C = 0.01f;
@@ -24,7 +24,10 @@ public class ParticleSystem {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				for (int k = 0; k < 10; k++) {
-					particles.add(new Particle(new Vector3(i, j, k), 1f));
+					// particles.add(new Particle(new Vector3(i, j, k), 1));
+					particles.add(new Particle(new Vector3((float) Math
+							.random() * 10, (float) Math.random() * 10,
+							(float) Math.random() * 10), 1));
 				}
 			}
 		}
