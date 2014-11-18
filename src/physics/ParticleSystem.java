@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import egl.math.Vector3;
 
 public class ParticleSystem {
-	private ArrayList<Particle> particles;
+	private ArrayList<Particle> particles = new ArrayList<Particle>();
 	private CellGrid cube;
 
 	//private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
@@ -31,7 +31,14 @@ public class ParticleSystem {
 	}
 
 
-	
+	public ArrayList<egl.math.Vector3> getPositions(){
+		ArrayList<egl.math.Vector3> positions = new ArrayList<egl.math.Vector3>();
+		for (Particle part: particles){
+			Vector3 pos = part.getOldPos();
+			positions.add(new egl.math.Vector3(pos.x,pos.y,pos.z));
+		}
+		return positions;
+	}
 	
 	public void update() {
 		//Removed apply gravity in favor of p.resetToGravity()
