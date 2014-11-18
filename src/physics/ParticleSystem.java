@@ -44,7 +44,9 @@ public class ParticleSystem {
 
 	public static void main(String args[]) {
 		ParticleSystem ps = new ParticleSystem(0.1f);
-		ps.update();
+		while (true) {
+			ps.update();
+		}
 	}
 
 	public void update() {
@@ -63,7 +65,7 @@ public class ParticleSystem {
 
 			// predict position x* = xi + delta T * vi
 			p.getNewPos().add(p.getVelocity().mul(deltaT));
-
+			p.imposeConstraints();
 		}
 
 		// get neighbors
@@ -96,14 +98,13 @@ public class ParticleSystem {
 							.clone())).mul(lambdaSum));
 				}
 				p.setDeltaP(deltaP.div(REST_DENSITY));
-
 			}
 			// Update position x*i = x*i + delta Pi
 			for (Particle p : particles) {
 				p.getNewPos().add(p.getDeltaP());
 			}
 		}
-
+		
 		for (Particle p : particles) {
 			// set new velocity vi = (1/delta T) * (x*i - xi)
 
@@ -119,9 +120,11 @@ public class ParticleSystem {
 			// apply XSPH viscosity
 
 			// update position xi = x*i
-			p.setOldPos(p.getNewPos().clone());
-			System.out.println(p.getNewPos().toString());
+			p.imposeConstraints();
 			
+			System.out.println(p.getNewPos().x < 0 || p.getNewPos().y < 0 || p.getNewPos().z < 0);
+			
+			p.setOldPos(p.getNewPos().clone());			
 		}
 	}
 

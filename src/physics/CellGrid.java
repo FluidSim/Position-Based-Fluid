@@ -29,7 +29,9 @@ public class CellGrid {
 		for (Particle p: particles) {
 			Vector3 pos = p.getNewPos().clone();
 			//assuming indices are always valid because the box keeps the particles contained
+			//System.out.println(pos.toString());
 			Cell cell = cells[(int) pos.x][(int) pos.y][(int) pos.z];
+			
 			cell.addParticle(p);
 			p.setCell(cell);
 		}

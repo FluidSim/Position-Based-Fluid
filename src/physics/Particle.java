@@ -27,6 +27,7 @@ public class Particle {
 	}
 
 	public void imposeConstraints() {
+
 		if (this.newPos.x < 0f) {
 			this.newPos.x = 0f;
 		}
