@@ -12,6 +12,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
+
+import egl.math.*;
  
 public class ShaderExample 
 {
