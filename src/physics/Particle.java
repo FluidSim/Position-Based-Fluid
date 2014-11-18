@@ -1,6 +1,8 @@
 package physics;
 import java.util.ArrayList;
 
+import egl.math.Vector3;
+
 public class Particle {
 	private Vector3 oldPos;
 	private Vector3 newPos;

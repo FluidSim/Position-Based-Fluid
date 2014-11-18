@@ -1,12 +1,14 @@
 package physics;
 import java.util.ArrayList;
 
+import egl.math.Vector3;
+
 public class ParticleSystem {
 	private ArrayList<Particle> particles;
 	private CellGrid cube;
 
 	//private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
-	private static final float deltaT = 0.1f;
+	private float deltaT = 0.1f;
 	private static final float H = 1f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
 	//We may want to damp the spiky density
@@ -15,7 +17,8 @@ public class ParticleSystem {
 	private static final float EPSILON = .1f; // what value?
 	private static final float C = 0.01f;
 
-	public ParticleSystem() {
+	public ParticleSystem(float deltaT) {
+		this.deltaT = deltaT;
 		for (int i = 0; i < 10; i++) {
 			for (int j = 10; j < 20; j++) {
 				for (int k = 0; k < 10; k++) {
@@ -23,11 +26,13 @@ public class ParticleSystem {
 				}
 			}
 		}
-
 		//create cell cube
-		CellGrid cube = new CellGrid(15, 15, 15); //should be whatever the size of our box is
+		cube = new CellGrid(15, 15, 15); //should be whatever the size of our box is
 	}
 
+
+	
+	
 	public void update() {
 		//Removed apply gravity in favor of p.resetToGravity()
 		//applyGravity();
@@ -37,10 +42,10 @@ public class ParticleSystem {
 			p.resetToGravity();
 			
 			//update velocity vi = vi + delta T * fext
-			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
+			p.getVelocity().add(p.getForce().mul(deltaT));
 
 			//predict position x* = xi + delta T * vi
-			p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
+			p.getNewPos().add(p.getVelocity().mul(deltaT));
 		}
 
 		//get neighbors
@@ -64,57 +69,49 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
 					float lambdaSum = p.getLambda() + n.getLambda();
-					deltaP = (deltaP.add(WSpiky(p.getNewPos(), n.getNewPos()))).mul(lambdaSum);
+					deltaP.add((WSpiky(p.getNewPos().clone(), n.getNewPos().clone())).mul(lambdaSum));
 				}
 				p.setDeltaP(deltaP.div(REST_DENSITY));
 				
 			}
 			//Update position x*i = x*i + delta Pi
 			for (Particle p : particles) {
-				p.setNewPos(p.getNewPos().add(p.getDeltaP()));
+				p.getNewPos().add(p.getDeltaP());
 			}
 		}
 
 		for (Particle p : particles) {
 			//set new velocity vi = (1/delta T) * (x*i - xi)
-			p.setVelocity((p.getNewPos().sub(p.getOldPos())).div(deltaT));
-
+			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone())).div(deltaT));
 			//apply vorticity confinement
-			curl(p);
-			applyVorticity(p);
+			//curl(p);
+			//applyVorticity(p);
 			
-			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
-			p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
+			//p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
+			//p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
 
 			//apply XSPH viscosity
 
 			//update position xi = x*i
-			p.setOldPos(p.getNewPos());
+			p.setOldPos(p.getNewPos().clone());
 		}
 	}
-/*
- * Replaced in favor of p.resetToGravity()
-	private void applyGravity() {
-		for (Particle p : particles) {
-			p.getForce().add(GRAVITY);
-		}
-	}
-*/
+
 	//Poly6 Kernel
 	private float WPoly6(Vector3 pi, Vector3 pj) {
-		float rSquared = (float) pi.sub(pj).magnitude();
-		if (rSquared > H) return 0;
-		rSquared = (float)Math.pow(rSquared, 2);
-		return (float) (KPOLY * Math.pow((H - rSquared), 3));
+		Vector3 r = new Vector3 (pi.clone().sub(pj.clone()));
+		float rSquared = r.lenSq();
+		if (r.len() > H) return 0;
+		return (float) (KPOLY * Math.pow((Math.pow(H, 2.0) - r.lenSq()), 3));
 	}
 	
 	//Spiky Kernel
 	private Vector3 WSpiky (Vector3 pi, Vector3 pj) {
-		Vector3 radius = pi.sub(pj);
-		float coeff = (float) Math.pow(H - radius.magnitude(), 2);
+		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
+		float coeff = (float) Math.pow(H - r.len(), 2);
 		coeff *= SPIKY;
-		coeff /= radius.magnitude();
-		return radius.mul(coeff);
+		coeff /= r.len();
+		return r.mul(coeff);
 	}
 
 	private float lambda(Particle p, ArrayList<Particle> neighbors) {
@@ -123,14 +120,14 @@ public class ParticleSystem {
 		float sumGradients = 0;
 		for (Particle n : neighbors) {
 			//Calculate gradient with respect to j
-			Vector3 gradientJ = WSpiky (p.getNewPos(), n.getNewPos()).div(REST_DENSITY);
+			Vector3 gradientJ =new Vector3 ( (WSpiky (p.getNewPos(), n.getNewPos())).div(REST_DENSITY));
 			//Add magnitude squared to sum
-			sumGradients += Math.pow(gradientJ.magnitude(), 2);
+			sumGradients += gradientJ.lenSq();
 			//Continue calculating particle i gradient
-			gradientI = gradientI.add (gradientJ);
+			gradientI.add (gradientJ);
 		}
 		//Add the particle i gradient magnitude squared to sum
-		sumGradients += Math.pow(gradientI.magnitude(), 2);
+		sumGradients += gradientI.lenSq();
 		return  ((-1f) * densityConstraint) / (sumGradients + EPSILON);
 	}
 
@@ -148,7 +145,7 @@ public class ParticleSystem {
 		Vector3 gradient;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
-			velocityDiff = n.getVelocity().sub(p.getVelocity());
+			velocityDiff = new Vector3 (n.getVelocity().clone().sub(p.getVelocity().clone()));
 			gradient = WSpiky(p.getNewPos(), n.getNewPos());
 			w.add(velocityDiff.cross(gradient));
 		}
@@ -169,13 +166,13 @@ public class ParticleSystem {
 			Vector3 d = n.getNewPos().sub(p.getNewPos());
 			//Why do you need the curl?
 			Vector3 mw = n.getCurl().sub(w);
-			float magnitudeW = mw.magnitude();
+			float magnitudeW = mw.len();
 			gradient.x += magnitudeW / d.x;
 			gradient.y += magnitudeW / d.y;
 			gradient.z += magnitudeW / d.z;
 		}
 
-		N = gradient.div(gradient.magnitude());
+		N = gradient.div(gradient.len());
 		vorticity = (N.cross(w)).mul(EPSILON);
 		p.getForce().add(vorticity);
 	}
