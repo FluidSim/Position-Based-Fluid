@@ -224,8 +224,10 @@ public class ShaderExample
 		time += .05;
 		copy(points, initialPoints);
 		for (Vector3 v: points){
-			v.x += Math.sin(time);
-			v.y += Math.cos(time);
+			double newX = Math.cos(time)*v.x - Math.sin(time)*v.y;
+			double newY = Math.sin(time)*v.x + Math.cos(time)*v.y;
+			v.x = (float)newX;
+			v.y = (float)newY;
 		}
 	}
 	
