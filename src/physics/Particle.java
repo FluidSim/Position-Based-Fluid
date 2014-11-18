@@ -27,6 +27,28 @@ public class Particle {
 		neighbors = new ArrayList<Particle>();
 	}
 
+	public void imposeConstraints() {
+		if (this.newPos.x < 0f) {
+			this.newPos.x = 0f;
+		}
+		if (this.newPos.y < 0f) {
+			this.newPos.y = 0f;
+		}
+		if (this.newPos.z < 0f) {
+			this.newPos.z = 0f;
+		}
+		if (this.newPos.x > 10f) {
+			this.newPos.x = 10f;
+		}
+		if (this.newPos.y > 10f) {
+			this.newPos.y = 10f;
+		}
+		if (this.newPos.z > 10f) {
+			this.newPos.z = 10f;
+		}
+		
+	}
+	
 	public Vector3 getOldPos() {
 		return oldPos;
 	}

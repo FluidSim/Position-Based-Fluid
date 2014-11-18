@@ -20,7 +20,7 @@ public class ParticleSystem {
 	public ParticleSystem(float deltaT) {
 		this.deltaT = deltaT;
 		for (int i = 0; i < 10; i++) {
-			for (int j = 10; j < 20; j++) {
+			for (int j = 0; j < 10; j++) {
 				for (int k = 0; k < 10; k++) {
 					particles.add(new Particle(new Vector3(i, j, k), 1));
 				}
@@ -43,7 +43,10 @@ public class ParticleSystem {
 	public void update() {
 		//Removed apply gravity in favor of p.resetToGravity()
 		//applyGravity();
+		
 		for (Particle p : particles) {
+			//Change this later
+			p.setNewPos(p.getOldPos().clone());
 			
 			//Reset force and apply gravity which is constant
 			p.resetToGravity();
