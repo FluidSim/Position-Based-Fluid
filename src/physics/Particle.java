@@ -11,7 +11,6 @@ public class Particle {
 	private Vector3 deltaP;
 	private Vector3 curl;
 	private float mass;
-	private float density;
 	private float lambda;
 	private float pConstraint;
 	private ArrayList<Particle> neighbors;
@@ -37,14 +36,14 @@ public class Particle {
 		if (this.newPos.z < 0f) {
 			this.newPos.z = 0f;
 		}
-		if (this.newPos.x > 10f) {
-			this.newPos.x = 10f;
+		if (this.newPos.x > 15f) {
+			this.newPos.x = 15f -0.001f;
 		}
-		if (this.newPos.y > 10f) {
-			this.newPos.y = 10f;
+		if (this.newPos.y > 15f) {
+			this.newPos.y = 15f - 0.001f;;
 		}
-		if (this.newPos.z > 10f) {
-			this.newPos.z = 10f;
+		if (this.newPos.z > 15f) {
+			this.newPos.z = 15f -0.001f;;
 		}
 		
 	}
@@ -77,14 +76,6 @@ public class Particle {
 
 	public float getMass() {
 		return mass;
-	}
-
-	public float getDensity() {
-		return density;
-	}
-
-	public void setDensity(float density) {
-		this.density = density;
 	}
 
 	public ArrayList<Particle> getNeighbors() {
