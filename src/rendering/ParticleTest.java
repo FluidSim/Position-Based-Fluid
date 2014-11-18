@@ -22,7 +22,7 @@ import egl.math.*;
  
 public class ParticleTest 
 {
-	public static ParticleSystem system = new ParticleSystem();
+	public static ParticleSystem system = new ParticleSystem(0.1f);
 	
 	/**
 	 * General initialization stuff for OpenGL
