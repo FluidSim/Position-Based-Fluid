@@ -52,11 +52,12 @@ public class ShaderExample
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
 		// throw an error.
-		PixelFormat pixelFormat = new PixelFormat();
-		ContextAttribs contextAtrributes = new ContextAttribs(3, 2);
-		contextAtrributes.withForwardCompatible(true);
-		contextAtrributes.withProfileCore(true);
-		Display.create(pixelFormat, contextAtrributes);
+//		PixelFormat pixelFormat = new PixelFormat();
+//		ContextAttribs contextAtrributes = new ContextAttribs(3, 2);
+//		contextAtrributes.withForwardCompatible(true);
+//		contextAtrributes.withProfileCore(true);
+		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
+//		Display.create(pixelFormat, contextAtrributes);
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
