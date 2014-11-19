@@ -11,8 +11,7 @@ public class ParticleSystem {
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private float deltaT = 0.1f;
 	private static final float H = .17f;
-	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
-			.pow(H, 9)));
+	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
 	// We may want to damp the spiky density
 	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
@@ -88,7 +87,7 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
 					float lambdaSum = p.getLambda() + n.getLambda();
-					deltaP.add((WSpiky(p, n)).mul(lambdaSum));
+					deltaP.add((WSpiky(p.getNewPos(), n.getNewPos())).mul(lambdaSum));
 				}
 				
 				p.setDeltaP(deltaP.div(REST_DENSITY));
@@ -125,13 +124,13 @@ public class ParticleSystem {
 	}
 
 	// Poly6 Kernel
-	private float WPoly6(Particle pi, Particle pj) {
+	private float WPoly6(Vector3 pi, Vector3 pj) {
 		// Check if particles are in the same place
-		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
-			pj.getNewPos().add((float) Math.random() * 1e-3f);
+		if (pi.equalsApprox(pj)) {
+			pj.add((float) Math.random() * 1e-3f);
 		}
 		
-		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
 		if (rLen > H) {
 			return 0;
@@ -140,19 +139,19 @@ public class ParticleSystem {
 	}
 
 	// Spiky Kernel
-	private Vector3 WSpiky(Particle pi, Particle pj) {
+	private Vector3 WSpiky(Vector3 pi, Vector3 pj) {
 		// Check if particles are in the same place
-		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
-			pj.getNewPos().add((float) Math.random() * 1e-3f);
+		if (pi.equalsApprox(pj)) {
+			pj.add((float) Math.random() * 1e-3f);
 		}
 		
-		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
 		if (rLen > H) {
 			return new Vector3(0f, 0f, 0f);
 		}
 		
-		float coeff = (float) Math.pow(H - rLen, 2);
+		float coeff = (H - rLen) * (H -rLen);
 		coeff *= SPIKY;
 		coeff /= rLen;
 		return r.mul(coeff);
@@ -164,7 +163,7 @@ public class ParticleSystem {
 		float sumGradients = 0;
 		for (Particle n : neighbors) {
 			// Calculate gradient with respect to j
-			Vector3 gradientJ = new Vector3((WSpiky(p, n)).div(REST_DENSITY));
+			Vector3 gradientJ = new Vector3((WSpiky(p.getNewPos(), n.getNewPos())).div(REST_DENSITY));
 			// Add magnitude squared to sum
 			sumGradients += gradientJ.lenSq();
 			// Continue calculating particle i gradient
@@ -178,7 +177,7 @@ public class ParticleSystem {
 	private float calcDensityConstraint(Particle p, ArrayList<Particle> neighbors) {
 		float sum = 0f;
 		for (Particle n : neighbors) {
-			sum += n.getMass() * WPoly6(p, n);
+			sum += n.getMass() * WPoly6(p.getNewPos(), n.getNewPos());
 		}
 		
 		return (sum / REST_DENSITY) - 1;
@@ -191,7 +190,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			velocityDiff = new Vector3(n.getVelocity().clone().sub(p.getVelocity().clone()));
-			gradient = WSpiky(p, n);
+			gradient = WSpiky(p.getNewPos(), n.getNewPos());
 			w.add(velocityDiff.cross(gradient));
 		}
 
