@@ -22,7 +22,9 @@ import egl.math.*;
  
 public class ParticleTest 
 {
-	public static ParticleSystem system = new ParticleSystem(.1f);
+
+
+	public static ParticleSystem system = new ParticleSystem(0.1f);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -116,6 +118,7 @@ public class ParticleTest
 			System.out.println("about to update");
 			system.update();
 			points = system.getPositions();
+			System.out.println(system.getPositions().size());
 			vaoHandle = constructVertexArrayObject(points);
 		}
 		Display.destroy();
@@ -127,7 +130,7 @@ public class ParticleTest
 	private int constructVertexArrayObject(ArrayList<Vector3> points)
 	{
 		Matrix4 S = Matrix4.createScale((float)1/15);
-		Matrix4 T = Matrix4.createTranslation((float)-0.5,(float)-0.5,(float)-0.5);
+		Matrix4 T = Matrix4.createTranslation((float)-0.5,(float)-0.3,(float)-0.5);
 		float[] buffer = new float[points.size()*3];
 		int i = 0;
 		for(Vector3 point: points){

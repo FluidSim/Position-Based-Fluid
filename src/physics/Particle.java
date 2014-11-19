@@ -29,22 +29,22 @@ public class Particle {
 	public void imposeConstraints() {
 
 		if (this.newPos.x < 0f) {
-			this.newPos.x = 0f;
+			this.newPos.x = (float)(0f + Math.random()*1e-3);
 		}
 		if (this.newPos.y < 0f) {
-			this.newPos.y = 0f;
+			this.newPos.y = (float)(0f + Math.random()*1e-3);
 		}
 		if (this.newPos.z < 0f) {
-			this.newPos.z = 0f;
+			this.newPos.z = (float)(0f + Math.random()*1e-3);
 		}
 		if (this.newPos.x > 15f) {
-			this.newPos.x = 15f -0.001f;
+			this.newPos.x = (float)(14.999f - Math.random()*1e-3);
 		}
 		if (this.newPos.y > 15f) {
-			this.newPos.y = 15f - 0.001f;;
+			this.newPos.y = (float)(14.999f - Math.random()*1e-3);;
 		}
 		if (this.newPos.z > 15f) {
-			this.newPos.z = 15f -0.001f;;
+			this.newPos.z = (float)(14.999f - Math.random()*1e-3);;
 		}
 		
 	}
