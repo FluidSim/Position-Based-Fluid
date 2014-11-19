@@ -81,10 +81,19 @@ public class ParticleTest
 		{
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
+			float eyePosX = 0;
+			float eyePosY = 0;
+			float eyePosZ = -5;
+			float rotY = 0;
+			float rotX = .1f;
+			
 			//Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float)0,(float)0,(float)-5);
-			Matrix4 R = Matrix4.createRotationY((float)0.3);
-			Matrix4 R2 = Matrix4.createRotationX((float)0.3);
+
+
+			Matrix4 M = Matrix4.createTranslation((float)eyePosX,(float)eyePosY,(float)eyePosZ);
+			Matrix4 R = Matrix4.createRotationY((float)rotY);
+			Matrix4 R2 = Matrix4.createRotationX((float)rotX);
+
 			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)4,(float)1);
 
 			// tell OpenGL to use the shader
