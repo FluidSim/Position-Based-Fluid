@@ -9,14 +9,25 @@ public class ParticleSystem {
 	private CellGrid cube;
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
+	//deltaT is the timestep
 	private float deltaT = 0.1f;
+	//H is radius of influence
+	//KPOLY and SPIKY are constant coefficients used in Density Estimation Kernels
+	//See Macklin slides or Muller 2003
 	private static final float H = .17f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
-	// We may want to damp the spiky density
 	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
+	//Epsilon used in lambda calculation
+	//See Macklin part 3
 	private static final float EPSILON = 0.1f; // what value?
 	private static final float C = 0.01f;
+	//K and deltaQMag used in sCorr Calculation
+	//See Macklin part 4
+	private static final float K = 0.1f;
+	private static final float deltaQMag = 0.1f * H;
+	private static final float wQH = KPOLY * (H*H - deltaQMag*deltaQMag) * (H*H - deltaQMag*deltaQMag) * (H*H - deltaQMag*deltaQMag);
+	//Used for bounds of the box
 	public static float rangex = 1f;
 	public static float rangey = 1f;
 	public static float rangez = 1f;
@@ -33,7 +44,7 @@ public class ParticleSystem {
 				}
 			}
 		} else {
-			for (int i = 0; i < 10000; i++) {
+			for (int i = 0; i < 5000; i++) {
 				particles.add(new Particle(new Vector3((float) Math.random() * rangex, (float) Math.random() * rangey, (float) Math.random() * rangez), 1));
 			}
 		}
@@ -54,7 +65,7 @@ public class ParticleSystem {
 	public void update() {
 		for (Particle p : particles) {
 			applyGravity(p);
-			
+			System.out.println(p.getNewPos().toString());
 			p.setNewPos(p.getOldPos().clone());
 
 			// update velocity vi = vi + delta T * fext
@@ -79,7 +90,7 @@ public class ParticleSystem {
 			// Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
-				p.setLambda(lambda(p, neighbors));
+				p.setLambda(lambda(p, neighbors));		
 			}
 			// Calculate deltaP
 			for (Particle p : particles) {
@@ -87,7 +98,8 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
 					float lambdaSum = p.getLambda() + n.getLambda();
-					deltaP.add((WSpiky(p.getNewPos(), n.getNewPos())).mul(lambdaSum));
+					float sCorr = sCorr(p, n);
+					deltaP.add((WSpiky(p.getNewPos(), n.getNewPos())).mul(lambdaSum + sCorr));
 				}
 				
 				p.setDeltaP(deltaP.div(REST_DENSITY));
@@ -267,6 +279,14 @@ public class ParticleSystem {
 		} else {
 			return x;
 		}
+	}
+	
+	private float sCorr (Particle pi, Particle pj) {
+		//Get Density from WPoly6 and divide by constant from paper
+		float corr = WPoly6(pi.getNewPos(), pj.getNewPos()) / wQH;
+		//take to power of 4
+		corr *= corr * corr * corr;
+		return -K * corr;
 	}
 	
 	private static boolean outOfRange(float x, float min, float max) {
