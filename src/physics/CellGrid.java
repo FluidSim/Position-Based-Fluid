@@ -27,7 +27,7 @@ public class CellGrid {
 	public void updateCells(ArrayList<Particle> particles) {
 		clearCells();
 		for (Particle p: particles) {
-			Vector3 pos = p.getNewPos().clone();
+			Vector3 pos = p.getNewPos();
 			//assuming indices are always valid because the box keeps the particles contained
 			Cell cell = cells[(int) pos.x][(int) pos.y][(int) pos.z];
 			
