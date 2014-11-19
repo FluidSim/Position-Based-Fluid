@@ -17,7 +17,7 @@ public class ParticleSystem {
 	// See Macklin slides or Muller 2003
 	private static final float H = 2f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
-	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
+	private static final float SPIKY = (float) (15f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
 	// See Macklin part 3
@@ -26,7 +26,7 @@ public class ParticleSystem {
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
 	private static final float K = 0.1f;
-	private static final float deltaQMag = 0.1f * H;
+	private static final float deltaQMag = .3f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
 	public static int rangex = 50;
