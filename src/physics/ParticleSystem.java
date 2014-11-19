@@ -41,11 +41,11 @@ public class ParticleSystem {
 		cube = new CellGrid(15, 15, 15); // should be whatever the size of our box is
 	}
 
-	public ArrayList<egl.math.Vector3> getPositions() {
-		ArrayList<egl.math.Vector3> positions = new ArrayList<egl.math.Vector3>();
+	public ArrayList<Vector3> getPositions() {
+		ArrayList<Vector3> positions = new ArrayList<Vector3>();
 		for (Particle part : particles) {
 			Vector3 pos = part.getOldPos();
-			positions.add(new egl.math.Vector3(pos.x, pos.y, pos.z));
+			positions.add(new Vector3(pos.x, pos.y, pos.z));
 		}
 		
 		return positions;
@@ -172,6 +172,29 @@ public class ParticleSystem {
 		// Add the particle i gradient magnitude squared to sum
 		sumGradients += gradientI.lenSq();
 		return ((-1f) * densityConstraint) / (sumGradients + EPSILON);
+		
+		
+		/*float sum = 0;
+		for (Particle n : neighbors) {
+			//k == i
+			Vector3 v = new Vector3(0f, 0f, 0f);
+			if (p.equals(n)) {
+				ArrayList<Particle> ns = p.getNeighbors();
+				for (Particle ne : ns) {
+					if (!ne.equals(p)) {
+						Vector3 gradient = WSpiky(p.getNewPos(), ne.getNewPos());
+						v.add(gradient);
+					}
+				}
+				v.div(REST_DENSITY);
+				sum += v.lenSq();
+			} else {
+				Vector3 gradient = WSpiky(p.getNewPos(), n.getNewPos());
+				gradient.div(-1 * REST_DENSITY);
+				sum += gradient.lenSq();
+			}
+		}
+		return sum;*/
 	}
 
 	private float calcDensityConstraint(Particle p, ArrayList<Particle> neighbors) {
