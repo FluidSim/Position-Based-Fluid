@@ -1,10 +1,8 @@
 package rendering;
 
 import physics.ParticleSystem;
-
 import egl.math.Matrix4;
 import egl.math.Vector3;
-
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
 import static org.lwjgl.opengl.GL11.glGetError;
 
@@ -44,11 +42,12 @@ public class ParticleTest
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
 		// throw an error.
-		PixelFormat pixelFormat = new PixelFormat();
-		ContextAttribs contextAtrributes = new ContextAttribs(3, 2);
-		contextAtrributes.withForwardCompatible(true);
-		contextAtrributes.withProfileCore(true);
-		Display.create(pixelFormat, contextAtrributes);
+//		PixelFormat pixelFormat = new PixelFormat();
+//		ContextAttribs contextAtrributes = new ContextAttribs(3, 2);
+//		contextAtrributes.withForwardCompatible(true);
+//		contextAtrributes.withProfileCore(true);
+//		Display.create(pixelFormat, contextAtrributes);
+		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
