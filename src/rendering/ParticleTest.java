@@ -84,8 +84,8 @@ public class ParticleTest
 			float eyePosX = 0;
 			float eyePosY = 0;
 			float eyePosZ = -5;
-			float rotY = 0;
-			float rotX = .1f;
+			float rotY = .3f;
+			float rotX = .3f;
 			
 			//Create Matrices
 
