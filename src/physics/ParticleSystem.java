@@ -55,6 +55,7 @@ public class ParticleSystem {
 
 		for (Particle p : particles) {
 			// Change this later
+			System.out.println(p.getNewPos());
 			p.setNewPos(p.getOldPos().clone());
 
 			// Reset force and apply gravity which is constant
@@ -94,8 +95,7 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
 					float lambdaSum = p.getLambda() + n.getLambda();
-					deltaP.add((WSpiky(p.getNewPos().clone(), n.getNewPos()
-							.clone())).mul(lambdaSum));
+					deltaP.add((WSpiky(p,n)).mul(lambdaSum));
 				}
 				p.setDeltaP(deltaP.div(REST_DENSITY));
 			}
@@ -111,7 +111,7 @@ public class ParticleSystem {
 			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone()))
 					.div(deltaT));
 			// apply vorticity confinement
-			// curl(p);
+			// omega(p);
 			// applyVorticity(p);
 
 			// p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
@@ -127,17 +127,26 @@ public class ParticleSystem {
 	}
 
 	// Poly6 Kernel
-	private float WPoly6(Vector3 pi, Vector3 pj) {
-		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
-		float rSquared = r.lenSq();
-		if (r.len() > H)
+	private float WPoly6(Particle pi, Particle pj) {
+		//Check if particles are in the same place
+		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
+			pj.getNewPos().add((float) Math.random() * 1e-3f);
+		}
+		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		if (r.len() > H )
 			return 0;
 		return (float) (KPOLY * Math.pow((Math.pow(H, 2.0) - r.lenSq()), 3));
 	}
 
 	// Spiky Kernel
-	private Vector3 WSpiky(Vector3 pi, Vector3 pj) {
-		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
+	private Vector3 WSpiky(Particle pi, Particle pj) {
+		//Check if particles are in the same place
+		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
+			pj.getNewPos().add((float) Math.random() * 1e-3f);
+		}
+		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		if (r.len() > H)
+			return new Vector3(0f, 0f, 0f);
 		float coeff = (float) Math.pow(H - r.len(), 2);
 		coeff *= SPIKY;
 		coeff /= r.len();
@@ -150,8 +159,7 @@ public class ParticleSystem {
 		float sumGradients = 0;
 		for (Particle n : neighbors) {
 			// Calculate gradient with respect to j
-			Vector3 gradientJ = new Vector3((WSpiky(p.getNewPos(),
-					n.getNewPos())).div(REST_DENSITY));
+			Vector3 gradientJ = new Vector3((WSpiky(p, n)).div(REST_DENSITY));
 			// Add magnitude squared to sum
 			sumGradients += gradientJ.lenSq();
 			// Continue calculating particle i gradient
@@ -166,14 +174,14 @@ public class ParticleSystem {
 			ArrayList<Particle> neighbors) {
 		float sum = 0f;
 		for (Particle n : neighbors) {
-			sum += n.getMass() * WPoly6(p.getNewPos(), n.getNewPos());
+			sum += n.getMass() * WPoly6(p, n);
 		}
 		return sum / REST_DENSITY;
 	}
 
 	// Can we rename this something other than curl? It's a curl estimate used
 	// to approximate a property of the system
-	private void curl(Particle p) {
+	private void omega(Particle p) {
 		Vector3 w = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
 		Vector3 gradient;
@@ -181,27 +189,27 @@ public class ParticleSystem {
 		for (Particle n : neighbors) {
 			velocityDiff = new Vector3(n.getVelocity().clone()
 					.sub(p.getVelocity().clone()));
-			gradient = WSpiky(p.getNewPos(), n.getNewPos());
+			gradient = WSpiky(p, n);
 			w.add(velocityDiff.cross(gradient));
 		}
 		// I don't think there's a reason for this
 		// let's just output the answer or abstract all of vorticity force into
 		// a function
 		// Also I really still don't want to call it the curl
-		p.setCurl(w);
+		p.setOmega(w);
 	}
 
 	// I don't really follow the reasoning for this method -Steve
 	private void applyVorticity(Particle p) {
 		Vector3 N;
-		Vector3 w = p.getCurl();
+		Vector3 w = p.getOmega();
 		Vector3 gradient = new Vector3(0, 0, 0);
 		Vector3 vorticity;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			Vector3 d = n.getNewPos().sub(p.getNewPos());
 			// Why do you need the curl?
-			Vector3 mw = n.getCurl().sub(w);
+			Vector3 mw = n.getOmega().sub(w);
 			float magnitudeW = mw.len();
 			gradient.x += magnitudeW / d.x;
 			gradient.y += magnitudeW / d.y;
