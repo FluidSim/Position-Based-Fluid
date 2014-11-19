@@ -9,7 +9,6 @@ public class Particle {
 	private Vector3 velocity;
 	private Vector3 force;
 	private Vector3 deltaP;
-	private Vector3 omega;
 	private float mass;
 	private float lambda;
 	private float pConstraint;
@@ -96,13 +95,5 @@ public class Particle {
 
 	public void setCell(Cell cell) {
 		this.cell = cell;
-	}
-
-	public Vector3 getOmega() {
-		return omega;
-	}
-
-	public void setOmega(Vector3 curl) {
-		this.omega = omega;
 	}
 }

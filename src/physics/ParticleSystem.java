@@ -44,7 +44,7 @@ public class ParticleSystem {
 				}
 			}
 		} else {
-			for (int i = 0; i < 5000; i++) {
+			for (int i = 0; i < 1000; i++) {
 				particles.add(new Particle(new Vector3((float) Math.random() * rangex, (float) Math.random() * rangey, (float) Math.random() * rangez), 1));
 			}
 		}
@@ -65,16 +65,17 @@ public class ParticleSystem {
 	public void update() {
 		for (Particle p : particles) {
 			applyGravity(p);
-			System.out.println(p.getNewPos().toString());
+			
 			p.setNewPos(p.getOldPos().clone());
-
+			
 			// update velocity vi = vi + delta T * fext
 			p.getVelocity().add(p.getForce().mul(deltaT));
-
+			
 			// predict position x* = xi + delta T * vi
 			p.getNewPos().add(p.getVelocity().mul(deltaT));
 			
 			imposeConstraints(p);
+			
 		}
 
 		// get neighbors
@@ -90,6 +91,7 @@ public class ParticleSystem {
 			// Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
+				
 				p.setLambda(lambda(p, neighbors));		
 			}
 			// Calculate deltaP
@@ -118,18 +120,20 @@ public class ParticleSystem {
 			
 			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone())).div(deltaT));
 			// apply vorticity confinement
-			// omega(p);
-			// applyVorticity(p);
+			applyVorticity(p);
 
-			// p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
-			// p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
+			//Are we double counting Gravity?
+			p.setVelocity(p.getVelocity().add(p.getForce().mul(deltaT)));
+			p.setNewPos(p.getOldPos().add(p.getVelocity().mul(deltaT)));
 
+			imposeConstraints(p);
 			// apply XSPH viscosity
 
 			// update position xi = x*i
 			p.setOldPos(p.getNewPos().clone());
 		}
 	}
+	
 	
 	private void applyGravity(Particle p) {
 		p.getForce().add(GRAVITY);
@@ -170,6 +174,7 @@ public class ParticleSystem {
 	}
 
 	private float lambda(Particle p, ArrayList<Particle> neighbors) {
+		//System.out.println(p.getNewPos());
 		float densityConstraint = calcDensityConstraint(p, neighbors);
 		Vector3 gradientI = new Vector3(0f, 0f, 0f);
 		float sumGradients = 0;
@@ -218,29 +223,52 @@ public class ParticleSystem {
 		return (sum / REST_DENSITY) - 1;
 	}
 	
-	private void omega(Particle p) {
-		Vector3 w = new Vector3(0, 0, 0);
+	private Vector3 vorticity(Particle p) {
+		Vector3 vorticity = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
 		Vector3 gradient;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			velocityDiff = new Vector3(n.getVelocity().clone().sub(p.getVelocity().clone()));
 			gradient = WSpiky(p.getNewPos(), n.getNewPos());
-			w.add(velocityDiff.cross(gradient));
+			vorticity.add(velocityDiff.cross(gradient));
 		}
-
-		p.setOmega(w);
+		return vorticity;
+	}
+	
+	private Vector3 eta (Particle p, float vorticityNorm) {
+		ArrayList<Particle> neighbors = p.getNeighbors();
+		Vector3 eta = new Vector3(0, 0, 0);
+		for (Particle n : neighbors) {
+			eta.add(WSpiky(p.getNewPos(), n.getNewPos()).mul(vorticityNorm));
+		}
+		
+		return eta;
 	}
 
 	private void applyVorticity(Particle p) {
+		
+		Vector3 vorticity = vorticity (p);
+		//System.out.println(vorticity.toString());
+		if (vorticity.len() == 0) {
+			//No direction for eta
+			return;
+		}
+		Vector3 eta = eta (p, vorticity.len());
+		//Same epsilon?
+		Vector3 n = eta.clone().normalize();
+		Vector3 fi = (n.cross(vorticity)).mul(EPSILON);
+		System.out.println(n.toString());
+		p.getForce().add(fi);
+		/*
 		Vector3 N;
-		Vector3 w = p.getOmega();
+		Vector3 w = p.getVorticity();
 		Vector3 gradient = new Vector3(0, 0, 0);
 		Vector3 vorticity;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			Vector3 d = n.getNewPos().sub(p.getNewPos());
-			Vector3 mw = n.getOmega().sub(w);
+			Vector3 mw = n.getVorticity().sub(w);
 			float magnitudeW = mw.len();
 			gradient.x += magnitudeW / d.x;
 			gradient.y += magnitudeW / d.y;
@@ -250,6 +278,7 @@ public class ParticleSystem {
 		N = gradient.div(gradient.len());
 		vorticity = (N.cross(w)).mul(EPSILON);
 		p.getForce().add(vorticity);
+		*/
 	}
 	
 	//Make sure that particle does not leave the cube grid
