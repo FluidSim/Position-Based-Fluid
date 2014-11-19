@@ -84,8 +84,8 @@ public class ParticleTest
 			float eyePosX = 0f;
 			float eyePosY = 0f;
 			float eyePosZ = -5f;
-			float rotY = 0.3f;
-			float rotX = 0.3f;
+			float rotY = 0.4f;
+			float rotX = -0.3f;
 			
 			//Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float)eyePosX, (float)eyePosY, (float)eyePosZ);

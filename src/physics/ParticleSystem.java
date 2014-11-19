@@ -18,19 +18,20 @@ public class ParticleSystem {
 	private static final float H = 2f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
 	private static final float SPIKY = (float) (15f / (Math.PI * Math.pow(H, 6)));
+	private static final float VISC = (float) (15f / (2 * Math.PI * (H * H * H)));
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
 	// See Macklin part 3
-	private static final float EPSILON_LAMBDA = 10f;
+	private static final float EPSILON_LAMBDA = 1000f;
 	private static final float C = 0.01f;
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
-	private static final float EPSILON_VORTICITY = 1f;
+	private static final float EPSILON_VORTICITY = .01f;
 	private static final float K = 0.1f;
-	private static final float deltaQMag = .3f * H;
+	private static final float deltaQMag = .2f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
-	public static int rangex = 50;
+	public static int rangex = 40;
 	public static int rangey = 100;
 	public static int rangez = 10;
 
@@ -38,7 +39,7 @@ public class ParticleSystem {
 		this.deltaT = deltaT;
 		if (!randomStart) {
 			for (int i = 0; i < 30; i++) {
-				for (int j = 25; j < 40; j++) {
+				for (int j = 15; j < 40; j++) {
 					for (int k = 0; k < 5; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1));
 					}
@@ -142,7 +143,7 @@ public class ParticleSystem {
 
 		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
-		if (rLen > H) {
+		if (rLen > H || rLen == 0) {
 			return 0;
 		}
 		return (float) (KPOLY * Math.pow((H * H - r.lenSq()), 3));
@@ -157,13 +158,24 @@ public class ParticleSystem {
 
 		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
-		if (rLen > H) {
+		if (rLen > H || rLen == 0) {
 			return new Vector3(0f, 0f, 0f);
 		}
 
 		float coeff = (H - rLen) * (H - rLen);
 		coeff *= SPIKY;
 		coeff /= rLen;
+		return r.mul(coeff);
+	}
+	
+	private Vector3 WViscosity(Vector3 pi, Vector3 pj) {
+		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
+		float rLen = r.len();
+		if (rLen > H || rLen == 0) return new Vector3(0f, 0f, 0f);
+		
+		float coeff = (-1 * (rLen * rLen * rLen)) / (2 * (H * H * H));
+		coeff += (r.lenSq() / (H * H));
+		coeff += (H / (2 * rLen)) - 1;
 		return r.mul(coeff);
 	}
 
@@ -174,6 +186,7 @@ public class ParticleSystem {
 		for (Particle n : neighbors) {
 			// Calculate gradient with respect to j
 			Vector3 gradientJ = new Vector3((WSpiky(p.getNewPos(), n.getNewPos())).div(REST_DENSITY));
+			
 			// Add magnitude squared to sum
 			sumGradients += gradientJ.lenSq();
 			// Continue calculating particle i gradient
@@ -224,7 +237,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			velocityDiff = new Vector3(n.getVelocity().clone().sub(p.getVelocity().clone()));
-			gradient = WSpiky(p.getNewPos(), n.getNewPos());
+			gradient = WViscosity(p.getNewPos(), n.getNewPos());
 			vorticity.add(velocityDiff.cross(gradient));
 		}
 
@@ -235,7 +248,7 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		Vector3 eta = new Vector3(0, 0, 0);
 		for (Particle n : neighbors) {
-			eta.add(WSpiky(p.getNewPos(), n.getNewPos()).mul(vorticityMag));
+			eta.add(WViscosity(p.getNewPos(), n.getNewPos()).mul(vorticityMag));
 		}
 
 		return eta;
