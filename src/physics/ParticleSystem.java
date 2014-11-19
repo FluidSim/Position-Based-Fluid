@@ -240,13 +240,13 @@ public class ParticleSystem {
 			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
 		}
 		if (p.getNewPos().x >= cube.getWidth()) {
-			p.getNewPos().x = (float) (cube.getWidth() - Math.random()*1e-3);
+			p.getNewPos().x = (float) (cube.getWidth() - 1e-3f - Math.random()*1e-3);
 		}
 		if (p.getNewPos().y >= cube.getHeight()) {
-			p.getNewPos().y = (float) (cube.getHeight() - Math.random()*1e-3);;
+			p.getNewPos().y = (float) (cube.getHeight() - 1e-3f - Math.random()*1e-3);;
 		}
 		if (p.getNewPos().z >= cube.getDepth()) {
-			p.getNewPos().z = (float) (cube.getDepth() - Math.random()*1e-3);;
+			p.getNewPos().z = (float) (cube.getDepth() - 1e-3f - Math.random()*1e-3);;
 		}
 	}
 }
