@@ -62,8 +62,7 @@ public class ParticleSystem {
 		// applyGravity();
 
 		for (Particle p : particles) {
-			// Change this later
-			System.out.println(p.getNewPos());
+			
 			p.setNewPos(p.getOldPos().clone());
 
 			// Reset force and apply gravity which is constant
@@ -74,9 +73,12 @@ public class ParticleSystem {
 
 			// predict position x* = xi + delta T * vi
 			p.getNewPos().add(p.getVelocity().mul(deltaT));
+			
+			imposeConstraints(p);
 		}
 
 		// get neighbors
+		
 		cube.updateCells(particles);
 		for (Particle p : particles) {
 			ArrayList<Particle> neighbors = new ArrayList<Particle>(p.getCell()
@@ -127,7 +129,7 @@ public class ParticleSystem {
 			// apply XSPH viscosity
 
 			// update position xi = x*i
-			imposeConstraints(p);
+			
 
 			p.setOldPos(p.getNewPos().clone());
 		}
@@ -238,13 +240,13 @@ public class ParticleSystem {
 			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
 		}
 		if (p.getNewPos().x >= cube.getWidth()) {
-			p.getNewPos().x = (float)(cube.getWidth() - Math.random()*1e-3);
+			p.getNewPos().x = (float) (cube.getWidth() - Math.random()*1e-3);
 		}
 		if (p.getNewPos().y >= cube.getHeight()) {
-			p.getNewPos().y = (float)(cube.getHeight() - Math.random()*1e-3);;
+			p.getNewPos().y = (float) (cube.getHeight() - Math.random()*1e-3);;
 		}
 		if (p.getNewPos().z >= cube.getDepth()) {
-			p.getNewPos().z = (float)(cube.getDepth() - Math.random()*1e-3);;
+			p.getNewPos().z = (float) (cube.getDepth() - Math.random()*1e-3);;
 		}
 	}
 }
