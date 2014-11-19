@@ -10,12 +10,12 @@ public class ParticleSystem {
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private float deltaT = 0.1f;
-	private static final float H = 1f;
+	private static final float H = .17f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
 			.pow(H, 9)));
 	// We may want to damp the spiky density
 	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
-	private static final float REST_DENSITY = .9f;
+	private static final float REST_DENSITY = 1f;
 	private static final float EPSILON = 0.1f; // what value?
 	private static final float C = 0.01f;
 	public static float rangex = 1f;
@@ -53,14 +53,10 @@ public class ParticleSystem {
 	}
 
 	public void update() {
-		// Removed apply gravity in favor of p.resetToGravity()
-		// applyGravity();
 		for (Particle p : particles) {
-			p.setNewPos(p.getOldPos().clone());
-
-			// Reset force and apply gravity which is constant
-			//p.resetToGravity();
 			applyGravity(p);
+			
+			p.setNewPos(p.getOldPos().clone());
 
 			// update velocity vi = vi + delta T * fext
 			p.getVelocity().add(p.getForce().mul(deltaT));
@@ -74,8 +70,7 @@ public class ParticleSystem {
 		// get neighbors
 		cube.updateCells(particles);
 		for (Particle p : particles) {
-			ArrayList<Particle> neighbors = new ArrayList<Particle>(p.getCell()
-					.getParticles());
+			ArrayList<Particle> neighbors = new ArrayList<Particle>(p.getCell().getParticles());
 			neighbors.remove(p);
 			p.setNeighbors(neighbors);
 		}
@@ -141,7 +136,7 @@ public class ParticleSystem {
 		if (rLen > H) {
 			return 0;
 		}
-		return (float) (KPOLY * Math.pow((H * H - rLen * rLen), 3));
+		return (float) (KPOLY * Math.pow((H * H - r.lenSq()), 3));
 	}
 
 	// Spiky Kernel

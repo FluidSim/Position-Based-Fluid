@@ -22,7 +22,7 @@ public class ParticleTest
 {
 
 
-	public static ParticleSystem system = new ParticleSystem(.1f,true);
+	public static ParticleSystem system = new ParticleSystem(.1f, true);
 	
 	/**
 	 * General initialization stuff for OpenGL
