@@ -8,14 +8,14 @@ public class ParticleSystem {
 	private ArrayList<Particle> particles = new ArrayList<Particle>();
 	private CellGrid cube;
 
-	// private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
+	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private float deltaT = 0.1f;
-	private static final float H = .17f;
+	private static final float H = 1f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
 			.pow(H, 9)));
 	// We may want to damp the spiky density
 	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
-	private static final float REST_DENSITY = 1f;
+	private static final float REST_DENSITY = .9f;
 	private static final float EPSILON = 0.1f; // what value?
 	private static final float C = 0.01f;
 	public static float rangex = 1f;
@@ -35,14 +35,11 @@ public class ParticleSystem {
 			}
 		} else {
 			for (int i = 0; i < 10000; i++) {
-				particles.add(new Particle(new Vector3(
-						(float) Math.random() * rangex, (float) Math.random() * rangey,
-						(float) Math.random() * rangez), 1));
+				particles.add(new Particle(new Vector3((float) Math.random() * rangex, (float) Math.random() * rangey, (float) Math.random() * rangez), 1));
 			}
 		}
 		// create cell cube
-		cube = new CellGrid(15, 15, 15); // should be whatever the size of our
-											// box is
+		cube = new CellGrid(15, 15, 15); // should be whatever the size of our box is
 	}
 
 	public ArrayList<egl.math.Vector3> getPositions() {
@@ -51,19 +48,19 @@ public class ParticleSystem {
 			Vector3 pos = part.getOldPos();
 			positions.add(new egl.math.Vector3(pos.x, pos.y, pos.z));
 		}
+		
 		return positions;
 	}
 
 	public void update() {
 		// Removed apply gravity in favor of p.resetToGravity()
 		// applyGravity();
-
 		for (Particle p : particles) {
-			
 			p.setNewPos(p.getOldPos().clone());
 
 			// Reset force and apply gravity which is constant
-			p.resetToGravity();
+			//p.resetToGravity();
+			applyGravity(p);
 
 			// update velocity vi = vi + delta T * fext
 			p.getVelocity().add(p.getForce().mul(deltaT));
@@ -75,27 +72,22 @@ public class ParticleSystem {
 		}
 
 		// get neighbors
-		
 		cube.updateCells(particles);
 		for (Particle p : particles) {
 			ArrayList<Particle> neighbors = new ArrayList<Particle>(p.getCell()
 					.getParticles());
 			neighbors.remove(p);
 			p.setNeighbors(neighbors);
-
 		}
 
-		// while sovler < iterations (they say that 2-4 is enough in the paper)
+		// while solver < iterations (they say that 2-4 is enough in the paper)
 		for (int i = 0; i < 4; i++) {
-
 			// Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				p.setLambda(lambda(p, neighbors));
-
 			}
 			// Calculate deltaP
-			// TODO:Perform collision and detection response
 			for (Particle p : particles) {
 				Vector3 deltaP = new Vector3(0f, 0f, 0f);
 				ArrayList<Particle> neighbors = p.getNeighbors();
@@ -103,8 +95,10 @@ public class ParticleSystem {
 					float lambdaSum = p.getLambda() + n.getLambda();
 					deltaP.add((WSpiky(p, n)).mul(lambdaSum));
 				}
+				
 				p.setDeltaP(deltaP.div(REST_DENSITY));
 			}
+			
 			// Update position x*i = x*i + delta Pi
 			for (Particle p : particles) {
 				p.getNewPos().add(p.getDeltaP());
@@ -113,12 +107,10 @@ public class ParticleSystem {
 
 		for (Particle p : particles) {
 			// set new velocity vi = (1/delta T) * (x*i - xi)
-			
 			//Make sure particles don't get rendered outside the box
 			imposeConstraints(p);
 			
-			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone()))
-					.div(deltaT));
+			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone())).div(deltaT));
 			// apply vorticity confinement
 			// omega(p);
 			// applyVorticity(p);
@@ -128,12 +120,13 @@ public class ParticleSystem {
 
 			// apply XSPH viscosity
 
-			
-			
-
 			// update position xi = x*i
 			p.setOldPos(p.getNewPos().clone());
 		}
+	}
+	
+	private void applyGravity(Particle p) {
+		p.getForce().add(GRAVITY);
 	}
 
 	// Poly6 Kernel
@@ -142,11 +135,13 @@ public class ParticleSystem {
 		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
 			pj.getNewPos().add((float) Math.random() * 1e-3f);
 		}
-		Vector3 r = new Vector3(pi.getNewPos().clone()
-				.sub(pj.getNewPos().clone()));
-		if (r.len() > H)
+		
+		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		float rLen = r.len();
+		if (rLen > H) {
 			return 0;
-		return (float) (KPOLY * Math.pow((Math.pow(H, 2.0) - r.lenSq()), 3));
+		}
+		return (float) (KPOLY * Math.pow((H * H - rLen * rLen), 3));
 	}
 
 	// Spiky Kernel
@@ -155,13 +150,16 @@ public class ParticleSystem {
 		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
 			pj.getNewPos().add((float) Math.random() * 1e-3f);
 		}
-		Vector3 r = new Vector3(pi.getNewPos().clone()
-				.sub(pj.getNewPos().clone()));
-		if (r.len() > H)
+		
+		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		float rLen = r.len();
+		if (rLen > H) {
 			return new Vector3(0f, 0f, 0f);
-		float coeff = (float) Math.pow(H - r.len(), 2);
+		}
+		
+		float coeff = (float) Math.pow(H - rLen, 2);
 		coeff *= SPIKY;
-		coeff /= r.len();
+		coeff /= rLen;
 		return r.mul(coeff);
 	}
 
@@ -187,6 +185,7 @@ public class ParticleSystem {
 		for (Particle n : neighbors) {
 			sum += n.getMass() * WPoly6(p, n);
 		}
+		
 		return (sum / REST_DENSITY) - 1;
 	}
 	
@@ -196,18 +195,14 @@ public class ParticleSystem {
 		Vector3 gradient;
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
-			velocityDiff = new Vector3(n.getVelocity().clone()
-					.sub(p.getVelocity().clone()));
+			velocityDiff = new Vector3(n.getVelocity().clone().sub(p.getVelocity().clone()));
 			gradient = WSpiky(p, n);
 			w.add(velocityDiff.cross(gradient));
 		}
-		// I don't think there's a reason for this
-		// let's just output the answer or abstract all of vorticity force into
-		// a function
+
 		p.setOmega(w);
 	}
 
-	// I don't really follow the reasoning for this method -Steve
 	private void applyVorticity(Particle p) {
 		Vector3 N;
 		Vector3 w = p.getOmega();
@@ -216,7 +211,6 @@ public class ParticleSystem {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		for (Particle n : neighbors) {
 			Vector3 d = n.getNewPos().sub(p.getNewPos());
-			// Why do you need the curl?
 			Vector3 mw = n.getOmega().sub(w);
 			float magnitudeW = mw.len();
 			gradient.x += magnitudeW / d.x;
@@ -231,15 +225,18 @@ public class ParticleSystem {
 	
 	//Make sure that particle does not leave the cube grid
 	private void imposeConstraints(Particle p) {
-		if (outOfRange(p.getNewPos().x, 0, rangex)){
+		if (outOfRange(p.getNewPos().x, 0, rangex)) {
 			p.getVelocity().x = 0;
 		}
-		if (outOfRange(p.getNewPos().y, 0, rangey)){
+		
+		if (outOfRange(p.getNewPos().y, 0, rangey)) {
 			p.getVelocity().y = 0;
 		}
-		if (outOfRange(p.getNewPos().z, 0, rangez)){
+		
+		if (outOfRange(p.getNewPos().z, 0, rangez)) {
 			p.getVelocity().z = 0;
 		}
+		
 		p.getNewPos().x = clampedConstraint(p.getNewPos().x,rangex);
 		p.getNewPos().y = clampedConstraint(p.getNewPos().y,rangey);
 		p.getNewPos().z = clampedConstraint(p.getNewPos().z,rangez);
@@ -248,16 +245,14 @@ public class ParticleSystem {
 	private float clampedConstraint(float x, float max){
 		if (x < 0) {
 			return (float) (Math.random()*1e-3);
-		}
-		else if (x >= max){
+		} else if (x >= max) {
 			return (float) (max - 1e-3f - Math.random()*1e-3f);
-		}
-		else{
+		} else {
 			return x;
 		}
 	}
 	
-	private static boolean outOfRange(float x, float min, float max){
+	private static boolean outOfRange(float x, float min, float max) {
 		return x < min || x >= max;
 	}
 	

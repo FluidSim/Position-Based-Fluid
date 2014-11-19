@@ -42,12 +42,6 @@ public class Particle {
 		this.velocity = velocity;
 	}
 	
-	//Resets the force to the gravitational force only
-	//F = (0, -9.8, 0)
-	public void resetToGravity() {
-		force = new Vector3 (0, -9.8f, 0);
-	}
-
 	public Vector3 getForce() {
 		return force;
 	}
