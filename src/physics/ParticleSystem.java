@@ -21,10 +21,11 @@ public class ParticleSystem {
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
 	// See Macklin part 3
-	private static final float EPSILON = 10f; // what value?
+	private static final float EPSILON_LAMBDA = 10f;
 	private static final float C = 0.01f;
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
+	private static final float EPSILON_VORTICITY = 1f;
 	private static final float K = 0.1f;
 	private static final float deltaQMag = .3f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
@@ -121,7 +122,7 @@ public class ParticleSystem {
 			p.getVelocity().add(vorticityForce(p).mul(deltaT));
 			
 			// apply XSPH viscosity
-
+			p.getVelocity().add(xsphViscosity(p));
 			// update position xi = x*i
 			p.setOldPos(p.getNewPos().clone());
 		}
@@ -180,7 +181,7 @@ public class ParticleSystem {
 		}
 		// Add the particle i gradient magnitude squared to sum
 		sumGradients += gradientI.lenSq();
-		return ((-1f) * densityConstraint) / (sumGradients + EPSILON);
+		return ((-1f) * densityConstraint) / (sumGradients + EPSILON_LAMBDA);
 
 		
 		/*float sum = 0; 
@@ -249,7 +250,7 @@ public class ParticleSystem {
 		Vector3 eta = eta(p, vorticity.len());
 		// Same epsilon?
 		Vector3 n = eta.clone().normalize();
-		return (n.cross(vorticity)).mul(EPSILON);
+		return (n.cross(vorticity)).mul(EPSILON_VORTICITY);
 		
 		/*
 		Vector3 N;
@@ -307,6 +308,18 @@ public class ParticleSystem {
 		// take to power of 4
 		corr *= corr * corr * corr;
 		return -K * corr;
+	}
+	
+	//Returns Vector3 to add to velocity
+	//See Macklin Part 5, Equation 17
+	private Vector3 xsphViscosity(Particle p) {
+		Vector3 visc = new Vector3(0f);
+		ArrayList<Particle> neighbors = p.getNeighbors();
+		for (Particle n : neighbors) {
+			Vector3 velocityDiff = new Vector3(n.getVelocity().clone().sub(p.getVelocity().clone()));
+			velocityDiff.mul(WPoly6(p.getNewPos(), n.getNewPos()));
+		}
+		return visc.mul(C);
 	}
 
 	private static boolean outOfRange(float x, float min, float max) {
