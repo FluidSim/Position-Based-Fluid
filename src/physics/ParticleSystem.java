@@ -109,7 +109,10 @@ public class ParticleSystem {
 
 		for (Particle p : particles) {
 			// set new velocity vi = (1/delta T) * (x*i - xi)
-
+			
+			//Make sure particles don't get rendered outside the box
+			imposeConstraints(p);
+			
 			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone()))
 					.div(deltaT));
 			// apply vorticity confinement
@@ -123,8 +126,7 @@ public class ParticleSystem {
 
 			
 			
-			//Make sure particles don't get rendered outside the box
-			imposeConstraints(p);
+
 			// update position xi = x*i
 			p.setOldPos(p.getNewPos().clone());
 		}
