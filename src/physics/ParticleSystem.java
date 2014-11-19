@@ -14,9 +14,9 @@ public class ParticleSystem {
 	//H is radius of influence
 	//KPOLY and SPIKY are constant coefficients used in Density Estimation Kernels
 	//See Macklin slides or Muller 2003
-	private static final float H = .17f;
+	private static final float H = 1f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
-	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
+	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
 	//Epsilon used in lambda calculation
 	//See Macklin part 3
@@ -28,9 +28,9 @@ public class ParticleSystem {
 	private static final float deltaQMag = 0.1f * H;
 	private static final float wQH = KPOLY * (H*H - deltaQMag*deltaQMag) * (H*H - deltaQMag*deltaQMag) * (H*H - deltaQMag*deltaQMag);
 	//Used for bounds of the box
-	public static float rangex = 1f;
-	public static float rangey = 1f;
-	public static float rangez = 1f;
+	public static float rangex = 15f;
+	public static float rangey = 15f;
+	public static float rangez = 15f;
 
 
 	public ParticleSystem(float deltaT, boolean randomStart) {
@@ -44,7 +44,7 @@ public class ParticleSystem {
 				}
 			}
 		} else {
-			for (int i = 0; i < 1000; i++) {
+			for (int i = 0; i < 3000; i++) {
 				particles.add(new Particle(new Vector3((float) Math.random() * rangex, (float) Math.random() * rangey, (float) Math.random() * rangez), 1));
 			}
 		}

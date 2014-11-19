@@ -22,7 +22,7 @@ public class ParticleTest
 {
 
 
-	public static ParticleSystem system = new ParticleSystem(.1f, true);
+	public static ParticleSystem system = new ParticleSystem(0.1f, true);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -83,8 +83,8 @@ public class ParticleTest
  
 			//Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float)0,(float)0,(float)-5);
-			Matrix4 R = Matrix4.createRotationY((float)0.0);
-			Matrix4 R2 = Matrix4.createRotationX((float)0.1);
+			Matrix4 R = Matrix4.createRotationY((float)0.3);
+			Matrix4 R2 = Matrix4.createRotationX((float)0.3);
 			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)4,(float)1);
 
 			// tell OpenGL to use the shader
