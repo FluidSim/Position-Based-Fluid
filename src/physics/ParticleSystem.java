@@ -249,9 +249,9 @@ public class ParticleSystem {
 //		if (p.getNewPos().z >= cube.getDepth()) {
 //			p.getNewPos().z = (float) (cube.getDepth() - 1e-3f - Math.random()*1e-3);;
 //		}
-		p.getNewPos().x = clampedConstraint(p.getNewPos().x,cube.getWidth());
-		p.getNewPos().y = clampedConstraint(p.getNewPos().y,cube.getHeight());
-		p.getNewPos().z = clampedConstraint(p.getNewPos().z,cube.getDepth());
+		p.getNewPos().x = clampedConstraint(p.getNewPos().x,rangex);
+		p.getNewPos().y = clampedConstraint(p.getNewPos().y,rangey);
+		p.getNewPos().z = clampedConstraint(p.getNewPos().z,rangez);
 	}
 	
 	private float clampedConstraint(float x, float max){
