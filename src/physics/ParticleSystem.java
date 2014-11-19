@@ -10,14 +10,18 @@ public class ParticleSystem {
 
 	// private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	private float deltaT = 0.1f;
-	private static final float H = 2f;
+	private static final float H = .17f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
 			.pow(H, 9)));
 	// We may want to damp the spiky density
-	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
+	private static final float SPIKY = (float) ((1.2f) * 45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
-	private static final float EPSILON = .1f; // what value?
+	private static final float EPSILON = 0.1f; // what value?
 	private static final float C = 0.01f;
+	public static float rangex = 1f;
+	public static float rangey = 1f;
+	public static float rangez = 1f;
+
 
 	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
@@ -30,10 +34,10 @@ public class ParticleSystem {
 				}
 			}
 		} else {
-			for (int i = 0; i < 5000; i++) {
+			for (int i = 0; i < 10000; i++) {
 				particles.add(new Particle(new Vector3(
-						(float) Math.random() * 10, (float) Math.random() * 10,
-						(float) Math.random() * 10), 1));
+						(float) Math.random() * rangex, (float) Math.random() * rangey,
+						(float) Math.random() * rangez), 1));
 			}
 		}
 		// create cell cube
