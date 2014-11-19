@@ -231,24 +231,15 @@ public class ParticleSystem {
 	
 	//Make sure that particle does not leave the cube grid
 	private void imposeConstraints(Particle p) {
-//		if (p.getNewPos().x < 0f) {
-//			p.getNewPos().x = (float)(0f + Math.random()*1e-3);
-//		}
-//		if (p.getNewPos().y < 0f) {
-//			p.getNewPos().y = (float)(0f + Math.random()*1e-3);
-//		}
-//		if (p.getNewPos().z < 0f) {
-//			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
-//		}
-//		if (p.getNewPos().x >= cube.getWidth()) {
-//			p.getNewPos().x = (float) (cube.getWidth() - 1e-3f - Math.random()*1e-3);
-//		}
-//		if (p.getNewPos().y >= cube.getHeight()) {
-//			p.getNewPos().y = (float) (cube.getHeight() - 1e-3f - Math.random()*1e-3);;
-//		}
-//		if (p.getNewPos().z >= cube.getDepth()) {
-//			p.getNewPos().z = (float) (cube.getDepth() - 1e-3f - Math.random()*1e-3);;
-//		}
+		if (outOfRange(p.getNewPos().x, 0, rangex)){
+			p.getVelocity().x = 0;
+		}
+		if (outOfRange(p.getNewPos().y, 0, rangey)){
+			p.getVelocity().y = 0;
+		}
+		if (outOfRange(p.getNewPos().z, 0, rangez)){
+			p.getVelocity().z = 0;
+		}
 		p.getNewPos().x = clampedConstraint(p.getNewPos().x,rangex);
 		p.getNewPos().y = clampedConstraint(p.getNewPos().y,rangey);
 		p.getNewPos().z = clampedConstraint(p.getNewPos().z,rangez);
@@ -264,6 +255,10 @@ public class ParticleSystem {
 		else{
 			return x;
 		}
+	}
+	
+	private static boolean outOfRange(float x, float min, float max){
+		return x < min || x >= max;
 	}
 	
 }
