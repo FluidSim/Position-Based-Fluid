@@ -74,7 +74,6 @@ public class ParticleSystem {
 
 			// predict position x* = xi + delta T * vi
 			p.getNewPos().add(p.getVelocity().mul(deltaT));
-			p.imposeConstraints();
 		}
 
 		// get neighbors
@@ -128,7 +127,7 @@ public class ParticleSystem {
 			// apply XSPH viscosity
 
 			// update position xi = x*i
-			p.imposeConstraints();
+			imposeConstraints(p);
 
 			p.setOldPos(p.getNewPos().clone());
 		}
@@ -180,17 +179,14 @@ public class ParticleSystem {
 		return ((-1f) * densityConstraint) / (sumGradients + EPSILON);
 	}
 
-	private float calcDensityConstraint(Particle p,
-			ArrayList<Particle> neighbors) {
+	private float calcDensityConstraint(Particle p, ArrayList<Particle> neighbors) {
 		float sum = 0f;
 		for (Particle n : neighbors) {
 			sum += n.getMass() * WPoly6(p, n);
 		}
-		return sum / REST_DENSITY;
+		return (sum / REST_DENSITY) - 1;
 	}
-
-	// Can we rename this something other than curl? It's a curl estimate used
-	// to approximate a property of the system
+	
 	private void omega(Particle p) {
 		Vector3 w = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
@@ -205,7 +201,6 @@ public class ParticleSystem {
 		// I don't think there's a reason for this
 		// let's just output the answer or abstract all of vorticity force into
 		// a function
-		// Also I really still don't want to call it the curl
 		p.setOmega(w);
 	}
 
@@ -229,5 +224,27 @@ public class ParticleSystem {
 		N = gradient.div(gradient.len());
 		vorticity = (N.cross(w)).mul(EPSILON);
 		p.getForce().add(vorticity);
+	}
+	
+	//Make sure that particle does not leave the cube grid
+	private void imposeConstraints(Particle p) {
+		if (p.getNewPos().x < 0f) {
+			p.getNewPos().x = (float)(0f + Math.random()*1e-3);
+		}
+		if (p.getNewPos().y < 0f) {
+			p.getNewPos().y = (float)(0f + Math.random()*1e-3);
+		}
+		if (p.getNewPos().z < 0f) {
+			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
+		}
+		if (p.getNewPos().x >= cube.getWidth()) {
+			p.getNewPos().x = (float)(cube.getWidth() - Math.random()*1e-3);
+		}
+		if (p.getNewPos().y >= cube.getHeight()) {
+			p.getNewPos().y = (float)(cube.getHeight() - Math.random()*1e-3);;
+		}
+		if (p.getNewPos().z >= cube.getDepth()) {
+			p.getNewPos().z = (float)(cube.getDepth() - Math.random()*1e-3);;
+		}
 	}
 }

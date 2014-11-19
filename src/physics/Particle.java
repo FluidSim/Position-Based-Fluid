@@ -25,29 +25,6 @@ public class Particle {
 		deltaP = new Vector3(0f, 0f, 0f);
 		neighbors = new ArrayList<Particle>();
 	}
-
-	public void imposeConstraints() {
-
-		if (this.newPos.x < 0f) {
-			this.newPos.x = (float)(0f + Math.random()*1e-3);
-		}
-		if (this.newPos.y < 0f) {
-			this.newPos.y = (float)(0f + Math.random()*1e-3);
-		}
-		if (this.newPos.z < 0f) {
-			this.newPos.z = (float)(0f + Math.random()*1e-3);
-		}
-		if (this.newPos.x >= 15f) {
-			this.newPos.x = (float)(14.999f - Math.random()*1e-3);
-		}
-		if (this.newPos.y >= 15f) {
-			this.newPos.y = (float)(14.999f - Math.random()*1e-3);;
-		}
-		if (this.newPos.z >= 15f) {
-			this.newPos.z = (float)(14.999f - Math.random()*1e-3);;
-		}
-		
-	}
 	
 	public Vector3 getOldPos() {
 		return oldPos;
