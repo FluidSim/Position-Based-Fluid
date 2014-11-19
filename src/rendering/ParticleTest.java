@@ -22,7 +22,7 @@ public class ParticleTest
 {
 
 
-	public static ParticleSystem system = new ParticleSystem(.4f,true);
+	public static ParticleSystem system = new ParticleSystem(.1f,true);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -31,8 +31,8 @@ public class ParticleTest
 	{
 		
 		// width and height of window and view port
-		int width = 1080;
-		int height = 720;
+		int width = 900;
+		int height = 900;
  
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
@@ -83,9 +83,9 @@ public class ParticleTest
  
 			//Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float)0,(float)0,(float)-5);
-			Matrix4 R = Matrix4.createRotationY((float)0.3);
-			Matrix4 R2 = Matrix4.createRotationX((float)0.3);
-			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)3,(float)0);
+			Matrix4 R = Matrix4.createRotationY((float)0.0);
+			Matrix4 R2 = Matrix4.createRotationX((float)0.1);
+			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)4,(float)1);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram( shader.getProgramId() );
@@ -126,7 +126,7 @@ public class ParticleTest
 	 */
 	private int constructVertexArrayObject(ArrayList<Vector3> points)
 	{
-		Matrix4 S = Matrix4.createScale((float)1/15);
+		Matrix4 S = Matrix4.createScale((float)1/ParticleSystem.rangex);
 		Matrix4 T = Matrix4.createTranslation((float)-0.5,(float)-0.3,(float)-0.5);
 		float[] buffer = new float[points.size()*3];
 		int i = 0;
