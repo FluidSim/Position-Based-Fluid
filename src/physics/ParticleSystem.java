@@ -225,23 +225,39 @@ public class ParticleSystem {
 	
 	//Make sure that particle does not leave the cube grid
 	private void imposeConstraints(Particle p) {
-		if (p.getNewPos().x < 0f) {
-			p.getNewPos().x = (float)(0f + Math.random()*1e-3);
+//		if (p.getNewPos().x < 0f) {
+//			p.getNewPos().x = (float)(0f + Math.random()*1e-3);
+//		}
+//		if (p.getNewPos().y < 0f) {
+//			p.getNewPos().y = (float)(0f + Math.random()*1e-3);
+//		}
+//		if (p.getNewPos().z < 0f) {
+//			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
+//		}
+//		if (p.getNewPos().x >= cube.getWidth()) {
+//			p.getNewPos().x = (float) (cube.getWidth() - 1e-3f - Math.random()*1e-3);
+//		}
+//		if (p.getNewPos().y >= cube.getHeight()) {
+//			p.getNewPos().y = (float) (cube.getHeight() - 1e-3f - Math.random()*1e-3);;
+//		}
+//		if (p.getNewPos().z >= cube.getDepth()) {
+//			p.getNewPos().z = (float) (cube.getDepth() - 1e-3f - Math.random()*1e-3);;
+//		}
+		p.getNewPos().x = clampedConstraint(p.getNewPos().x,cube.getWidth());
+		p.getNewPos().y = clampedConstraint(p.getNewPos().y,cube.getHeight());
+		p.getNewPos().z = clampedConstraint(p.getNewPos().z,cube.getDepth());
+	}
+	
+	private float clampedConstraint(float x, float max){
+		if (x < 0) {
+			return (float) (Math.random()*1e-3);
 		}
-		if (p.getNewPos().y < 0f) {
-			p.getNewPos().y = (float)(0f + Math.random()*1e-3);
+		else if (x >= max){
+			return (float) (x - 1e-3f - Math.random()*1e-3f);
 		}
-		if (p.getNewPos().z < 0f) {
-			p.getNewPos().z = (float)(0f + Math.random()*1e-3);
-		}
-		if (p.getNewPos().x >= cube.getWidth()) {
-			p.getNewPos().x = (float) (cube.getWidth() - 1e-3f - Math.random()*1e-3);
-		}
-		if (p.getNewPos().y >= cube.getHeight()) {
-			p.getNewPos().y = (float) (cube.getHeight() - 1e-3f - Math.random()*1e-3);;
-		}
-		if (p.getNewPos().z >= cube.getDepth()) {
-			p.getNewPos().z = (float) (cube.getDepth() - 1e-3f - Math.random()*1e-3);;
+		else{
+			return x;
 		}
 	}
+	
 }
