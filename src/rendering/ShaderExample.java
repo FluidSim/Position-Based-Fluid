@@ -232,7 +232,7 @@ public class ShaderExample
 	}
 	
 	public static void updatePoints(){
-		time += .05;
+		time += .00;
 		copy(points, initialPoints);
 		for (Vector3 v: points){
 			double newX = Math.cos(time)*v.x - Math.sin(time)*v.y;

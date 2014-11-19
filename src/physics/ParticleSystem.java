@@ -14,21 +14,26 @@ public class ParticleSystem {
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math
 			.pow(H, 9)));
 	// We may want to damp the spiky density
-	private static final float SPIKY = (float) ((0.01f)*(45f / (Math.PI * Math.pow(H, 6))));
+	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float REST_DENSITY = 1f;
 	private static final float EPSILON = .1f; // what value?
 	private static final float C = 0.01f;
 
-	public ParticleSystem(float deltaT) {
+	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				for (int k = 0; k < 10; k++) {
-					// particles.add(new Particle(new Vector3(i, j, k), 1));
-					particles.add(new Particle(new Vector3((float) Math
-							.random() * 10, (float) Math.random() * 10,
-							(float) Math.random() * 10), 1));
+		if (!randomStart) {
+			for (int i = 0; i < 10; i++) {
+				for (int j = 0; j < 10; j++) {
+					for (int k = 0; k < 10; k++) {
+						particles.add(new Particle(new Vector3(i, j, k), 1));
+					}
 				}
+			}
+		} else {
+			for (int i = 0; i < 5000; i++) {
+				particles.add(new Particle(new Vector3(
+						(float) Math.random() * 10, (float) Math.random() * 10,
+						(float) Math.random() * 10), 1));
 			}
 		}
 		// create cell cube
@@ -46,7 +51,7 @@ public class ParticleSystem {
 	}
 
 	public static void main(String args[]) {
-		ParticleSystem ps = new ParticleSystem(0.1f);
+		ParticleSystem ps = new ParticleSystem(0.1f,true);
 		while (true) {
 			ps.update();
 		}
@@ -98,7 +103,7 @@ public class ParticleSystem {
 				ArrayList<Particle> neighbors = p.getNeighbors();
 				for (Particle n : neighbors) {
 					float lambdaSum = p.getLambda() + n.getLambda();
-					deltaP.add((WSpiky(p,n)).mul(lambdaSum));
+					deltaP.add((WSpiky(p, n)).mul(lambdaSum));
 				}
 				p.setDeltaP(deltaP.div(REST_DENSITY));
 			}
@@ -107,7 +112,7 @@ public class ParticleSystem {
 				p.getNewPos().add(p.getDeltaP());
 			}
 		}
-		
+
 		for (Particle p : particles) {
 			// set new velocity vi = (1/delta T) * (x*i - xi)
 
@@ -124,30 +129,32 @@ public class ParticleSystem {
 
 			// update position xi = x*i
 			p.imposeConstraints();
-			
-			p.setOldPos(p.getNewPos().clone());			
+
+			p.setOldPos(p.getNewPos().clone());
 		}
 	}
 
 	// Poly6 Kernel
 	private float WPoly6(Particle pi, Particle pj) {
-		//Check if particles are in the same place
+		// Check if particles are in the same place
 		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
 			pj.getNewPos().add((float) Math.random() * 1e-3f);
 		}
-		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
-		if (r.len() > H )
+		Vector3 r = new Vector3(pi.getNewPos().clone()
+				.sub(pj.getNewPos().clone()));
+		if (r.len() > H)
 			return 0;
 		return (float) (KPOLY * Math.pow((Math.pow(H, 2.0) - r.lenSq()), 3));
 	}
 
 	// Spiky Kernel
 	private Vector3 WSpiky(Particle pi, Particle pj) {
-		//Check if particles are in the same place
+		// Check if particles are in the same place
 		if (pi.getNewPos().equalsApprox(pj.getNewPos())) {
 			pj.getNewPos().add((float) Math.random() * 1e-3f);
 		}
-		Vector3 r = new Vector3(pi.getNewPos().clone().sub(pj.getNewPos().clone()));
+		Vector3 r = new Vector3(pi.getNewPos().clone()
+				.sub(pj.getNewPos().clone()));
 		if (r.len() > H)
 			return new Vector3(0f, 0f, 0f);
 		float coeff = (float) Math.pow(H - r.len(), 2);

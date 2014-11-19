@@ -24,7 +24,7 @@ public class ParticleTest
 {
 
 
-	public static ParticleSystem system = new ParticleSystem(0.1f);
+	public static ParticleSystem system = new ParticleSystem(.4f,true);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -33,8 +33,8 @@ public class ParticleTest
 	{
 		
 		// width and height of window and view port
-		int width = 640;
-		int height = 480;
+		int width = 1080;
+		int height = 720;
  
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
@@ -115,10 +115,8 @@ public class ParticleTest
 			Display.update();
 			Display.sync(60);
 			
-			System.out.println("about to update");
 			system.update();
 			points = system.getPositions();
-			System.out.println(system.getPositions().size());
 			vaoHandle = constructVertexArrayObject(points);
 		}
 		Display.destroy();
