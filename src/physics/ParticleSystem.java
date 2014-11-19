@@ -259,7 +259,7 @@ public class ParticleSystem {
 			return (float) (Math.random()*1e-3);
 		}
 		else if (x >= max){
-			return (float) (x - 1e-3f - Math.random()*1e-3f);
+			return (float) (max - 1e-3f - Math.random()*1e-3f);
 		}
 		else{
 			return x;
