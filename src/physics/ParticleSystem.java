@@ -50,13 +50,6 @@ public class ParticleSystem {
 		return positions;
 	}
 
-	public static void main(String args[]) {
-		ParticleSystem ps = new ParticleSystem(0.1f,true);
-		while (true) {
-			ps.update();
-		}
-	}
-
 	public void update() {
 		// Removed apply gravity in favor of p.resetToGravity()
 		// applyGravity();
@@ -128,9 +121,11 @@ public class ParticleSystem {
 
 			// apply XSPH viscosity
 
-			// update position xi = x*i
 			
-
+			
+			//Make sure particles don't get rendered outside the box
+			imposeConstraints(p);
+			// update position xi = x*i
 			p.setOldPos(p.getNewPos().clone());
 		}
 	}
