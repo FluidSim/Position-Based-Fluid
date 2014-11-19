@@ -44,6 +44,12 @@ public class Particle {
 	public Vector3 getForce() {
 		return force;
 	}
+	
+	public void setForce(float x, float y, float z) {
+		force.x = x;
+		force.y = y;
+		force.z = z;
+	}
 
 	public float getMass() {
 		return mass;

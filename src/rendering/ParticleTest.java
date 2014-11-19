@@ -22,7 +22,7 @@ public class ParticleTest
 {
 
 
-	public static ParticleSystem system = new ParticleSystem(0.1f, true);
+	public static ParticleSystem system = new ParticleSystem(.1f, false);
 	
 	/**
 	 * General initialization stuff for OpenGL
@@ -81,20 +81,17 @@ public class ParticleTest
 		{
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
-			float eyePosX = 0;
-			float eyePosY = 0;
-			float eyePosZ = -5;
-			float rotY = .3f;
-			float rotX = .3f;
+			float eyePosX = 0f;
+			float eyePosY = 0f;
+			float eyePosZ = -5f;
+			float rotY = 0f;
+			float rotX = 1f;
 			
 			//Create Matrices
-
-
-			Matrix4 M = Matrix4.createTranslation((float)eyePosX,(float)eyePosY,(float)eyePosZ);
+			Matrix4 M = Matrix4.createTranslation((float)eyePosX, (float)eyePosY, (float)eyePosZ);
 			Matrix4 R = Matrix4.createRotationY((float)rotY);
 			Matrix4 R2 = Matrix4.createRotationX((float)rotX);
-
-			Matrix4 V = Matrix4.createPerspective((float)1,(float)1,(float)4,(float)1);
+			Matrix4 V = Matrix4.createPerspective((float)1, (float)1, (float)4, (float)1);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram( shader.getProgramId() );
@@ -135,8 +132,8 @@ public class ParticleTest
 	 */
 	private int constructVertexArrayObject(ArrayList<Vector3> points)
 	{
-		Matrix4 S = Matrix4.createScale((float)1/ParticleSystem.rangex);
-		Matrix4 T = Matrix4.createTranslation((float)-0.5,(float)-0.3,(float)-0.5);
+		Matrix4 S = Matrix4.createScale((float)1 / ParticleSystem.rangex);
+		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
 		float[] buffer = new float[points.size()*3];
 		int i = 0;
 		for(Vector3 point: points){
