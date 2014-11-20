@@ -22,25 +22,28 @@ public class ParticleSystem {
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
 	// See Macklin part 3
-	private static final float EPSILON_LAMBDA = 50f;
+	private static final float EPSILON_LAMBDA = 100f;
 	private static final float C = 0.01f;
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
-	private static final float EPSILON_VORTICITY = .05f;
+	private static final float EPSILON_VORTICITY = 10f;
 	private static final float K = 0.001f;
-	private static final float deltaQMag = .1f * H;
+	private static final float deltaQMag = .3f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
-	public static float rangex = 35f;
-	public static float rangey = 50f;
-	public static float rangez = 8f;
+	public float rangex = 35f;
+	public float rangey = 50f;
+	public float rangez = 12f;
+	
+	public float originalX = rangex;
+	public float time = 0;
 	
 	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
 		if (!randomStart) {
 			for (int i = 0; i < 30; i++) {
 				for (int j = 10; j < 30; j++) {
-					for (int k = 0; k < 5; k++) {
+					for (int k = 0; k < 10; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1f));
 					}
 				}
@@ -65,6 +68,12 @@ public class ParticleSystem {
 	}
 
 	public void update() {
+		time++;
+		if (time > 70 && time < 100) {
+			//rangex = (float) (-Math.abs(Math.sin(time - Math.PI/2)*originalX*.5) + originalX);
+			rangex -= .5f;//*Math.signum(Math.sin(time/20.0 -100));
+		}
+		
 		for (Particle p : particles) {
 			applyGravity(p);
 			p.setNewPos(p.getOldPos().clone());
