@@ -72,6 +72,9 @@ public class ParticleTest {
 		while (Display.isCloseRequested() == false) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
+			//Enable point size on Mac
+			GL11.glEnable(0x8642);
+			
 			float eyePosX = 0f;
 			float eyePosY = 0f;
 			float eyePosZ = -5f;
