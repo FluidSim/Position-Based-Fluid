@@ -31,15 +31,15 @@ public class ParticleSystem {
 	private static final float deltaQMag = .1f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
-	public static float rangex = 40f;
-	public static float rangey = 100f;
-	public static float rangez = 10f;
+	public static float rangex = 35f;
+	public static float rangey = 50f;
+	public static float rangez = 8f;
 	
 	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
 		if (!randomStart) {
 			for (int i = 0; i < 30; i++) {
-				for (int j = 15; j < 30; j++) {
+				for (int j = 10; j < 30; j++) {
 					for (int k = 0; k < 5; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1f));
 					}
