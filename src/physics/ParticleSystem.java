@@ -10,14 +10,14 @@ public class ParticleSystem {
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
 	// deltaT is the timestep
-	private float deltaT = 0.005f;
+	private float deltaT = 0.00005f;
 	// H is radius of influence
 	// KPOLY and SPIKY are constant coefficients used in Density Estimation
 	// Kernels
 	// See Macklin slides or Muller 2003
 	private static final float H = 2f;
 	private static final float KPOLY = (float) (315f / (64f * Math.PI * Math.pow(H, 9)));
-	private static final float SPIKY = (float) (15f / (Math.PI * Math.pow(H, 6)));
+	private static final float SPIKY = (float) (45f / (Math.PI * Math.pow(H, 6)));
 	private static final float VISC = (float) (15f / (2 * Math.PI * (H * H * H)));
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
@@ -26,9 +26,9 @@ public class ParticleSystem {
 	private static final float C = 0.01f;
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
-	private static final float EPSILON_VORTICITY = .01f;
+	private static final float EPSILON_VORTICITY = 1f;
 	private static final float K = 0.1f;
-	private static final float deltaQMag = .2f * H;
+	private static final float deltaQMag = .1f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
 	public static int rangex = 40;
@@ -39,9 +39,9 @@ public class ParticleSystem {
 		this.deltaT = deltaT;
 		if (!randomStart) {
 			for (int i = 0; i < 30; i++) {
-				for (int j = 15; j < 40; j++) {
+				for (int j = 15; j < 30; j++) {
 					for (int k = 0; k < 5; k++) {
-						particles.add(new Particle(new Vector3(i, j, k), 1));
+						particles.add(new Particle(new Vector3(i, j, k), 1f));
 					}
 				}
 			}
@@ -51,8 +51,7 @@ public class ParticleSystem {
 			}
 		}
 		// create cell cube
-		cube = new CellGrid(rangex, rangey, rangez); // should be whatever the
-														// size of our box is
+		cube = new CellGrid(rangex, rangey, rangez); // should be whatever the size of the box is
 	}
 
 	public ArrayList<Vector3> getPositions() {
@@ -88,7 +87,7 @@ public class ParticleSystem {
 		}
 
 		// while solver < iterations (they say that 2-4 is enough in the paper)
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 10; i++) {
 			// Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
