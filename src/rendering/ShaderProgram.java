@@ -11,17 +11,14 @@ import org.lwjgl.util.glu.GLU;
 
 import static org.lwjgl.opengl.GL20.*;
  
-public class ShaderProgram 
-{
+public class ShaderProgram {
 	// OpenGL handle that will point to the executable shader program
 	// that can later be used for rendering
 	private int programId;
 	
-	public ShaderProgram(){
-	}
+	public ShaderProgram() {}
 	@SuppressWarnings("deprecation")
-	public void init(String vertexShaderFilename, String fragmentShaderFilename)
-	{
+	public void init(String vertexShaderFilename, String fragmentShaderFilename) {
 		// create the shader program. If OK, create vertex and fragment shaders
 		programId = glCreateProgram();
 		
@@ -37,8 +34,7 @@ public class ShaderProgram
 		glLinkProgram(programId);
 		
 		// validate linking
-		if (glGetProgram(programId, GL_LINK_STATUS) == GL11.GL_FALSE) 
-		{
+		if (glGetProgram(programId, GL_LINK_STATUS) == GL11.GL_FALSE) {
 			throw new RuntimeException("could not link shader. Reason: " + glGetProgramInfoLog(programId, 1000));
 		}
  
@@ -56,14 +52,12 @@ public class ShaderProgram
     * is the same.
     * @param the name and path to the vertex shader
     */
-	private int loadAndCompileShader(String filename, int shaderType)
-	{
+	private int loadAndCompileShader(String filename, int shaderType) {
 		//vertShader will be non zero if succefully created
 		int handle = glCreateShader(shaderType);
  
-		if( handle == 0 )
-		{
-			throw new RuntimeException("could not created shader of type "+shaderType+" for file "+filename+". "+ glGetProgramInfoLog(programId, 1000));
+		if (handle == 0) {
+			throw new RuntimeException("could not created shader of type " + shaderType + " for file " + filename + ". "+ glGetProgramInfoLog(programId, 1000));
 		}
  
 		// load code from file into String
@@ -80,8 +74,7 @@ public class ShaderProgram
 		int shaderStatus = glGetShader(handle, GL20.GL_COMPILE_STATUS);
  
 		// check whether compilation was successful
-		if( shaderStatus == GL11.GL_FALSE)
-		{
+		if (shaderStatus == GL11.GL_FALSE) {
 			throw new IllegalStateException("compilation error for shader ["+filename+"]. Reason: " + glGetShaderInfoLog(handle, 1000));
 		}
  
@@ -91,27 +84,21 @@ public class ShaderProgram
 	/**
 	 * Load a text file and return it as a String.
 	 */
-	private String loadFile(String filename)
-	{
+	private String loadFile(String filename) {
 		StringBuilder vertexCode = new StringBuilder();
 		String line = null ;
-		try
-		{
+		try {
 		    BufferedReader reader = new BufferedReader(new FileReader(filename));
-		    while( (line = reader.readLine()) !=null )
-		    {
+		    while ((line = reader.readLine()) !=null) {
 		    	vertexCode.append(line);
 		    	vertexCode.append('\n');
 		    }
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			throw new IllegalArgumentException("unable to load shader from file ["+filename+"]", e);
 		}
  
 		return vertexCode.toString();
 	}
- 
  
 	public int getProgramId() {
 		return programId;

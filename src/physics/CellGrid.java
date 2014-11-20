@@ -22,6 +22,22 @@ public class CellGrid {
 				}
 			}
 		}
+		
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				for (int k = 0; k < depth; k++) {
+					for (int x = -1; x < 2; x++) {
+						for (int y = -1; y < 2; y++) {
+							for (int z = -1; z < 2; z++) {
+								if (i + x >= 0 && i + x < width && j + y >= 0 && j + y < height && k + z >= 0 && k + z < depth) {
+									cells[i][j][k].addNeighbor(cells[i+x][j+y][k+z]);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public void updateCells(ArrayList<Particle> particles) {
@@ -30,8 +46,6 @@ public class CellGrid {
 			Vector3 pos = p.getNewPos();
 			//assuming indices are always valid because the box keeps the particles contained
 			Cell cell = cells[(int) pos.x][(int) pos.y][(int) pos.z];
-			//Cell cell = cells[(int) (pos.x*(width/ParticleSystem.rangex))][(int) (pos.y*(height/ParticleSystem.rangey))][(int) (pos.z*(depth/ParticleSystem.rangez))];
-
 			cell.addParticle(p);
 			p.setCell(cell);
 		}

@@ -18,18 +18,13 @@ import org.lwjgl.util.glu.GLU;
 
 import egl.math.*;
  
-public class ParticleTest 
-{
-
-
+public class ParticleTest {
 	public static ParticleSystem system = new ParticleSystem(.1f, false);
 	
 	/**
 	 * General initialization stuff for OpenGL
 	 */
-	public void initGl() throws LWJGLException
-	{
-		
+	public void initGl() throws LWJGLException {
 		// width and height of window and view port
 		int width = 900;
 		int height = 900;
@@ -51,12 +46,10 @@ public class ParticleTest
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
 	}
 	
 	/** Run the shader */
-	public void run()
-	{
+	public void run() {
 		ArrayList<Vector3> points = system.getPositions();
 		// compile and link vertex and fragment shaders into
 		// a "program" that resides in the OpenGL driver
@@ -76,9 +69,7 @@ public class ParticleTest
 	    GL20.glBindAttribLocation(shader.getProgramId(), 0, "velocity");
 	    GL20.glBindAttribLocation(shader.getProgramId(), 1, "radius");
 
- 
-		while( Display.isCloseRequested() == false )
-		{
+		while (Display.isCloseRequested() == false) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
 			float eyePosX = 0f;
@@ -88,10 +79,10 @@ public class ParticleTest
 			float rotX = -0.3f;
 			
 			//Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float)eyePosX, (float)eyePosY, (float)eyePosZ);
-			Matrix4 R = Matrix4.createRotationY((float)rotY);
-			Matrix4 R2 = Matrix4.createRotationX((float)rotX);
-			Matrix4 V = Matrix4.createPerspective((float)1, (float)1, (float)4, (float)1);
+			Matrix4 M = Matrix4.createTranslation((float) eyePosX, (float) eyePosY, (float) eyePosZ);
+			Matrix4 R = Matrix4.createRotationY((float) rotY);
+			Matrix4 R2 = Matrix4.createRotationX((float) rotX);
+			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram( shader.getProgramId() );
@@ -100,7 +91,6 @@ public class ParticleTest
 			addMatrix(shader, R, "R");
 			addMatrix(shader, M, "M");
 			addMatrix(shader, V, "V");
-			
 			
 			// bind vertex and color data
 			GL30.glBindVertexArray(vaoHandle);
@@ -111,8 +101,7 @@ public class ParticleTest
 			GL11.glDrawArrays(GL11.GL_POINTS, 0, points.size());
  
 			// check for errors
-			if( glGetError() != GL_NO_ERROR )
-			{
+			if (glGetError() != GL_NO_ERROR) {
 				throw new RuntimeException("OpenGL error: "+GLU.gluErrorString(glGetError()));
 			}
 			
@@ -124,19 +113,19 @@ public class ParticleTest
 			points = system.getPositions();
 			vaoHandle = constructVertexArrayObject(points);
 		}
+		
 		Display.destroy();
 	}
  
 	/**
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
-	private int constructVertexArrayObject(ArrayList<Vector3> points)
-	{
-		Matrix4 S = Matrix4.createScale((float)1 / ParticleSystem.rangex);
+	private int constructVertexArrayObject(ArrayList<Vector3> points) {
+		Matrix4 S = Matrix4.createScale((float)1 / 40);
 		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
 		float[] buffer = new float[points.size()*3];
 		int i = 0;
-		for(Vector3 point: points){
+		for(Vector3 point: points) {
 			S.mulDir(point);
 			T.mulPos(point);
 			buffer[3*i]=(point.x); buffer[3*i+1]=(point.y); buffer[3*i+2]=(point.z);
@@ -185,7 +174,7 @@ public class ParticleTest
 	}
 	
 	/** Add a Matrix as a uniform */
-	public static void addMatrix(ShaderProgram shader, Matrix4 M, String name){
+	public static void addMatrix(ShaderProgram shader, Matrix4 M, String name) {
 		FloatBuffer Mbuffer = BufferUtils.createFloatBuffer(M.m.length);
 		Mbuffer.put(M.m);
 		Mbuffer.flip();
@@ -194,7 +183,7 @@ public class ParticleTest
 	}
 	
 	/** Create a x * y * z box of points */
-	public static ArrayList<Vector3> createBox(int x, int y, int z, int closeness){
+	public static ArrayList<Vector3> createBox(int x, int y, int z, int closeness) {
 		ArrayList<Vector3> points = new ArrayList<Vector3>();
 		for(int i = 0; i < x; i++){
 			for(int j = 0; j < y; j++){
@@ -207,7 +196,7 @@ public class ParticleTest
 	}
 	
 	/** Create a colorBuffer with color (x,y,z) */
-	public static FloatBuffer createColorBuffer(float x, float y, float z, int size){
+	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
 		float[] colors = new float[size*3];
 		for(int j = 0; j < size; j++){
 			colors[3*j]=(x); colors[3*j+1]=(y); colors[3*j+2]=(z);
@@ -221,20 +210,16 @@ public class ParticleTest
 	/**
 	 * main method to run the example
 	 */
-	public static void main(String[] args) throws LWJGLException
-	{
+	public static void main(String[] args) throws LWJGLException {
 		ParticleTest example = new ParticleTest();
 		example.initGl();
 		example.run();
 	}
 	
-	
-	public static void copy(ArrayList<Vector3> dest, ArrayList<Vector3> src){
+	public static void copy(ArrayList<Vector3> dest, ArrayList<Vector3> src) {
 		dest.clear();
 		for (Vector3 v: src){
 			dest.add(v.clone());
 		}
 	}
-	
-	
 }
