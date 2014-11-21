@@ -13,16 +13,14 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 
-import egl.math.Matrix4;
-import egl.math.Vector3;
 import egl.math.*;
  
 public class ShaderExample 
 {
 	
 	//CONSTANTS
-	public static float xrot = 0.3f;
-	public static float yrot = 0.3f;
+	public static float xrot = 0.2f;
+	public static float yrot = 0.2f;
 	public static float scale = (float)1/30;
 	public static float trans = 0f;
 	public static float transback = -5; 
@@ -57,6 +55,8 @@ public class ShaderExample
 //		contextAtrributes.withForwardCompatible(true);
 //		contextAtrributes.withProfileCore(true);
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
+		
+		
 //		Display.create(pixelFormat, contextAtrributes);
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
@@ -229,7 +229,18 @@ public class ShaderExample
 	{
 		ShaderExample example = new ShaderExample();
 		example.initGl();
-		example.run();
+		//example.run();
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		// set the color of the quad (R,G,B,A)
+		GL11.glColor3f(0.5f,0.5f,1.0f);
+		 
+		// draw quad
+		GL11.glBegin(GL11.GL_QUADS);
+		    GL11.glVertex2f(100,100);
+		    GL11.glVertex2f(100+200,100);
+		    GL11.glVertex2f(100+200,100+200);
+		    GL11.glVertex2f(100,100+200);
+		GL11.glEnd();
 	}
 	
 	public static void updatePoints(){

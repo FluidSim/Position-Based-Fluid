@@ -40,11 +40,6 @@ public class ShaderProgram {
  
 		// perform general validation that the program is usable
 		glValidateProgram(programId);
- 
-//		if (glGetProgram(programId, GL_VALIDATE_STATUS) == GL11.GL_FALSE)
-//		{
-//			throw new RuntimeException("could not validate shader. Reason: " + glGetProgramInfoLog(programId, 1000));            
-//		}
 	}
  
    /*

@@ -42,7 +42,7 @@ public class ParticleSystem {
 		this.deltaT = deltaT;
 		if (!randomStart) {
 			for (int i = 0; i < 30; i++) {
-				for (int j = 10; j < 30; j++) {
+				for (int j = 15; j < 30; j++) {
 					for (int k = 0; k < 10; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1f));
 					}

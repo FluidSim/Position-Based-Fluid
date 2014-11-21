@@ -37,11 +37,6 @@ public class ParticleTest {
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
 		// throw an error.
-//		PixelFormat pixelFormat = new PixelFormat();
-//		ContextAttribs contextAtrributes = new ContextAttribs(3, 2);
-//		contextAtrributes.withForwardCompatible(true);
-//		contextAtrributes.withProfileCore(true);
-//		Display.create(pixelFormat, contextAtrributes);
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
@@ -59,16 +54,9 @@ public class ParticleTest {
 		// the two shaders into a usable shader program
 		shader.init("src/rendering/simple.vertex", "src/rendering/simple.fragment");	
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
  
-		
-		//ArrayList<Vector3> points = createBox(15,15,15,15);
-		
-		int vaoHandle = constructVertexArrayObject(points);
-		
-	    GL20.glBindAttribLocation(shader.getProgramId(), 0, "velocity");
-	    GL20.glBindAttribLocation(shader.getProgramId(), 1, "radius");
-
+		constructVertexArrayObject(points);
+	
 		while (Display.isCloseRequested() == false) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
  
@@ -78,8 +66,8 @@ public class ParticleTest {
 			float eyePosX = 0f;
 			float eyePosY = 0f;
 			float eyePosZ = -5f;
-			float rotY = 0.4f;
-			float rotX = 0.3f;
+			float rotY = 0.2f;
+			float rotX = 0.2f;
 			
 			//Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float) eyePosX, (float) eyePosY, (float) eyePosZ);
@@ -94,12 +82,7 @@ public class ParticleTest {
 			addMatrix(shader, R, "R");
 			addMatrix(shader, M, "M");
 			addMatrix(shader, V, "V");
-			
-			// bind vertex and color data
-			GL30.glBindVertexArray(vaoHandle);
-			GL20.glEnableVertexAttribArray(0); // VertexPosition
-			GL20.glEnableVertexAttribArray(1); // VertexColor
- 
+	
 			// draw VAO
 			GL11.glDrawArrays(GL11.GL_POINTS, 0, points.size());
  
@@ -114,16 +97,15 @@ public class ParticleTest {
 			
 			system.update();
 			points = system.getPositions();
-			vaoHandle = constructVertexArrayObject(points);
+			constructVertexArrayObject(points);
 		}
-		
 		Display.destroy();
 	}
  
 	/**
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
-	private int constructVertexArrayObject(ArrayList<Vector3> points) {
+	private void constructVertexArrayObject(ArrayList<Vector3> points) {
 		Matrix4 S = Matrix4.createScale((float)1 / 40);
 		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
 		float[] buffer = new float[points.size()*3];
@@ -136,12 +118,15 @@ public class ParticleTest {
 		}
  
 		// convert vertex array to buffer
-		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
+		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length + 6);
 		positionBuffer.put(buffer);
+		positionBuffer.put(0);positionBuffer.put(0);positionBuffer.put(0);
+		positionBuffer.put(20);positionBuffer.put(20);positionBuffer.put(20);
+
 		positionBuffer.flip();
  
 		// convert color array to buffer
-		FloatBuffer colorBuffer = createColorBuffer((float)0.6,(float)0.6,(float)0.8,points.size()*3);
+		FloatBuffer colorBuffer = createColorBuffer((float)0.6,(float)0.6,(float)0.8,(points.size()*3)+6);
 		
 		// create vertex byffer object (VBO) for vertices
 		int positionBufferHandle = GL15.glGenBuffers();
@@ -172,9 +157,7 @@ public class ParticleTest {
  
 		// unbind VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
- 
-		return vaoHandle;
-	}
+ 	}
 	
 	/** Add a Matrix as a uniform */
 	public static void addMatrix(ShaderProgram shader, Matrix4 M, String name) {
