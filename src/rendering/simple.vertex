@@ -14,6 +14,7 @@ out vec3 Color;
  
 void main() {
 	Color = VertexColor;
-    gl_Position = M*V*R2*R*vec4(VertexPosition, 1.0);
-    gl_PointSize = 8;
+    vec4 viewPos = M*V*R2*R*vec4(VertexPosition, 1.0);
+    gl_Position = viewPos;
+    gl_PointSize = 32/(2-viewPos.z);
 }
