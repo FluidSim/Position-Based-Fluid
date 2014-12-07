@@ -26,8 +26,8 @@ public class ParticleTest {
 	 */
 	public void initGl() throws LWJGLException {
 		// width and height of window and view port
-		int width = 900;
-		int height = 900;
+		int width = 600;
+		int height = 600;
  
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
@@ -66,8 +66,8 @@ public class ParticleTest {
 			float eyePosX = 0f;
 			float eyePosY = 0f;
 			float eyePosZ = -5f;
-			float rotY = 0.2f;
-			float rotX = 0.2f;
+			float rotY = 0.3f;
+			float rotX = 0.3f;
 			
 			//Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float) eyePosX, (float) eyePosY, (float) eyePosZ);

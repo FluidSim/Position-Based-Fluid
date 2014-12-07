@@ -22,7 +22,7 @@ public class ParticleSystem {
 	private static final float REST_DENSITY = 1f;
 	// Epsilon used in lambda calculation
 	// See Macklin part 3
-	private static final float EPSILON_LAMBDA = 100f;
+	private static final float EPSILON_LAMBDA = 150f;
 	private static final float C = 0.01f;
 	// K and deltaQMag used in sCorr Calculation
 	// See Macklin part 4
@@ -32,18 +32,19 @@ public class ParticleSystem {
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
 	public float rangex = 35f;
-	public float rangey = 50f;
+	public float rangey = 500f;
 	public float rangez = 12f;
 	
 	public float originalX = rangex;
 	public float time = 0;
+	public boolean dropped = false;
 	
 	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
 		if (!randomStart) {
-			for (int i = 0; i < 30; i++) {
-				for (int j = 15; j < 30; j++) {
-					for (int k = 0; k < 10; k++) {
+			for (int i = 3; i < 6; i++) {
+				for (int j = 15; j < 250; j++) {
+					for (int k = 3; k < 6; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1f));
 					}
 				}
@@ -73,6 +74,11 @@ public class ParticleSystem {
 			//rangex = (float) (-Math.abs(Math.sin(time - Math.PI/2)*originalX*.5) + originalX);
 			rangex -= .5f;//*Math.signum(Math.sin(time/20.0 -100));
 		}
+		
+		/*if (time > 100 && !dropped) {
+			dropped = true;
+			dropParticles();
+		}*/
 		
 		for (Particle p : particles) {
 			applyGravity(p);
@@ -314,5 +320,15 @@ public class ParticleSystem {
 
 	private static boolean outOfRange(float x, float min, float max) {
 		return x < min || x >= max;
+	}
+	
+	private void dropParticles() {
+		for (int i = 25; i < 34; i++) {
+			for (int j = 15; j < 50; j++) {
+				for (int k = 0; k < 5; k++) {
+					particles.add(new Particle(new Vector3(i, j, k), 1f));
+				}
+			}
+		}
 	}
 }
