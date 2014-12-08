@@ -26,8 +26,8 @@ public class ParticleTest {
 	 */
 	public void initGl() throws LWJGLException {
 		// width and height of window and view port
-		int width = 900;
-		int height = 900;
+		int width = 600;
+		int height = 600;
  
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
