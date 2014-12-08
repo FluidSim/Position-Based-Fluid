@@ -72,8 +72,6 @@ public class Renderer {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-		// ArrayList<Vector3> points = createBox(15,15,15,15);
-
 		int vaoHandle = constructVertexArrayObject(points);
 
 		GL20.glBindAttribLocation(shader.getProgramId(), 0, "velocity");
@@ -89,14 +87,13 @@ public class Renderer {
 			Matrix4 R2 = Matrix4.createRotationX(xrot);
 			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,
 					(float) 4, (float) 1);
+			
+			Matrix4 mViewProj = M.clone().mulBefore(R).mulBefore(R2).mulBefore(V);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram(shader.getProgramId());
 
-			addMatrix(shader, R2, "R2");
-			addMatrix(shader, R, "R");
-			addMatrix(shader, M, "M");
-			addMatrix(shader, V, "V");
+			addMatrix(shader,mViewProj,"mViewProj");
 
 			// bind vertex and color data
 			GL30.glBindVertexArray(vaoHandle);
