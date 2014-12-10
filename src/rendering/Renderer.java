@@ -111,7 +111,7 @@ public class Renderer {
 
 			// swap buffers and sync frame rate to 60 fps
 			Display.update();
-			Display.sync(60);
+			Display.sync(30);
 
 			updatePoints();
 			vaoHandle = constructVertexArrayObject(points);
@@ -177,7 +177,7 @@ public class Renderer {
 
 		// unbind VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
+		
 		return vaoHandle;
 	}
 
