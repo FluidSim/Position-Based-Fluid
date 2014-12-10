@@ -240,6 +240,27 @@ public class Renderer {
 		GL11.glEnd();
 	}
 
+	
+	public static void addVector3(ShaderProgram shader, Vector3 V, String name){
+		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
+		GL20.glUniform3f(loc, V.x, V.y, V.z);
+	}
+	
+	public static void addVector2(ShaderProgram shader, Vector2 V, String name){
+		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
+		GL20.glUniform2f(loc, V.x, V.y);
+	}
+	
+	public static void addInt(ShaderProgram shader, int x, String name){
+		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
+		GL20.glUniform1i(loc,x);
+	}
+	
+	public static void addFloat(ShaderProgram shader, int f, String name){
+		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
+		GL20.glUniform1f(loc, f);
+	}
+	
 	public static void updatePoints() {
 		time += .00;
 		copy(points, initialPoints);
