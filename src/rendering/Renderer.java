@@ -19,6 +19,7 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 import egl.math.Matrix4;
+import egl.math.Vector2;
 import egl.math.Vector3;
 
 public class Renderer {
@@ -34,6 +35,8 @@ public class Renderer {
 	public static ArrayList<Vector3> points = new ArrayList<Vector3>(
 			initialPoints.size());
 	public static double time = 0;
+
+	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
 	/**
 	 * General initialization stuff for OpenGL
@@ -72,12 +75,20 @@ public class Renderer {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-		int vaoHandle = constructVertexArrayObject(points);
-
-		GL20.glBindAttribLocation(shader.getProgramId(), 0, "velocity");
-		GL20.glBindAttribLocation(shader.getProgramId(), 1, "radius");
+		// int vaoHandle = constructVertexArrayObject(points);
+		//
+		// GL20.glBindAttribLocation(shader.getProgramId(), 0,
+		// "VertexPosition");
+		// GL20.glBindAttribLocation(shader.getProgramId(), 1, "Color");
 
 		while (Display.isCloseRequested() == false) {
+
+			int vaoHandle = constructVertexArrayObject(points);
+
+			GL20.glBindAttribLocation(shader.getProgramId(), 0,
+					"VertexPosition");
+			GL20.glBindAttribLocation(shader.getProgramId(), 1, "Color");
+
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			// Create Matrices
@@ -87,13 +98,17 @@ public class Renderer {
 			Matrix4 R2 = Matrix4.createRotationX(xrot);
 			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,
 					(float) 4, (float) 1);
-			
-			Matrix4 mViewProj = M.clone().mulBefore(R).mulBefore(R2).mulBefore(V);
+
+			Matrix4 mViewProj = M.clone().mulBefore(R).mulBefore(R2)
+					.mulBefore(V);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram(shader.getProgramId());
 
-			addMatrix(shader,mViewProj,"mViewProj");
+			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
+			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(),
+					Display.getHeight()), "screenSize");
+			RenderUtility.addVector3(shader, lightPosition, "lightPos");
 
 			// bind vertex and color data
 			GL30.glBindVertexArray(vaoHandle);
@@ -114,7 +129,7 @@ public class Renderer {
 			Display.sync(30);
 
 			updatePoints();
-			vaoHandle = constructVertexArrayObject(points);
+			// vaoHandle = constructVertexArrayObject(points);
 		}
 		Display.destroy();
 	}
@@ -123,17 +138,13 @@ public class Renderer {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	private int constructVertexArrayObject(ArrayList<Vector3> points) {
-		Matrix4 S = Matrix4.createScale(scale);
-		Matrix4 T = Matrix4.createTranslation(trans, trans, trans);
+
+		// Create the array for the vectors of positions
 		float[] buffer = new float[points.size() * 3];
-		int i = 0;
-		for (Vector3 point : points) {
-			S.mulDir(point);
-			T.mulPos(point);
-			buffer[3 * i] = (point.x);
-			buffer[3 * i + 1] = (point.y);
-			buffer[3 * i + 2] = (point.z);
-			i = i + 1;
+		for (int i = 0; i < points.size(); i++) {
+			buffer[3 * i] = (points.get(i).x);
+			buffer[3 * i + 1] = (points.get(i).y);
+			buffer[3 * i + 2] = (points.get(i).z);
 		}
 
 		// convert vertex array to buffer
@@ -142,11 +153,11 @@ public class Renderer {
 		positionBuffer.put(buffer);
 		positionBuffer.flip();
 
-		// convert color array to buffer
+		// create color buffer
 		FloatBuffer colorBuffer = createColorBuffer((float) 0.6, (float) 0.6,
 				(float) 0.8, points.size() * 3);
 
-		// create vertex byffer object (VBO) for vertices
+		// create vertex buffer object (VBO) for vertices
 		int positionBufferHandle = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer,
@@ -158,7 +169,7 @@ public class Renderer {
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer,
 				GL15.GL_STATIC_DRAW);
 
-		// unbind VBO
+		// unbind VBO (glBindBuffer(..., 0) unbinds all buffers. 0 is reserved
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 		// create vertex array object (VAO)
@@ -177,17 +188,8 @@ public class Renderer {
 
 		// unbind VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		
-		return vaoHandle;
-	}
 
-	/** Add a Matrix as a uniform */
-	public static void addMatrix(ShaderProgram shader, Matrix4 M, String name) {
-		FloatBuffer Mbuffer = BufferUtils.createFloatBuffer(M.m.length);
-		Mbuffer.put(M.m);
-		Mbuffer.flip();
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
-		GL20.glUniformMatrix4(loc, true, Mbuffer);
+		return vaoHandle;
 	}
 
 	/** Create a x * y * z box of points */
@@ -226,43 +228,22 @@ public class Renderer {
 	public static void main(String[] args) throws LWJGLException {
 		ShaderExample example = new ShaderExample();
 		example.initGl();
-		// example.run();
+		example.run();
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		// set the color of the quad (R,G,B,A)
-		GL11.glColor3f(0.5f, 0.5f, 1.0f);
-
-		// draw quad
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(100, 100);
-		GL11.glVertex2f(100 + 200, 100);
-		GL11.glVertex2f(100 + 200, 100 + 200);
-		GL11.glVertex2f(100, 100 + 200);
-		GL11.glEnd();
+		// GL11.glColor3f(0.5f, 0.5f, 1.0f);
+		//
+		// // draw quad
+		// GL11.glBegin(GL11.GL_QUADS);
+		// GL11.glVertex2f(100, 100);
+		// GL11.glVertex2f(100 + 200, 100);
+		// GL11.glVertex2f(100 + 200, 100 + 200);
+		// GL11.glVertex2f(100, 100 + 200);
+		// GL11.glEnd();
 	}
 
-	
-	public static void addVector3(ShaderProgram shader, Vector3 V, String name){
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
-		GL20.glUniform3f(loc, V.x, V.y, V.z);
-	}
-	
-	public static void addVector2(ShaderProgram shader, Vector2 V, String name){
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
-		GL20.glUniform2f(loc, V.x, V.y);
-	}
-	
-	public static void addInt(ShaderProgram shader, int x, String name){
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
-		GL20.glUniform1i(loc,x);
-	}
-	
-	public static void addFloat(ShaderProgram shader, int f, String name){
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
-		GL20.glUniform1f(loc, f);
-	}
-	
 	public static void updatePoints() {
-		time += .00;
+		// time += .00;
 		copy(points, initialPoints);
 		for (Vector3 v : points) {
 			double newX = Math.cos(time) * v.x - Math.sin(time) * v.y;

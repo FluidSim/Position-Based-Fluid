@@ -16,7 +16,7 @@ public class ShaderProgram {
 	// that can later be used for rendering
 	private int programId;
 	
-	public ShaderProgram() {}
+	public ShaderProgram() { }
 	@SuppressWarnings("deprecation")
 	public void init(String vertexShaderFilename, String fragmentShaderFilename) {
 		// create the shader program. If OK, create vertex and fragment shaders

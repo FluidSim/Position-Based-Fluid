@@ -2,13 +2,13 @@
 
 in vec3 pos;
 in float radius;
+in vec3 fragColor;
 
-uniform vec3 inColor;
 uniform mat4 mViewProj;
 uniform vec2 screenSize;
 uniform vec3 lightPos;
 
-out vec3 Color;
+out vec3 outColor;
 out float depth;
  
 void main() {
@@ -30,5 +30,5 @@ void main() {
     
     float diffuse = max(0, dot(normal,pos-lightPos));
     
-    Color = diffuse*inColor;
+    outColor = diffuse*inColor;
 }
