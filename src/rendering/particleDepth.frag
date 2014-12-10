@@ -30,5 +30,5 @@ void main() {
     
     float diffuse = max(0, dot(normal,pos-lightPos));
     
-    outColor = diffuse*inColor;
+    outColor = diffuse*fragColor;
 }
