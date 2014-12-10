@@ -98,9 +98,11 @@ public class Renderer {
 			Matrix4 R2 = Matrix4.createRotationX(xrot);
 			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,
 					(float) 4, (float) 1);
+			Matrix4 S = Matrix4.createScale(scale);
+			Matrix4 T = Matrix4.createTranslation(trans,trans,trans);
 
 			Matrix4 mViewProj = M.clone().mulBefore(R).mulBefore(R2)
-					.mulBefore(V);
+					.mulBefore(V).mulBefore(T).mulBefore(S);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram(shader.getProgramId());
