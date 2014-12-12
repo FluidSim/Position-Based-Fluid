@@ -30,6 +30,8 @@ public class ParticleShader extends ShaderHelper {
 		position = glGetAttribLocation(program, "vertexPos");
 		mViewProj = glGetUniformLocation(program, "mViewProj");
 		screenSize = glGetUniformLocation(program, "screenSize");
+		glBindFragDataLocation(program, 0, "depth");
+		glBindFragDataLocation(program, 0, "outColor");
 		color = glGetFragDataLocation(program, "outColor");
 		depth = glGetFragDataLocation(program, "depth");
 	}
