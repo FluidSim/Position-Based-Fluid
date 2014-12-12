@@ -86,9 +86,9 @@ public class Renderer {
 			
 			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
 
-			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
-			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
-			RenderUtility.addVector3(shader, lightPosition, "lightPos");			
+			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
+			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
+			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");			
 
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
