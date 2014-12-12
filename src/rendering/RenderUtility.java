@@ -109,4 +109,11 @@ public final class RenderUtility {
 		return buff;
 	}
 	
+	public static void checkErrors() {
+		int error = glGetError();
+		if (error != GL_NO_ERROR) {
+			throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(error));
+		}
+	}
+	
 }

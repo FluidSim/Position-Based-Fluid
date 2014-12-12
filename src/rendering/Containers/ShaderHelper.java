@@ -1,5 +1,6 @@
 package rendering.Containers;
 
+import rendering.RenderUtility;
 import java.io.BufferedReader;
 import java.io.FileReader;
  
@@ -23,9 +24,7 @@ public abstract class ShaderHelper {
 		
 		glAttachShader(program, vertShader);
 		glAttachShader(program, fragShader);
-		
-		initFields();
- 
+	 
 		glLinkProgram(program);
 		
 		if (glGetProgrami(program, GL_LINK_STATUS) == GL_FALSE) {
@@ -43,17 +42,16 @@ public abstract class ShaderHelper {
     * @param the name and path to the vertex shader
     */
 	private int compileShader(String filename, int shaderType) {
+
 		int shader = glCreateShader(shaderType);
 		
 		if (glGetShaderi(program, GL_LINK_STATUS) == GL_FALSE) {
 			throw new RuntimeException("Could not create shader.");
 		}
- 
+	
 		String source = loadFile(filename);
- 
 		glShaderSource(shader, source); 
 		glCompileShader(shader);
- 
 		return shader;
 	}
 

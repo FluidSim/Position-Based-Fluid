@@ -39,16 +39,17 @@ public class Renderer {
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
 	public void initGl() throws LWJGLException {
-		int width = 640;
-		int height = 640;
-
+		int width = 600;
+		int height = 600;
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
-		Display.setTitle("Fluid Simulation");
-
+		Display.setTitle("Shader Example");
+		// set up OpenGL to run in forward-compatible mode
+		// so that using deprecated functionality will
+		// throw an error.
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
-
+		// initialize basic OpenGL stuff
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -58,9 +59,9 @@ public class Renderer {
 		ArrayList<Vector3> points = system.getPositions();
 
 		ParticleShader particleShader = new ParticleShader();
-		// particleShader.initFields();
 		particleShader.initProgram("src/rendering/Shaders/test.vert", "src/rendering/Shaders/test.frag");
-
+		particleShader.initFields();
+		
 		glBindFragDataLocation(particleShader.program, 0, "depth");
 
 		glEnable(GL_DEPTH_TEST);
@@ -73,7 +74,7 @@ public class Renderer {
 
 			// Enable point size on Mac
 			glEnable(0x8642);
-
+			
 			// Create Matrices
 			Matrix4 T = Matrix4.createTranslation((float) 0, (float) 0, transback);
 			Matrix4 Ry = Matrix4.createRotationY(yrot);
@@ -85,11 +86,11 @@ public class Renderer {
 			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
-
+			
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
 			
-			checkErrors();
+			
 
 			// swap buffers and sync frame rate to 60 fps
 			Display.update();
@@ -135,13 +136,6 @@ public class Renderer {
 		// Unbind VBO's
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	}
-
-	private void checkErrors() {
-		int error = glGetError();
-		if (error != GL_NO_ERROR) {
-			throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(error));
-		}
 	}
 
 	public static void main(String[] args) throws LWJGLException {
