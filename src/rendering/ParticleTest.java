@@ -48,11 +48,11 @@ public class ParticleTest {
 		ArrayList<Vector3> points = system.getPositions();
 		// compile and link vertex and fragment shaders into
 		// a "program" that resides in the OpenGL driver
-		ShaderProgram shader = new ShaderProgram();
+		ShaderHelper shader = new ShaderHelper();
  
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/rendering/Shaders/simple.vertex", "src/rendering/Shaders/simple.fragment");	
+		shader.initProgram("src/rendering/Shaders/simple.vertex", "src/rendering/Shaders/simple.fragment");	
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
  
 		constructVertexArrayObject(points);
@@ -76,7 +76,7 @@ public class ParticleTest {
 			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
 
 			// tell OpenGL to use the shader
-			GL20.glUseProgram( shader.getProgramId() );
+			GL20.glUseProgram( shader.getProgram() );
 			
 			addMatrix(shader, R2, "R2");
 			addMatrix(shader, R, "R");
@@ -160,11 +160,11 @@ public class ParticleTest {
  	}
 	
 	/** Add a Matrix as a uniform */
-	public static void addMatrix(ShaderProgram shader, Matrix4 M, String name) {
+	public static void addMatrix(ShaderHelper shader, Matrix4 M, String name) {
 		FloatBuffer Mbuffer = BufferUtils.createFloatBuffer(M.m.length);
 		Mbuffer.put(M.m);
 		Mbuffer.flip();
-		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
+		int loc = GL20.glGetUniformLocation(shader.getProgram(), name);
 		GL20.glUniformMatrix4(loc,true,Mbuffer);
 	}
 	

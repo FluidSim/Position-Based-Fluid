@@ -15,11 +15,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 import physics.ParticleSystem;
-
+import rendering.Containers.ParticleShader;
 import egl.math.Matrix4;
 import egl.math.Vector2;
 import egl.math.Vector3;
@@ -50,7 +51,7 @@ public class Renderer {
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
-		Display.setTitle("Shader Example");
+		Display.setTitle("Fluid Simulation");
 
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 
@@ -64,13 +65,19 @@ public class Renderer {
 	public void run() {
 		ArrayList<Vector3> points = system.getPositions();
 
-		// compile and link vertex and fragment shaders into
-		// a "program" that resides in the OpenGL driver
-		ShaderProgram shader = new ShaderProgram();
+		ShaderHelper shader = new ShaderHelper();
+		ParticleShader particleShader = new ParticleShader();
 
-		// do the heavy lifting of loading, compiling and linking
-		// the two shaders into a usable shader program
-		shader.init("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
+		shader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
+		particleShader.program = shader.getProgram();
+		
+		particleShader.position = GL20.glGetAttribLocation(particleShader.program, "vertexPos");
+		
+		particleShader.mView = GL20.glGetUniformLocation(particleShader.program, "mViewProj");
+		particleShader.screenSize = GL20.glGetUniformLocation(particleShader.program, "screenSize");
+		
+		GL30.glBindFragDataLocation(particleShader.program, 0, "depth");
+		
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
@@ -91,8 +98,7 @@ public class Renderer {
 			
 			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
 
-			// tell OpenGL to use the shader
-			GL20.glUseProgram(shader.getProgramId());
+			//GL20.glUseProgram(shader.getProgramId());
 
 			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
