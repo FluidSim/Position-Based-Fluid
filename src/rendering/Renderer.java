@@ -58,7 +58,7 @@ public class Renderer {
 
 		ParticleShader particleShader = new ParticleShader();
 		// particleShader.initFields();
-		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
+		particleShader.initProgram("src/rendering/Shaders/test.vert", "src/rendering/Shaders/test.frag");
 
 		glBindFragDataLocation(particleShader.program, 0, "depth");
 

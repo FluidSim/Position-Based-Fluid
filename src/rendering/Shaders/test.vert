@@ -19,3 +19,4 @@ void main() {
     radius = gl_PointSize;
     fragColor = color;
 }
+	
