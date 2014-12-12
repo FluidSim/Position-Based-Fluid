@@ -2,6 +2,10 @@ package rendering.Containers;
 
 import static org.lwjgl.opengl.GL20.glGetAttribLocation;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL40.*;
 
 public class ParticleShader extends ShaderHelper {
 	
@@ -14,11 +18,19 @@ public class ParticleShader extends ShaderHelper {
 	
 	/** terrain texture */
 	public int terrain;
+	
+	/** out color */
+	public int color;
+	
+	/** out depth */
+	public int depth;
 
 	@Override
 	public void initFields() {
 		position = glGetAttribLocation(program, "vertexPos");
 		mViewProj = glGetUniformLocation(program, "mViewProj");
-		screenSize = glGetUniformLocation(program, "screenSize");	
+		screenSize = glGetUniformLocation(program, "screenSize");
+		color = glGetFragDataLocation(program, "outColor");
+		depth = glGetFragDataLocation(program, "depth");
 	}
 }
