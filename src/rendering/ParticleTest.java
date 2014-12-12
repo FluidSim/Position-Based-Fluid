@@ -52,7 +52,7 @@ public class ParticleTest {
  
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/rendering/simple.vertex", "src/rendering/simple.fragment");	
+		shader.init("src/rendering/Shaders/simple.vertex", "src/rendering/Shaders/simple.fragment");	
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
  
 		constructVertexArrayObject(points);

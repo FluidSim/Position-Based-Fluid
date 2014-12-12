@@ -70,7 +70,7 @@ public class Renderer {
 
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/rendering/particleDepth.vert", "src/rendering/particleDepth.frag");
+		shader.init("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
