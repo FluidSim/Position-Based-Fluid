@@ -1,8 +1,5 @@
 package rendering;
 
-import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
-import static org.lwjgl.opengl.GL11.glGetError;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -11,11 +8,10 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL40;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL40.*;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
@@ -56,8 +52,8 @@ public class Renderer {
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 
 		// initialize basic OpenGL stuff
-		GL11.glViewport(0, 0, width, height);
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glViewport(0, 0, width, height);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	}
 
@@ -71,24 +67,24 @@ public class Renderer {
 		shader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.program = shader.getProgram();
 		
-		particleShader.position = GL20.glGetAttribLocation(particleShader.program, "vertexPos");
+		particleShader.position = glGetAttribLocation(particleShader.program, "vertexPos");
 		
-		particleShader.mView = GL20.glGetUniformLocation(particleShader.program, "mViewProj");
-		particleShader.screenSize = GL20.glGetUniformLocation(particleShader.program, "screenSize");
+		particleShader.mView = glGetUniformLocation(particleShader.program, "mViewProj");
+		particleShader.screenSize = glGetUniformLocation(particleShader.program, "screenSize");
 		
-		GL30.glBindFragDataLocation(particleShader.program, 0, "depth");
+		glBindFragDataLocation(particleShader.program, 0, "depth");
 		
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//points = system.getPositions();
 		constructVertexArrayObject(points);
 		
 		while (Display.isCloseRequested() == false) {
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  
 			//Enable point size on Mac
-			GL11.glEnable(0x8642);
+			glEnable(0x8642);
 
 			// Create Matrices
 			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0, transback);
@@ -105,7 +101,7 @@ public class Renderer {
 			RenderUtility.addVector3(shader, lightPosition, "lightPos");			
 
 			// draw VAO
-			GL11.glDrawArrays(GL11.GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, points.size());
 
 			// check for errors
 			if (glGetError() != GL_NO_ERROR) {
@@ -150,7 +146,7 @@ public class Renderer {
 		FloatBuffer colorBuffer = createColorBuffer((float)0.6, (float)0.6, (float)0.8, (points.size() * 3) + 6);
 		
 		// create vertex buffer object (VBO) for vertices
-		int positionBufferHandle = GL15.glGenBuffers();
+		/*int positionBufferHandle = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
  
@@ -177,7 +173,7 @@ public class Renderer {
 		GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
  
 		// unbind VBO
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);*/
 	}
 
 	/** Create a x * y * z box of points */
