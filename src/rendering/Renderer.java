@@ -52,8 +52,7 @@ public class Renderer {
 		Display.setVSyncEnabled(true);
 		Display.setTitle("Shader Example");
 
-		Display.create(new PixelFormat(), new ContextAttribs(3, 2)
-				.withForwardCompatible(true).withProfileCore(true));
+		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 
 		// initialize basic OpenGL stuff
 		GL11.glViewport(0, 0, width, height);
@@ -71,14 +70,12 @@ public class Renderer {
 
 		// do the heavy lifting of loading, compiling and linking
 		// the two shaders into a usable shader program
-		shader.init("src/rendering/particleDepth.vert",
-				"src/rendering/particleDepth.frag");
+		shader.init("src/rendering/particleDepth.vert", "src/rendering/particleDepth.frag");
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		//points = system.getPositions();
 		constructVertexArrayObject(points);
-		
 		
 		while (Display.isCloseRequested() == false) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -86,32 +83,20 @@ public class Renderer {
 			//Enable point size on Mac
 			GL11.glEnable(0x8642);
 
-			
 			// Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0,
-					transback);
+			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0, transback);
 			Matrix4 R = Matrix4.createRotationY(yrot);
 			Matrix4 R2 = Matrix4.createRotationX(xrot);
-			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,
-					(float) 4, (float) 1);
+			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
 			
-
-			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R)
-					.mulBefore(V);
+			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram(shader.getProgramId());
 
 			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
-			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(),
-					Display.getHeight()), "screenSize");
-			RenderUtility.addVector3(shader, lightPosition, "lightPos");
-
-			// bind vertex and color data
-			//GL30.glBindVertexArray(vaoHandle);
-			//GL20.glEnableVertexAttribArray(0); // VertexPosition
-			//GL20.glEnableVertexAttribArray(1); // VertexColor
-			
+			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
+			RenderUtility.addVector3(shader, lightPosition, "lightPos");			
 
 			// draw VAO
 			GL11.glDrawArrays(GL11.GL_POINTS, 0, points.size());
@@ -126,14 +111,12 @@ public class Renderer {
 			Display.update();
 			Display.sync(60);
 
-			//system.update();
-			//points = new ArrayList<Vector3>(system.getPositions());
-			// vaoHandle = constructVertexArrayObject(points);
 			system.update();
 			points = new ArrayList<Vector3>(system.getPositions());
 			updatePoints(points);
 			constructVertexArrayObject(points);
 		}
+		
 		Display.destroy();
 	}
 
@@ -153,17 +136,14 @@ public class Renderer {
 			buffer[3 * i + 2] = (points.get(i).z);
 		}
 
-		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length + 6);
-		positionBuffer.put(buffer);
-		positionBuffer.put(0);positionBuffer.put(0);positionBuffer.put(0);
-		positionBuffer.put(20);positionBuffer.put(20);positionBuffer.put(20);
+		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
 
 		positionBuffer.flip();
  
 		// convert color array to buffer
-		FloatBuffer colorBuffer = createColorBuffer((float)0.6,(float)0.6,(float)0.8,(points.size()*3)+6);
+		FloatBuffer colorBuffer = createColorBuffer((float)0.6, (float)0.6, (float)0.8, (points.size() * 3) + 6);
 		
-		// create vertex byffer object (VBO) for vertices
+		// create vertex buffer object (VBO) for vertices
 		int positionBufferHandle = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
@@ -201,8 +181,7 @@ public class Renderer {
 		for (int i = -x; i < x; i++) {
 			for (int j = -y; j < y; j++) {
 				for (int k = -z; k < z; k++) {
-					points.add(new Vector3((float) i / closeness, (float) j
-							/ closeness, (float) k / closeness));
+					points.add(new Vector3((float) i / closeness, (float) j / closeness, (float) k / closeness));
 				}
 			}
 		}
@@ -210,8 +189,7 @@ public class Renderer {
 	}
 
 	/** Create a colorBuffer with color (x,y,z) */
-	public static FloatBuffer createColorBuffer(float x, float y, float z,
-			int size) {
+	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
 		float[] colors = new float[size * 3];
 		for (int j = 0; j < size; j++) {
 			colors[3 * j] = (x);
