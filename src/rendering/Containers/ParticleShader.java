@@ -1,6 +1,6 @@
 package rendering.Containers;
 
-public class ParticleShader {
+public class ParticleShader extends ShaderHelper {
 	
 	/** shader program */
 	public int program;

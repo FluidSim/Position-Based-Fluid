@@ -1,17 +1,15 @@
 package rendering.Containers;
 
-public class CurvatureShader {
-	/** shader program */
-	public static int program;
+public class CurvatureShader extends ShaderHelper {
 	
 	/** vertex position */
-	public static int position;
+	public int position;
 	
 	/** projection matrix */
-	public static int mProj;
+	public int mProj;
 	
-	public static int screenSize;
+	public int screenSize;
 	
 	/** terrain texture */
-	public static int terrain;
+	public int terrain;
 }

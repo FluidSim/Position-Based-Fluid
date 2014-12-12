@@ -1,21 +1,18 @@
 package rendering.Containers;
 
-public class ThicknessShader {
-	
-	/** shader program */
-	public static int program;
+public class ThicknessShader extends ShaderHelper {
 	
 	/** vertex position */
-	public static int position;
+	public int position;
 	
 	/** model view matrix */
-	public static int mView;
+	public int mView;
 	
 	/** projection matrix */
-	public static int mProj;
+	public int mProj;
 	
-	public static int screenSize;
+	public int screenSize;
 	
 	/** terrain texture */
-	public static int terrain;
+	public int terrain;
 }

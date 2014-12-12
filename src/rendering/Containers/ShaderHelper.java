@@ -1,4 +1,4 @@
-package rendering;
+package rendering.Containers;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
