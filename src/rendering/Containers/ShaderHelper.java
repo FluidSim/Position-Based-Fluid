@@ -12,8 +12,8 @@ import static org.lwjgl.opengl.GL40.*;
 
 import static org.lwjgl.opengl.GL20.*;
  
-public class ShaderHelper {
-	private int program;
+public abstract class ShaderHelper {
+	public int program;
 		
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
 		program = glCreateProgram();
@@ -32,6 +32,8 @@ public class ShaderHelper {
 		
 		glValidateProgram(program);
 	}
+	
+	public abstract void initFields();
  
    /*
     * With the exception of syntax, setting up vertex and fragment shaders

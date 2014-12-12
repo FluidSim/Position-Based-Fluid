@@ -15,4 +15,10 @@ public class ThicknessShader extends ShaderHelper {
 	
 	/** terrain texture */
 	public int terrain;
+
+	@Override
+	public void initFields() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,9 +1,9 @@
 package rendering.Containers;
 
+import static org.lwjgl.opengl.GL20.glGetAttribLocation;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+
 public class ParticleShader extends ShaderHelper {
-	
-	/** shader program */
-	public int program;
 	
 	public int position;
 	
@@ -14,4 +14,11 @@ public class ParticleShader extends ShaderHelper {
 	
 	/** terrain texture */
 	public int terrain;
+
+	@Override
+	public void initFields() {
+		position = glGetAttribLocation(program, "vertexPos");
+		mViewProj = glGetUniformLocation(program, "mViewProj");
+		screenSize = glGetUniformLocation(program, "screenSize");	
+	}
 }
