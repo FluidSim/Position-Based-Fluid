@@ -78,12 +78,12 @@ public class Renderer {
 			glEnable(0x8642);
 
 			// Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0, transback);
-			Matrix4 R = Matrix4.createRotationY(yrot);
-			Matrix4 R2 = Matrix4.createRotationX(xrot);
-			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
+			Matrix4 T = Matrix4.createTranslation((float) 0, (float) 0, transback);
+			Matrix4 Ry = Matrix4.createRotationY(yrot);
+			Matrix4 Rx = Matrix4.createRotationX(xrot);
+			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
 			
-			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
+			Matrix4 mViewProj = T.clone().mulBefore(Rx).mulBefore(Ry).mulBefore(P);
 
 			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
