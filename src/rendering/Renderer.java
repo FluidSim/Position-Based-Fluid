@@ -66,9 +66,8 @@ public class Renderer {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
 		constructVertexArrayObject(points);
-		
+
 		while (Display.isCloseRequested() == false) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -89,12 +88,8 @@ public class Renderer {
 
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
-
-			// check for errors
-			int error = glGetError();
-			if (error != GL_NO_ERROR) {
-				throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(error));
-			}
+			
+			checkErrors();
 
 			// swap buffers and sync frame rate to 60 fps
 			Display.update();
@@ -112,34 +107,41 @@ public class Renderer {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
-		//Create color and position buffers
-		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f,0.6f,0.8f,(points.size()*3));
+		// Create color and position buffers
+		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f, 0.6f, 0.8f, (points.size() * 3));
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
-		
-		//create VBO's
-		int positionHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, positionBuffer,GL_STATIC_DRAW);
+
+		// create VBO's
+		int positionHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
 		int colorHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
-		
-		//Unbind VBO's
+
+		// Unbind VBO's
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
-		//Create VA0
+
+		// Create VA0
 		int vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		
-		//Assign vertex buffer to slot 0 of VAO
-		glBindBuffer(GL_ARRAY_BUFFER,positionHandle);
+
+		// Assign vertex buffer to slot 0 of VAO
+		glBindBuffer(GL_ARRAY_BUFFER, positionHandle);
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-		
-		//Assign color buffer to slot 0 of VAO
-		glBindBuffer(GL_ARRAY_BUFFER,colorHandle);
+
+		// Assign color buffer to slot 0 of VAO
+		glBindBuffer(GL_ARRAY_BUFFER, colorHandle);
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-		
-		//Unbind VBO's
+
+		// Unbind VBO's
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	}
+
+	private void checkErrors() {
+		int error = glGetError();
+		if (error != GL_NO_ERROR) {
+			throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(error));
+		}
 	}
 
 	public static void main(String[] args) throws LWJGLException {
