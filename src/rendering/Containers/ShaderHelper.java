@@ -23,6 +23,8 @@ public abstract class ShaderHelper {
 		
 		glAttachShader(program, vertShader);
 		glAttachShader(program, fragShader);
+		
+		initFields();
  
 		glLinkProgram(program);
 		

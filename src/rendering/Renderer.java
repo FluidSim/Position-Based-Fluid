@@ -27,7 +27,7 @@ public class Renderer {
 	public static ParticleSystem system = new ParticleSystem(.1f, false);
 
 	public static double time = 0;
-	
+
 	// CONSTANTS
 	public static float xrot = 0.3f;
 	public static float yrot = 0.3f;
@@ -57,20 +57,20 @@ public class Renderer {
 		ArrayList<Vector3> points = system.getPositions();
 
 		ParticleShader particleShader = new ParticleShader();
+		// particleShader.initFields();
 		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
-		particleShader.initFields();
-		
+
 		glBindFragDataLocation(particleShader.program, 0, "depth");
-		
+
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		constructVertexArrayObject(points);
-		
+
 		while (Display.isCloseRequested() == false) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
- 
-			//Enable point size on Mac
+
+			// Enable point size on Mac
 			glEnable(0x8642);
 
 			// Create Matrices
@@ -78,12 +78,12 @@ public class Renderer {
 			Matrix4 Ry = Matrix4.createRotationY(yrot);
 			Matrix4 Rx = Matrix4.createRotationX(xrot);
 			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
-			
+
 			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rx).mulBefore(Ry);
 
 			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
-			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");			
+			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
 
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
@@ -101,7 +101,7 @@ public class Renderer {
 			points = new ArrayList<Vector3>(system.getPositions());
 			constructVertexArrayObject(points);
 		}
-		
+
 		Display.destroy();
 	}
 
@@ -109,8 +109,8 @@ public class Renderer {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
-		Matrix4 S = Matrix4.createScale((float)1 / 40);
-		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
+		Matrix4 S = Matrix4.createScale((float) 1 / 40);
+		Matrix4 T = Matrix4.createTranslation((float) -0.5, (float) -0.3, (float) -0.5);
 		// Create the array for the vectors of positions
 		float[] buffer = new float[points.size() * 3];
 		for (int i = 0; i < points.size(); i++) {
@@ -124,37 +124,36 @@ public class Renderer {
 		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
 
 		positionBuffer.flip();
- 
-		// convert color array to buffer		
+
+		// convert color array to buffer
 		// create vertex buffer object (VBO) for vertices
-		/*int positionBufferHandle = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
- 
-		// create VBO for color values
-		int colorBufferHandle = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorBufferHandle);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
- 
-		// unbind VBO
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
- 
-		// create vertex array object (VAO)
-		int vaoHandle = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vaoHandle);
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
- 
-		// assign vertex VBO to slot 0 of VAO
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
-		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
- 
-		// assign vertex VBO to slot 1 of VAO
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorBufferHandle);
-		GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
- 
-		// unbind VBO
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);*/
+		/*
+		 * int positionBufferHandle = GL15.glGenBuffers();
+		 * GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
+		 * GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer,
+		 * GL15.GL_STATIC_DRAW);
+		 * 
+		 * // create VBO for color values int colorBufferHandle =
+		 * GL15.glGenBuffers(); GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,
+		 * colorBufferHandle); GL15.glBufferData(GL15.GL_ARRAY_BUFFER,
+		 * colorBuffer, GL15.GL_STATIC_DRAW);
+		 * 
+		 * // unbind VBO GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		 * 
+		 * // create vertex array object (VAO) int vaoHandle =
+		 * GL30.glGenVertexArrays(); GL30.glBindVertexArray(vaoHandle);
+		 * GL20.glEnableVertexAttribArray(0); GL20.glEnableVertexAttribArray(1);
+		 * 
+		 * // assign vertex VBO to slot 0 of VAO
+		 * GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
+		 * GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+		 * 
+		 * // assign vertex VBO to slot 1 of VAO
+		 * GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorBufferHandle);
+		 * GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
+		 * 
+		 * // unbind VBO GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		 */
 	}
 
 	public static void main(String[] args) throws LWJGLException {
