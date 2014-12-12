@@ -12,7 +12,6 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL40.*;
 
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
@@ -36,14 +35,9 @@ public class Renderer {
 	public static float trans = -0f;
 	public static float transback = -5;
 
-
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
-	/**
-	 * General initialization stuff for OpenGL
-	 */
 	public void initGl() throws LWJGLException {
-		// width and height of window and view port
 		int width = 640;
 		int height = 640;
 
@@ -54,13 +48,11 @@ public class Renderer {
 
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 
-		// initialize basic OpenGL stuff
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	}
 
-	/** Run the shader */
 	public void run() {
 		ArrayList<Vector3> points = system.getPositions();
 
@@ -80,7 +72,6 @@ public class Renderer {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		//points = system.getPositions();
 		constructVertexArrayObject(points);
 		
 		while (Display.isCloseRequested() == false) {
@@ -97,8 +88,6 @@ public class Renderer {
 			
 			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
 
-			//GL20.glUseProgram(shader.getProgramId());
-
 			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(shader, lightPosition, "lightPos");			
@@ -108,8 +97,7 @@ public class Renderer {
 
 			// check for errors
 			if (glGetError() != GL_NO_ERROR) {
-				throw new RuntimeException("OpenGL error: "
-						+ GLU.gluErrorString(glGetError()));
+				throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(glGetError()));
 			}
 
 			// swap buffers and sync frame rate to 60 fps
@@ -118,7 +106,6 @@ public class Renderer {
 
 			system.update();
 			points = new ArrayList<Vector3>(system.getPositions());
-			updatePoints(points);
 			constructVertexArrayObject(points);
 		}
 		
@@ -145,9 +132,7 @@ public class Renderer {
 
 		positionBuffer.flip();
  
-		// convert color array to buffer
-		FloatBuffer colorBuffer = createColorBuffer((float)0.6, (float)0.6, (float)0.8, (points.size() * 3) + 6);
-		
+		// convert color array to buffer		
 		// create vertex buffer object (VBO) for vertices
 		/*int positionBufferHandle = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferHandle);
@@ -179,58 +164,9 @@ public class Renderer {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);*/
 	}
 
-	/** Create a x * y * z box of points */
-	public static ArrayList<Vector3> createBox(int x, int y, int z,
-			int closeness) {
-		ArrayList<Vector3> points = new ArrayList<Vector3>();
-		for (int i = -x; i < x; i++) {
-			for (int j = -y; j < y; j++) {
-				for (int k = -z; k < z; k++) {
-					points.add(new Vector3((float) i / closeness, (float) j / closeness, (float) k / closeness));
-				}
-			}
-		}
-		return points;
-	}
-
-	/** Create a colorBuffer with color (x,y,z) */
-	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
-		float[] colors = new float[size * 3];
-		for (int j = 0; j < size; j++) {
-			colors[3 * j] = (x);
-			colors[3 * j + 1] = (y);
-			colors[3 * j + 2] = (z);
-		}
-		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
-		colorBuffer.put(colors);
-		colorBuffer.flip();
-		return colorBuffer;
-	}
-
-	/**
-	 * main method to run the example
-	 */
 	public static void main(String[] args) throws LWJGLException {
 		Renderer r = new Renderer();
 		r.initGl();
 		r.run();
 	}
-
-	public static void updatePoints(ArrayList<Vector3> points) {
-		time += .01;
-		for (Vector3 v : points) {
-			double newX = Math.cos(time) * v.x - Math.sin(time) * v.y;
-			double newY = Math.sin(time) * v.x + Math.cos(time) * v.y;
-			v.x = (float) newX;
-			v.y = (float) newY;
-		}
-	}
-
-	public static void copy(ArrayList<Vector3> dest, ArrayList<Vector3> src) {
-		dest.clear();
-		for (Vector3 v : src) {
-			dest.add(v.clone());
-		}
-	}
-
 }

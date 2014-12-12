@@ -16,10 +16,8 @@ public class ShaderHelper {
 	private int program;
 		
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
-		// create the shader program. If OK, create vertex and fragment shaders
 		program = glCreateProgram();
 		
-		// load and compile the two shaders
 		int vertShader = compileShader(vertexShaderFile, GL_VERTEX_SHADER);
 		int fragShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
 		
@@ -32,7 +30,6 @@ public class ShaderHelper {
 			throw new RuntimeException("Could not link shader.");
 		}
 		
-		// perform general validation that the program is usable
 		glValidateProgram(program);
 	}
  
@@ -55,10 +52,7 @@ public class ShaderHelper {
  
 		return shader;
 	}
- 
-	/**
-	 * Load a text file and return it as a String.
-	 */
+
 	private String loadFile(String filename) {
 		StringBuilder vertexCode = new StringBuilder();
 		String line = null ;
