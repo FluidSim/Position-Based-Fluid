@@ -92,8 +92,9 @@ public class Renderer {
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			// check for errors
-			if (glGetError() != GL_NO_ERROR) {
-				throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(glGetError()));
+			int error = glGetError();
+			if (error != GL_NO_ERROR) {
+				throw new RuntimeException("OpenGL error: " + GLU.gluErrorString(error));
 			}
 
 			// swap buffers and sync frame rate to 60 fps
