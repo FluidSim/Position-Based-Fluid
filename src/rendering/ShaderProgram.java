@@ -48,7 +48,7 @@ public class ShaderProgram {
     * @param the name and path to the vertex shader
     */
 	private int loadAndCompileShader(String filename, int shaderType) {
-		//vertShader will be non zero if succefully created
+		//vertShader will be non zero if successfully created
 		int handle = glCreateShader(shaderType);
  
 		if (handle == 0) {
@@ -84,7 +84,7 @@ public class ShaderProgram {
 		String line = null ;
 		try {
 		    BufferedReader reader = new BufferedReader(new FileReader(filename));
-		    while ((line = reader.readLine()) !=null) {
+		    while ((line = reader.readLine()) != null) {
 		    	vertexCode.append(line);
 		    	vertexCode.append('\n');
 		    }

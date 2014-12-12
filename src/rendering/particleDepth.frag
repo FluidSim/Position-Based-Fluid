@@ -28,7 +28,7 @@ void main() {
 	vec4 clipSpacePos = pixelPos * mViewProj;
     depth = clipSpacePos.z / clipSpacePos.w;
     
-    float diffuse = max(0, dot(normal,pos-lightPos));
+    float diffuse = max(0, dot(normal, pos - lightPos));
     
-    outColor = diffuse*fragColor;
+    outColor = diffuse * fragColor;
 }

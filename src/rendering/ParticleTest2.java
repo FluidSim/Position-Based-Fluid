@@ -42,7 +42,7 @@ public class ParticleTest2 {
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
-		Display.setTitle("Shader Example");
+		Display.setTitle("Fluid Simulation");
  
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
@@ -73,26 +73,19 @@ public class ParticleTest2 {
 			//Enable point size on Mac
 			GL11.glEnable(0x8642);
 			
-			
-			
 			//Create Matrices
-			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0,
-					transback);
+			Matrix4 M = Matrix4.createTranslation((float) 0, (float) 0,	transback);
 			Matrix4 R = Matrix4.createRotationY(yrot);
 			Matrix4 R2 = Matrix4.createRotationX(xrot);
-			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,
-					(float) 4, (float) 1);
+			Matrix4 V = Matrix4.createPerspective((float) 1, (float) 1,	(float) 4, (float) 1);
 			
-
-			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R)
-					.mulBefore(V);
+			Matrix4 mViewProj = M.clone().mulBefore(R2).mulBefore(R).mulBefore(V);
 
 			// tell OpenGL to use the shader
 			GL20.glUseProgram(shader.getProgramId());
 
 			RenderUtility.addMatrix(shader, mViewProj, "mViewProj");
-			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(),
-					Display.getHeight()), "screenSize");
+			RenderUtility.addVector2(shader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(shader, lightPosition, "lightPos");
 	
 			// draw VAO
@@ -111,6 +104,7 @@ public class ParticleTest2 {
 			points = system.getPositions();
 			constructVertexArrayObject(points);
 		}
+		
 		Display.destroy();
 	}
  
@@ -120,13 +114,16 @@ public class ParticleTest2 {
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
 		Matrix4 S = Matrix4.createScale((float)1 / 40);
 		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
-		float[] buffer = new float[points.size()*3];
+		float[] buffer = new float[points.size() * 3];
+		
 		int i = 0;
-		for(Vector3 point: points) {
+		for(Vector3 point : points) {
 			S.mulDir(point);
 			T.mulPos(point);
-			buffer[3*i]=(point.x); buffer[3*i+1]=(point.y); buffer[3*i+2]=(point.z);
-			i = i+1;
+			buffer[3 * i] = (point.x); 
+			buffer[3 * i+1] = (point.y); 
+			buffer[3 * i+2] = (point.z);
+			i++;
 		}
  
 		// convert vertex array to buffer
@@ -138,7 +135,7 @@ public class ParticleTest2 {
 		positionBuffer.flip();
  
 		// convert color array to buffer
-		FloatBuffer colorBuffer = createColorBuffer((float)0.6,(float)0.6,(float)0.8,(points.size()*3)+6);
+		FloatBuffer colorBuffer = createColorBuffer((float)0.6, (float)0.6, (float)0.8, (points.size() * 3) + 6);
 		
 		// create vertex byffer object (VBO) for vertices
 		int positionBufferHandle = GL15.glGenBuffers();
@@ -186,7 +183,7 @@ public class ParticleTest2 {
 		for(int i = 0; i < x; i++){
 			for(int j = 0; j < y; j++){
 				for(int k = 0; k < z; k++){
-					points.add(new Vector3((float)i/closeness,(float)j/closeness,(float)k/closeness));
+					points.add(new Vector3((float)i / closeness, (float)j / closeness, (float)k / closeness));
 				}
 			}
 		}
@@ -195,10 +192,13 @@ public class ParticleTest2 {
 	
 	/** Create a colorBuffer with color (x,y,z) */
 	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
-		float[] colors = new float[size*3];
+		float[] colors = new float[size * 3];
 		for(int j = 0; j < size; j++){
-			colors[3*j]=(x); colors[3*j+1]=(y); colors[3*j+2]=(z);
+			colors[3 * j] = (x);
+			colors[3 * j+1] = (y);
+			colors[3 * j+2] = (z);
 		}
+		
 		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
 		colorBuffer.put(colors);
 		colorBuffer.flip();	
@@ -216,7 +216,7 @@ public class ParticleTest2 {
 	
 	public static void copy(ArrayList<Vector3> dest, ArrayList<Vector3> src) {
 		dest.clear();
-		for (Vector3 v: src){
+		for (Vector3 v : src){
 			dest.add(v.clone());
 		}
 	}
