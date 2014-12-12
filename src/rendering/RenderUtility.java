@@ -91,7 +91,7 @@ public final class RenderUtility {
 	 * @param data: data to be loaded into the buffer
 	 * @param usage: expected usage pattern
 	 */
-	public static int makeBuffer(int type, FloatBuffer data, int usage){
+	public static int bindBuffer(int type, FloatBuffer data, int usage){
 		int buff = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, buff);
 		glBufferData(GL_ARRAY_BUFFER, data ,GL_STATIC_DRAW);
