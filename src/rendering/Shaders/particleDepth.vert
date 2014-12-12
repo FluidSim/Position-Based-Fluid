@@ -15,7 +15,7 @@ void main() {
 	vec4 viewPos = mViewProj * vec4(vertexPos.xyz, 1.0);
     pos = viewPos.xyz;
     gl_Position = viewPos;
-    gl_PointSize = 20;
+    gl_PointSize = 30;
     radius = gl_PointSize;
     fragColor = color;
 }

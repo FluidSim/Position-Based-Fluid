@@ -18,7 +18,7 @@ void main() {
 	normal.xy = gl_PointCoord * 2.0 - 1.0;
 	float r2 = length(normal);
 	
-	if (r2 > 1.0) {
+	if (r2 > 10.0) {
 		discard;
 	}
 	

@@ -59,7 +59,7 @@ public class Renderer {
 		ArrayList<Vector3> points = system.getPositions();
 
 		ParticleShader particleShader = new ParticleShader();
-		particleShader.initProgram("src/rendering/Shaders/test.vert", "src/rendering/Shaders/test.frag");
+		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.initFields();
 		
 		glBindFragDataLocation(particleShader.program, 0, "depth");
