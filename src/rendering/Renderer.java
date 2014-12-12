@@ -57,12 +57,8 @@ public class Renderer {
 		ArrayList<Vector3> points = system.getPositions();
 
 		ParticleShader particleShader = new ParticleShader();
-
 		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
-		
-		particleShader.position = glGetAttribLocation(particleShader.program, "vertexPos");
-		particleShader.mViewProj = glGetUniformLocation(particleShader.program, "mViewProj");
-		particleShader.screenSize = glGetUniformLocation(particleShader.program, "screenSize");
+		particleShader.initFields();
 		
 		glBindFragDataLocation(particleShader.program, 0, "depth");
 		
