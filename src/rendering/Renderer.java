@@ -79,7 +79,7 @@ public class Renderer {
 			Matrix4 Rx = Matrix4.createRotationX(xrot);
 			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
 			
-			Matrix4 mViewProj = T.clone().mulBefore(Rx).mulBefore(Ry).mulBefore(P);
+			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rx).mulBefore(Ry);
 
 			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
