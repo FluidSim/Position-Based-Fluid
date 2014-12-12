@@ -56,11 +56,9 @@ public class Renderer {
 	public void run() {
 		ArrayList<Vector3> points = system.getPositions();
 
-		ShaderHelper shader = new ShaderHelper();
 		ParticleShader particleShader = new ParticleShader();
 
-		shader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
-		particleShader.program = shader.getProgram();
+		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		
 		particleShader.position = glGetAttribLocation(particleShader.program, "vertexPos");
 		
