@@ -8,10 +8,7 @@ public class ParticleShader extends ShaderHelper {
 	public int position;
 	
 	/** model view matrix */
-	public int mView;
-	
-	/** projection matrix */
-	public int mProj;
+	public int mViewProj;
 	
 	public int screenSize;
 	

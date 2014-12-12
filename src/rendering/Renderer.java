@@ -61,8 +61,7 @@ public class Renderer {
 		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		
 		particleShader.position = glGetAttribLocation(particleShader.program, "vertexPos");
-		
-		particleShader.mView = glGetUniformLocation(particleShader.program, "mViewProj");
+		particleShader.mViewProj = glGetUniformLocation(particleShader.program, "mViewProj");
 		particleShader.screenSize = glGetUniformLocation(particleShader.program, "screenSize");
 		
 		glBindFragDataLocation(particleShader.program, 0, "depth");
