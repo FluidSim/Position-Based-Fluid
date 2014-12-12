@@ -1,7 +1,7 @@
 #version 400
  
-in vec4 vertexPos
-in vec3 color
+layout (location = 0) in vec4 vertexPos
+layout (location = 1) in vec3 color
 
 uniform mat4 mViewProj;
 uniform vec2 screenSize;
