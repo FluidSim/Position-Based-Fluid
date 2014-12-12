@@ -12,6 +12,7 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL15.*;
 
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
@@ -109,21 +110,9 @@ public class Renderer {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
-		Matrix4 S = Matrix4.createScale((float) 1 / 40);
-		Matrix4 T = Matrix4.createTranslation((float) -0.5, (float) -0.3, (float) -0.5);
-		// Create the array for the vectors of positions
-		float[] buffer = new float[points.size() * 3];
-		for (int i = 0; i < points.size(); i++) {
-			S.mulDir(points.get(i));
-			T.mulPos(points.get(i));
-			buffer[3 * i] = (points.get(i).x);
-			buffer[3 * i + 1] = (points.get(i).y);
-			buffer[3 * i + 2] = (points.get(i).z);
-		}
+		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
+		RenderUtility.makeBuffer(GL_ARRAY_BUFFER, positionBuffer,GL_STATIC_DRAW);
 
-		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
-
-		positionBuffer.flip();
 
 		// convert color array to buffer
 		// create vertex buffer object (VBO) for vertices
