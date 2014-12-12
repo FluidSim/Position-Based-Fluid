@@ -1,6 +1,7 @@
 package rendering;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -44,6 +45,27 @@ public final class RenderUtility {
 		Mbuffer.flip();
 		int loc = GL20.glGetUniformLocation(shader.getProgramId(), name);
 		GL20.glUniformMatrix4(loc, true, Mbuffer);
+	}
+	
+	public static FloatBuffer createPositionBuffer(ArrayList<Vector3> points){
+		Matrix4 S = Matrix4.createScale((float)1 / 40);
+		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
+		float[] buffer = new float[points.size()*3];
+		int i = 0;
+		for(Vector3 point: points) {
+			S.mulDir(point);
+			T.mulPos(point);
+			buffer[3*i]=(point.x); buffer[3*i+1]=(point.y); buffer[3*i+2]=(point.z);
+			i = i+1;
+		}
+ 
+		// convert vertex array to buffer
+		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
+		positionBuffer.put(buffer);
+		positionBuffer.flip();
+		
+		return positionBuffer;
+		
 	}
 	
 }
