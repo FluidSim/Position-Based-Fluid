@@ -2,18 +2,19 @@ package rendering;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.nio.FloatBuffer;
  
-import org.lwjgl.BufferUtils;
+
+
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.util.glu.GLU;
+import org.lwjgl.opengl.GL20.*;
+import org.lwjgl.opengl.GL30.*;
+import org.lwjgl.opengl.GL40.*;
 
 import static org.lwjgl.opengl.GL20.*;
  
 public class ShaderHelper {
 	private int program;
-	
+		
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
 		// create the shader program. If OK, create vertex and fragment shaders
 		program = glCreateProgram();
@@ -26,6 +27,10 @@ public class ShaderHelper {
 		glAttachShader(program, fragShader);
  
 		glLinkProgram(program);
+		
+		if (glGetProgrami(program, GL_LINK_STATUS) == GL11.GL_FALSE) {
+			throw new RuntimeException("Could not link shader.");
+		}
 		
 		// validate linking
 		/*if (glGetProgramiv(program, GL_LINK_STATUS)) {
@@ -43,6 +48,10 @@ public class ShaderHelper {
     */
 	private int compileShader(String filename, int shaderType) {
 		int shader = glCreateShader(shaderType);
+		
+		if (glGetShaderi(program, GL_LINK_STATUS) == GL11.GL_FALSE) {
+			throw new RuntimeException("Could not create shader.");
+		}
  
 		/*if (shader == 0) {
 			throw new RuntimeException("Could not created shader of type " + shaderType + " for file " + filename + ". "+ glGetProgramInfoLog(program, 1000));
