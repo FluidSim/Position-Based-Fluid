@@ -66,7 +66,9 @@ public class Renderer {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		
 		constructVertexArrayObject(points);
+		
 
 		while (Display.isCloseRequested() == false) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -110,9 +112,25 @@ public class Renderer {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
+		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f,0.6f,0.8f,(points.size()*3));
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
-		RenderUtility.makeBuffer(GL_ARRAY_BUFFER, positionBuffer,GL_STATIC_DRAW);
-
+		int positionHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, positionBuffer,GL_STATIC_DRAW);
+		int colorHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
+		
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+		int vao = glGenVertexArrays();
+		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		
+		glBindBuffer(GL_ARRAY_BUFFER,positionHandle);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		
+		glBindBuffer(GL_ARRAY_BUFFER,colorHandle);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		// convert color array to buffer
 		// create vertex buffer object (VBO) for vertices
@@ -125,7 +143,7 @@ public class Renderer {
 		 * // create VBO for color values int colorBufferHandle =
 		 * GL15.glGenBuffers(); GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,
 		 * colorBufferHandle); GL15.glBufferData(GL15.GL_ARRAY_BUFFER,
-		 * colorBuffer, GL15.GL_STATIC_DRAW);
+		 * colorBuffer, GL15.GL_STATIC_DRAW)
 		 * 
 		 * // unbind VBO GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		 * 

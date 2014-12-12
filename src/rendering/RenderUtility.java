@@ -85,6 +85,17 @@ public final class RenderUtility {
 		return positionBuffer;
 	}
 	
+	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
+		float[] colors = new float[size*3];
+		for(int j = 0; j < size; j++){
+		colors[3*j]=(x); colors[3*j+1]=(y); colors[3*j+2]=(z);
+		}
+		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
+		colorBuffer.put(colors);
+		colorBuffer.flip();
+		return colorBuffer;
+	}
+	
 	/** Bind a buffer. 
 	 * 
 	 * @param type: target buffer object type
