@@ -1,6 +1,7 @@
 package rendering;
 
 import physics.ParticleSystem;
+import rendering.Containers.ShaderHelper;
 import egl.math.Matrix4;
 import egl.math.Vector3;
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;

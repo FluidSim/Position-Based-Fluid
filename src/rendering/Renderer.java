@@ -8,15 +8,18 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.*;
+
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 import physics.ParticleSystem;
 import rendering.Containers.ParticleShader;
+import rendering.Containers.ShaderHelper;
 import egl.math.Matrix4;
 import egl.math.Vector2;
 import egl.math.Vector3;

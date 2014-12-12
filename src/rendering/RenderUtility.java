@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
+import rendering.Containers.ShaderHelper;
 import egl.math.Matrix4;
 import egl.math.Vector2;
 import egl.math.Vector3;
