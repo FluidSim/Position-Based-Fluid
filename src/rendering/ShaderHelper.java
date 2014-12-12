@@ -5,10 +5,10 @@ import java.io.FileReader;
  
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20.*;
-import org.lwjgl.opengl.GL30.*;
-import org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL40.*;
 
 import static org.lwjgl.opengl.GL20.*;
  
@@ -28,14 +28,9 @@ public class ShaderHelper {
  
 		glLinkProgram(program);
 		
-		if (glGetProgrami(program, GL_LINK_STATUS) == GL11.GL_FALSE) {
+		if (glGetProgrami(program, GL_LINK_STATUS) == GL_FALSE) {
 			throw new RuntimeException("Could not link shader.");
 		}
-		
-		// validate linking
-		/*if (glGetProgramiv(program, GL_LINK_STATUS)) {
-			throw new RuntimeException("could not link shader. Reason: " + glGetProgramInfoLog(program, 1000));
-		}*/
 		
 		// perform general validation that the program is usable
 		glValidateProgram(program);
@@ -49,13 +44,9 @@ public class ShaderHelper {
 	private int compileShader(String filename, int shaderType) {
 		int shader = glCreateShader(shaderType);
 		
-		if (glGetShaderi(program, GL_LINK_STATUS) == GL11.GL_FALSE) {
+		if (glGetShaderi(program, GL_LINK_STATUS) == GL_FALSE) {
 			throw new RuntimeException("Could not create shader.");
 		}
- 
-		/*if (shader == 0) {
-			throw new RuntimeException("Could not created shader of type " + shaderType + " for file " + filename + ". "+ glGetProgramInfoLog(program, 1000));
-		}*/
  
 		String source = loadFile(filename);
  
