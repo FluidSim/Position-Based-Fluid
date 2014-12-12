@@ -1,7 +1,7 @@
 #version 400
  
-layout (location = 0) in vec3 VertexPosition;
-layout (location = 1) in vec3 Color;
+in vec4 vertexPos
+in vec3 color
 
 uniform mat4 mViewProj;
 uniform vec2 screenSize;
@@ -12,10 +12,10 @@ out float radius;
 out vec3 fragColor;
  
 void main() {
-    vec4 viewPos = mViewProj * vec4(VertexPosition, 1.0);
+    vec4 viewPos = mViewProj * vec4(vertexPos.xyz, 1.0);
     pos = viewPos.xyz;
     gl_Position = viewPos;
     gl_PointSize = 20;
     radius = gl_PointSize;
-    fragColor = Color;
+    fragColor = color;
 }
