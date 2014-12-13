@@ -27,7 +27,7 @@ void main() {
 
 	//calculate depth
 	vec4 pixelPos = vec4(pos + normal * radius, 1.0);
-	vec4 clipSpacePos = pixelPos * mViewProj;
+	vec4 clipSpacePos = pixelPos * projection;
 	depth = clipSpacePos.z / clipSpacePos.w;
     
     float diffuse = max(0.0, dot(normal, pos - lightPos));
