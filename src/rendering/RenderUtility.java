@@ -77,6 +77,7 @@ public final class RenderUtility {
 		// convert vertex array to buffer
 		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
 		positionBuffer.put(buffer);
+		positionBuffer.flip();
 		
 		return positionBuffer;
 	}
@@ -91,6 +92,7 @@ public final class RenderUtility {
 		
 		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
 		colorBuffer.put(colors);
+		colorBuffer.flip();
 		
 		return colorBuffer;
 	}
