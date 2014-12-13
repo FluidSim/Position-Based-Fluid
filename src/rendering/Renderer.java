@@ -84,12 +84,8 @@ public class Renderer {
 			Matrix4 Rz = Matrix4.createRotationZ(zrot);
 			Matrix4 P = Matrix4.createPerspective((float) 3, (float) 3, (float) 8, (float) 10);
 
-<<<<<<< HEAD
-			Matrix4 mProj = P;
+			Matrix4 projection = P;
 			Matrix4 mView = T.clone().mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);
-=======
-			//Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);
->>>>>>> 4d49f28eff33d709cfa4fb77e3644e51908c5e2d
 
 			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, projection, "projection");
