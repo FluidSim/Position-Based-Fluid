@@ -82,7 +82,7 @@ public class Renderer {
 			Matrix4 Ry = Matrix4.createRotationY(yrot);
 			Matrix4 Rx = Matrix4.createRotationX(xrot);
 			Matrix4 Rz = Matrix4.createRotationZ(zrot);
-			Matrix4 P = Matrix4.createPerspective((float) 3, (float) 3, (float) 8, (float) 10);
+			Matrix4 P = Matrix4.createPerspective((float) 60, (float) 1, (float) 0.1, (float) 100);
 
 			Matrix4 projection = P;
 			Matrix4 mView = T.clone().mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);

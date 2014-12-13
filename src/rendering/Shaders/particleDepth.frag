@@ -9,7 +9,6 @@ uniform mat4 projection;
 uniform vec2 screenSize;
 uniform vec3 lightPos;
 
-
 out vec3 outColor;
 out float depth;
 
@@ -32,5 +31,5 @@ void main() {
     
     float diffuse = max(0.0, dot(normal, pos - lightPos));
     
-    outColor = diffuse * fragColor * .1;
+    outColor = diffuse * fragColor;
 }
