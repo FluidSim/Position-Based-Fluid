@@ -71,7 +71,6 @@ public class Renderer {
 			glUseProgram(particleShader.program);
 
 			// Create Matrices
-
 			Vector3 eye = new Vector3(10f, 0f, -10f);
 			Vector3 target = new Vector3(10f, 0f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
@@ -99,32 +98,6 @@ public class Renderer {
 			resetPoints(points);
 			
 			constructVertexArrayObject(points);
-			
-			float minX = Float.POSITIVE_INFINITY;
-			float minY = Float.POSITIVE_INFINITY;
-			float minZ = Float.POSITIVE_INFINITY;
-			float maxX = Float.NEGATIVE_INFINITY;
-			float maxY = Float.NEGATIVE_INFINITY;
-			float maxZ = Float.NEGATIVE_INFINITY;
-			for (Vector3 p: points){
-				minX = Math.min(minX, p.x);
-				minY = Math.min(minY, p.y);
-				minZ = Math.min(minZ, p.z);
-				maxX = Math.max(maxX, p.x);
-				maxY = Math.max(maxY, p.y);
-				maxZ = Math.max(maxZ, p.z);
-			}
-			
-			System.out.println("Min x: " + minX);
-			System.out.println("Min y: " + minY);
-			System.out.println("Min z: " + minZ);
-			System.out.println(projection.mulPos(mView.mulPos(new Vector3(minX,minY,minZ))));
-			System.out.println("Max x: " + maxX);
-			System.out.println("Max y: " + maxY);
-			System.out.println("Max z: " + maxZ);
-			System.out.println(projection.mulPos(mView.mulPos(new Vector3(maxX,maxY,maxZ))));
-			
-			time += .1;
 		}
 
 		Display.destroy();
