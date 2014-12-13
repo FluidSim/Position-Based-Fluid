@@ -71,14 +71,14 @@ public class Renderer {
 			glUseProgram(particleShader.program);
 
 			// Create Matrices
-			Vector3 eye = new Vector3(10f, 10f, -20f);
+			Vector3 eye = new Vector3(10f, 8f, -10f);
 			Vector3 target = new Vector3(10f, 0f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
 
 			float zNear = 1e-2f;
 			float zFar = 1e2f;
 
-			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (45*Math.PI/180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (60*Math.PI/180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
 			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 			
 			RenderUtility.addMatrix(particleShader, mView, "mView");
