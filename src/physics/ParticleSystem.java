@@ -33,7 +33,7 @@ public class ParticleSystem {
 	// Used for bounds of the box
 	public float rangex = 35f;
 	public float rangey = 500f;
-	public float rangez = 12f;
+	public float rangez = 10f;
 	
 	public float originalX = rangex;
 	public float time = 0;

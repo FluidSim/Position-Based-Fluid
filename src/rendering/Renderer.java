@@ -30,8 +30,9 @@ public class Renderer {
 	public static double time = 0;
 
 	// CONSTANTS
-	public static float xrot = 0.3f;
-	public static float yrot = 0.2f;
+	public static float xrot = 0.0f;
+	public static float yrot = 0.0f;
+	public static float zrot = 0.0f;
 	public static float scale = (float) 1 / 20;
 	public static float trans = -0f;
 	public static float transback = -6;
@@ -80,9 +81,10 @@ public class Renderer {
 			Matrix4 T = Matrix4.createTranslation((float) 0, (float) 0, transback);
 			Matrix4 Ry = Matrix4.createRotationY(yrot);
 			Matrix4 Rx = Matrix4.createRotationX(xrot);
-			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 6, (float) 3);
+			Matrix4 Rz = Matrix4.createRotationZ(zrot);
+			Matrix4 P = Matrix4.createPerspective((float) 3, (float) 3, (float) 8, (float) 10);
 
-			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rx).mulBefore(Ry);
+			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);
 
 			RenderUtility.addMatrix(particleShader, mViewProj, "mViewProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
@@ -108,7 +110,7 @@ public class Renderer {
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
 		// Create color and position buffers
-		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f, 0.6f, 0.8f, (points.size()));
+		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.3f, 0.3f, 1.0f, (points.size()));
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
 
 		// create VBO's
