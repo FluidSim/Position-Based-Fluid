@@ -66,20 +66,17 @@ public final class RenderUtility {
 		Matrix4 S = Matrix4.createScale((float)1 / 20);
 		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
 		float[] buffer = new float[points.size()*3];
-		int i = 0;
-		for(Vector3 point: points) {
-			S.mulDir(point);
-			T.mulPos(point);
-			buffer[3*i] = (point.x);
-			buffer[3*i+1] = (point.y);
-			buffer[3*i+2] = (point.z);
-			i = i+1;
+		for(int i = 0; i < points.size(); i++){
+			S.mulDir(points.get(i));
+			T.mulPos(points.get(i));
+			buffer[3*i] = (points.get(i).x);
+			buffer[3*i+1] = (points.get(i).y);
+			buffer[3*i+2] = (points.get(i).z);
 		}
  
 		// convert vertex array to buffer
 		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
 		positionBuffer.put(buffer);
-		positionBuffer.flip();
 		
 		return positionBuffer;
 	}
@@ -94,7 +91,6 @@ public final class RenderUtility {
 		
 		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
 		colorBuffer.put(colors);
-		colorBuffer.flip();
 		
 		return colorBuffer;
 	}
