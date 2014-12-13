@@ -30,6 +30,7 @@ void main() {
 	depth = clipSpacePos.z / clipSpacePos.w;
     
     float diffuse = max(0.0, dot(normal, pos - lightPos));
+    diffuse = diffuse/(length(normal) * length(pos-lightPos));
     
     outColor = diffuse * fragColor;
 }
