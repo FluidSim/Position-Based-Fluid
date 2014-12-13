@@ -4,7 +4,8 @@ in vec3 pos;
 in float radius;
 in vec3 fragColor;
 
-uniform mat4 mViewProj;
+uniform mat4 mView;
+uniform mat4 projection;
 uniform vec2 screenSize;
 uniform vec3 lightPos;
 
