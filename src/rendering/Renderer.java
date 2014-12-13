@@ -30,7 +30,7 @@ public class Renderer {
 	public static double time = 0;
 
 	// CONSTANTS
-	public static float xrot = .3f;
+	public static float xrot = 0.3f;
 	public static float yrot = 0.2f;
 	public static float scale = (float) 1 / 20;
 	public static float trans = -0f;
@@ -44,12 +44,13 @@ public class Renderer {
 		// set up window and display
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
-		Display.setTitle("Shader Example");
+		Display.setTitle("Position Based Fluids");
+		
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
 		// throw an error.
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
-		// initialize basic OpenGL stuff
+
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -61,8 +62,6 @@ public class Renderer {
 		ParticleShader particleShader = new ParticleShader();
 		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.initFields();
-		
-		glBindFragDataLocation(particleShader.program, 0, "depth");
 
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,7 +108,7 @@ public class Renderer {
 	 */
 	private void constructVertexArrayObject(ArrayList<Vector3> points) {
 		// Create color and position buffers
-		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f, 0.6f, 0.8f, (points.size() * 3));
+		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.6f, 0.6f, 0.8f, (points.size()));
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
 
 		// create VBO's

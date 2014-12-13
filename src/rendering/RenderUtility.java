@@ -25,9 +25,6 @@ import egl.math.Matrix4;
 import egl.math.Vector2;
 import egl.math.Vector3;
 
-
-
-
 public final class RenderUtility {
 
 	private RenderUtility() { }
@@ -73,7 +70,9 @@ public final class RenderUtility {
 		for(Vector3 point: points) {
 			S.mulDir(point);
 			T.mulPos(point);
-			buffer[3*i]=(point.x); buffer[3*i+1]=(point.y); buffer[3*i+2]=(point.z);
+			buffer[3*i] = (point.x);
+			buffer[3*i+1] = (point.y);
+			buffer[3*i+2] = (point.z);
 			i = i+1;
 		}
  
@@ -87,12 +86,16 @@ public final class RenderUtility {
 	
 	public static FloatBuffer createColorBuffer(float x, float y, float z, int size) {
 		float[] colors = new float[size*3];
-		for(int j = 0; j < size; j++){
-		colors[3*j]=(x); colors[3*j+1]=(y); colors[3*j+2]=(z);
+		for(int j = 0; j < size; j++) {
+			colors[3*j] = (x);
+			colors[3*j+1] = (y);
+			colors[3*j+2] = (z);
 		}
+		
 		FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
 		colorBuffer.put(colors);
 		colorBuffer.flip();
+		
 		return colorBuffer;
 	}
 	
@@ -106,6 +109,7 @@ public final class RenderUtility {
 		int buff = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, buff);
 		glBufferData(GL_ARRAY_BUFFER, data ,GL_STATIC_DRAW);
+		
 		return buff;
 	}
 	

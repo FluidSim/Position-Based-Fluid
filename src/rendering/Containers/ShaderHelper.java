@@ -52,6 +52,7 @@ public abstract class ShaderHelper {
 		String source = loadFile(filename);
 		glShaderSource(shader, source); 
 		glCompileShader(shader);
+		
 		return shader;
 	}
 

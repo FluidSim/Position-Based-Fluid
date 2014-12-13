@@ -10,26 +10,26 @@ uniform vec3 lightPos;
 
 
 out vec3 outColor;
-//out float depth;
+out float depth;
 
 void main() {
 	//calculate normal
 	vec3 normal;
 	normal.xy = gl_PointCoord * 2.0 - 1.0;
-	float r2 = length(normal);
+	float r2 = dot(normal.xy, normal.xy);
 	
-	if (r2 > radius/3) {
+	if (r2 > 1.0) {
 		discard;
 	}
 	
-	normal.z = -sqrt(1 - r2);
+	normal.z = -sqrt(1.0 - r2);
 
 	//calculate depth
 	vec4 pixelPos = vec4(pos + normal * radius, 1.0);
 	vec4 clipSpacePos = pixelPos * mViewProj;
-	//depth = clipSpacePos.z / clipSpacePos.w;
+	depth = clipSpacePos.z / clipSpacePos.w;
     
-    float diffuse = max(0, dot(normal, pos - lightPos));
+    float diffuse = max(0.0, dot(normal, pos - lightPos));
     
     outColor = diffuse * fragColor * .1;
 }
