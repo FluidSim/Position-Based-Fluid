@@ -30,11 +30,11 @@ public class Renderer {
 	public static double time = 0;
 
 	// CONSTANTS
-	public static float xrot = 0.3f;
-	public static float yrot = 0.3f;
-	public static float scale = (float) 1 / 50;
+	public static float xrot = .3f;
+	public static float yrot = 0.2f;
+	public static float scale = (float) 1 / 20;
 	public static float trans = -0f;
-	public static float transback = -5;
+	public static float transback = -6;
 
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
@@ -75,11 +75,13 @@ public class Renderer {
 			// Enable point size on Mac
 			glEnable(0x8642);
 			
+			glUseProgram(particleShader.program);
+			
 			// Create Matrices
 			Matrix4 T = Matrix4.createTranslation((float) 0, (float) 0, transback);
 			Matrix4 Ry = Matrix4.createRotationY(yrot);
 			Matrix4 Rx = Matrix4.createRotationX(xrot);
-			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 4, (float) 1);
+			Matrix4 P = Matrix4.createPerspective((float) 1, (float) 1, (float) 6, (float) 3);
 
 			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rx).mulBefore(Ry);
 
@@ -90,8 +92,6 @@ public class Renderer {
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
 			
-			
-
 			// swap buffers and sync frame rate to 60 fps
 			Display.update();
 			Display.sync(60);
