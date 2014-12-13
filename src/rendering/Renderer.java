@@ -75,20 +75,21 @@ public class Renderer {
 			// Enable point size on Mac
 			glEnable(0x8642);
 			
-			glClearDepth(0);
-			glDepthFunc(GL_GREATER);
-			
 			glUseProgram(particleShader.program);
 			
 			// Create Matrices
-			Matrix4 T = Matrix4.createTranslation((float) 0, (float) 0, transback);
-			Matrix4 Ry = Matrix4.createRotationY(yrot);
-			Matrix4 Rx = Matrix4.createRotationX(xrot);
-			Matrix4 Rz = Matrix4.createRotationZ(zrot);
-			Matrix4 P = Matrix4.createPerspective((float) 60, (float) 1, (float) .1, (float) 100);
 
-			Matrix4 projection = P;
-			Matrix4 mView = T.clone().mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);
+			Vector3 eye = new Vector3(0,0,-10);
+			Vector3 viewDir = new Vector3(0,0,1);
+			Vector3 up = new Vector3(0,1,0);
+			
+			float width = 60;
+			float height = 40;
+			float zNear = .1f;
+			float zFar = 100;
+			
+			Matrix4 projection = Matrix4.createPerspective(width, height, zNear, zFar);
+			Matrix4 mView = Matrix4.createView(eye, viewDir, up);
 
 			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, projection, "projection");
