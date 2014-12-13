@@ -29,8 +29,10 @@ void main() {
 	vec4 clipSpacePos = pixelPos * projection;
 	//depth = clipSpacePos.z / clipSpacePos.w;
     
-    float diffuse = max(0.0, dot(normal, pos - lightPos));
-    diffuse = diffuse/(length(normal) * length(pos-lightPos));
+    vec3 lightDir = pos - lightPos;
+    lightDir = normalize(lightDir);
+    normal = normalize(normal);
+    float diffuse = max(0.0, dot(normal, lightDir));
     
     outColor = diffuse * fragColor;
 }

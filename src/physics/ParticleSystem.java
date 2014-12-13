@@ -31,7 +31,7 @@ public class ParticleSystem {
 	private static final float deltaQMag = .3f * H;
 	private static final float wQH = KPOLY * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag) * (H * H - deltaQMag * deltaQMag);
 	// Used for bounds of the box
-	public float rangex = 35f;
+	public float rangex = 20f;
 	public float rangey = 500f;
 	public float rangez = 10f;
 	
@@ -70,7 +70,7 @@ public class ParticleSystem {
 
 	public void update() {
 		time++;
-		if (time > 70 && time < 100) {
+		if (time > 70 && time < 90) {
 			//rangex = (float) (-Math.abs(Math.sin(time - Math.PI/2)*originalX*.5) + originalX);
 			rangex -= .5f;//*Math.signum(Math.sin(time/20.0 -100));
 		}
