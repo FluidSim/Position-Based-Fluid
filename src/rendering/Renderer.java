@@ -79,14 +79,14 @@ public class Renderer {
 
 			// Create Matrices
 
-			Vector3 eye = new Vector3(0, 0f, -5f);
+			Vector3 eye = new Vector3(5f, 0, 3f);
 			Vector3 target = new Vector3(0f, 0f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
 
 			float zNear = .1f;
 			float zFar = 1e8f;
 
-			Matrix4 projection = Matrix4.createPerspectiveFOV((float) Math.PI / 4, (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+			Matrix4 projection = Matrix4.createPerspectiveFOV(20, (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
 			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 			RenderUtility.addMatrix(particleShader, mView, "mView");
