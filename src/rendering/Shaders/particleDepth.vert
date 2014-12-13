@@ -13,10 +13,10 @@ out float radius;
 out vec3 fragColor;
 
 void main() {
-	vec4 viewPos = mView * projection * vec4(vertexPos, 1.0);
+	vec4 viewPos = mView * vec4(vertexPos, 1.0);
     float dist = length(viewPos);    
-    gl_Position = viewPos;
-    gl_PointSize = 15;
+    gl_Position = projection * viewPos;
+    gl_PointSize = 15 / dist;
     
     pos = viewPos.xyz;
     radius = gl_PointSize;

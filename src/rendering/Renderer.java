@@ -27,15 +27,7 @@ import egl.math.Vector3;
 public class Renderer {
 	public static ParticleSystem system = new ParticleSystem(.1f, false);
 
-	public static double time = 0;
-
-	// CONSTANTS
-	public static float xrot = 0.0f;
-	public static float yrot = 0.0f;
-	public static float zrot = 0.0f;
-	public static float scale = (float) 1 / 20;
-	public static float trans = -0f;
-	public static float transback = -6;
+	private double time = 0;
 
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
@@ -58,7 +50,8 @@ public class Renderer {
 	}
 
 	public void run() {
-		ArrayList<Vector3> points = system.getPositions();
+		ArrayList<Vector3> points = new ArrayList<Vector3>();
+		resetPoints(points);
 
 		ParticleShader particleShader = new ParticleShader();
 		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
@@ -79,16 +72,16 @@ public class Renderer {
 
 			// Create Matrices
 
-			Vector3 eye = new Vector3(5f, 0, 3f);
-			Vector3 target = new Vector3(0f, 0f, 0f);
+			Vector3 eye = new Vector3(10f, 0f, -10f);
+			Vector3 target = new Vector3(10f, 0f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
 
-			float zNear = .1f;
-			float zFar = 1e8f;
+			float zNear = 1e-2f;
+			float zFar = 1e2f;
 
-			Matrix4 projection = Matrix4.createPerspectiveFOV(20, (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (45*Math.PI/180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
 			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
-
+			
 			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, projection, "projection");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
@@ -102,11 +95,46 @@ public class Renderer {
 			Display.sync(60);
 
 			system.update();
-			points = new ArrayList<Vector3>(system.getPositions());
+			
+			resetPoints(points);
+			
 			constructVertexArrayObject(points);
+			
+			float minX = Float.POSITIVE_INFINITY;
+			float minY = Float.POSITIVE_INFINITY;
+			float minZ = Float.POSITIVE_INFINITY;
+			float maxX = Float.NEGATIVE_INFINITY;
+			float maxY = Float.NEGATIVE_INFINITY;
+			float maxZ = Float.NEGATIVE_INFINITY;
+			for (Vector3 p: points){
+				minX = Math.min(minX, p.x);
+				minY = Math.min(minY, p.y);
+				minZ = Math.min(minZ, p.z);
+				maxX = Math.max(maxX, p.x);
+				maxY = Math.max(maxY, p.y);
+				maxZ = Math.max(maxZ, p.z);
+			}
+			
+			System.out.println("Min x: " + minX);
+			System.out.println("Min y: " + minY);
+			System.out.println("Min z: " + minZ);
+			System.out.println(projection.mulPos(mView.mulPos(new Vector3(minX,minY,minZ))));
+			System.out.println("Max x: " + maxX);
+			System.out.println("Max y: " + maxY);
+			System.out.println("Max z: " + maxZ);
+			System.out.println(projection.mulPos(mView.mulPos(new Vector3(maxX,maxY,maxZ))));
+			
+			time += .1;
 		}
 
 		Display.destroy();
+	}
+	
+	public void resetPoints(ArrayList<Vector3> points){
+		points.clear();
+		for (Vector3 p: system.getPositions()){
+			points.add(p.clone());
+		}
 	}
 
 	/**
