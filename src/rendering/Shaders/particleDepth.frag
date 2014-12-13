@@ -10,7 +10,7 @@ uniform vec2 screenSize;
 uniform vec3 lightPos;
 
 out vec3 outColor;
-out float depth;
+//out float depth;
 
 void main() {
 	//calculate normal
@@ -27,7 +27,7 @@ void main() {
 	//calculate depth
 	vec4 pixelPos = vec4(pos + normal * radius, 1.0);
 	vec4 clipSpacePos = pixelPos * projection;
-	depth = clipSpacePos.z / clipSpacePos.w;
+	//depth = clipSpacePos.z / clipSpacePos.w;
     
     float diffuse = max(0.0, dot(normal, pos - lightPos));
     diffuse = diffuse/(length(normal) * length(pos-lightPos));
