@@ -86,7 +86,7 @@ public class Renderer {
 
 			Matrix4 mViewProj = P.clone().mulBefore(T).mulBefore(Rz).mulBefore(Rx).mulBefore(Ry);
 
-			RenderUtility.addMatrix(particleShaer, mView, "mView");
+			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, mProj, "mProj");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
