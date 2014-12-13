@@ -9,7 +9,7 @@ uniform mat4 projection;
 uniform vec2 screenSize;
 uniform vec3 lightPos;
 
-out vec4 outColor;
+out float particleThickness;
 
 void main() {
 	//calculate normal
@@ -21,13 +21,15 @@ void main() {
 		discard;
 	}
 	
-	float alpha = 1.0 - r2;
+	particleThickness = 1.0 - r2;
 	
-	normal.z = -sqrt(1.0 - r2);
+	//normal.z = -sqrt(1.0 - r2);
     
-    float diffuse = max(0.0, dot(normal, pos - lightPos));
-    diffuse = diffuse/(length(normal) * length(pos-lightPos));
+    //vec3 lightDir = pos - lightPos;
+    //lightDir = normalize(lightDir);
+    //normal = normalize(normal);
+    //float diffuse = max(0.0, dot(normal, lightDir));
     
-    diffuseColor = diffuse * fragColor;
-	outColor = vec4(diffuseColor, alpha);
+    //diffuseColor = diffuse * fragColor;
+	//outColor = vec4(diffuseColor, alpha);
 }

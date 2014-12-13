@@ -54,8 +54,8 @@ public class Renderer {
 		resetPoints(points);
 
 		ParticleShader particleShader = new ParticleShader();
-		//particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
-		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleThickness.frag");
+		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
+//		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleThickness.frag");
 		particleShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
@@ -69,10 +69,9 @@ public class Renderer {
 			// Enable point size on Mac
 			glEnable(0x8642);
 			
-			glDisable(GL_DEPTH_TEST);
-			
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//			glDisable(GL_DEPTH_TEST);
+//			glEnable(GL_BLEND);
+//			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glUseProgram(particleShader.program);
 
