@@ -290,9 +290,9 @@ public class ParticleSystem {
 
 	private float clampedConstraint(float x, float max) {
 		if (x < 0) {
-			return (float) (Math.random() * 1e-3);
+			return 0;
 		} else if (x >= max) {
-			return (float) (max - 1e-3f - Math.random() * 1e-3f);
+			return max - 1e-3f;
 		} else {
 			return x;
 		}
