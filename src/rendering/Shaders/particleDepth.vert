@@ -15,9 +15,11 @@ out vec3 fragColor;
 void main() {
 	mat4 mViewProj = projection * mView;
 	vec4 viewPos = mView * vec4(vertexPos, 1.0);
+    float dist = length(viewPos);
+    gl_Position = mViewProj * vec4(vertexPos, 1.0);
+    gl_PointSize = 15 / dist;
+    
     pos = viewPos.xyz;
-    gl_Position = viewPos;
-    gl_PointSize = 15; //THIS IS WRONG, LOOK AT THE SLIDES
     radius = gl_PointSize;
     fragColor = color;
 }
