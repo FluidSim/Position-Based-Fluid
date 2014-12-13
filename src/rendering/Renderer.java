@@ -46,7 +46,7 @@ public class Renderer {
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
 		Display.setTitle("Position Based Fluids");
-		
+
 		// set up OpenGL to run in forward-compatible mode
 		// so that using deprecated functionality will
 		// throw an error.
@@ -74,31 +74,29 @@ public class Renderer {
 
 			// Enable point size on Mac
 			glEnable(0x8642);
-			
+
 			glUseProgram(particleShader.program);
-			
+
 			// Create Matrices
 
-			Vector3 eye = new Vector3(0,0,-10);
-			Vector3 viewDir = new Vector3(0,0,1);
-			Vector3 up = new Vector3(0,1,0);
-			
-			float width = 60;
-			float height = 40;
+			Vector3 eye = new Vector3(0, 0f, -5f);
+			Vector3 target = new Vector3(0f, 0f, 0f);
+			Vector3 up = new Vector3(0, 1, 0);
+
 			float zNear = .1f;
-			float zFar = 100;
-			
-			Matrix4 projection = Matrix4.createPerspective(width, height, zNear, zFar);
-			Matrix4 mView = Matrix4.createView(eye, viewDir, up);
+			float zFar = 1e8f;
+
+			Matrix4 projection = Matrix4.createPerspectiveFOV((float) Math.PI / 4, (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, projection, "projection");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
-			
+
 			// draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
-			
+
 			// swap buffers and sync frame rate to 60 fps
 			Display.update();
 			Display.sync(60);

@@ -63,12 +63,8 @@ public final class RenderUtility {
 	}
 	
 	public static FloatBuffer createPositionBuffer(ArrayList<Vector3> points){
-		Matrix4 S = Matrix4.createScale((float)1 / 20);
-		Matrix4 T = Matrix4.createTranslation((float)-0.5, (float)-0.3, (float)-0.5);
 		float[] buffer = new float[points.size()*3];
 		for(int i = 0; i < points.size(); i++){
-			S.mulDir(points.get(i));
-			T.mulPos(points.get(i));
 			buffer[3*i] = (points.get(i).x);
 			buffer[3*i+1] = (points.get(i).y);
 			buffer[3*i+2] = (points.get(i).z);
