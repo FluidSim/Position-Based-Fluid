@@ -23,6 +23,9 @@ void main() {
 	
 	float alpha = 1.0 - r2;
 	
+	//Scale down alpha to make things more transparent
+	alpha = alpha / 5;
+	
 	normal.z = -sqrt(1.0 - r2);
     
     vec3 lightDir = pos - lightPos;
