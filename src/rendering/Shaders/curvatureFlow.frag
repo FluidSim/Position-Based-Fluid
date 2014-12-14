@@ -1,51 +1,53 @@
+#version 400
+
 in vec2 posTex;
 
-//uniform sampler2D tex;
+uniform sampler2D tex;
 uniform mat4 projection;
 uniform vec2 screenSize;
 
-layout (location = 0) out float depth;
+out float depth;
 
 void main() {
-//	posTex = posTex / screenSize;
-//	
-//	//differential differences
-//	float deltaX = 1.0f / screenSize.x;
-//    float deltaY = 1.0f / screenSize.y;
-//    
-//    float particleDepth = texture(tex, posTex);
-//    
-//    //z value of point at (x,y)
-//    float z = texture(tex, posTex);
-//    //z value of point at (x + 1, y)
-//    float zXR = texture(tex, posTex + vec2(deltaX, 0));
-//    //z value of point at (x - 1, y)
-//    float zXL = texture(tex, posTex + vec2(-deltaX, 0));
-//    //z value of point at (x, y + 1)
-//    float zYT = texture(tex, posTex + vec2(0, deltaY));
-//    //z value of point at (x, y - 1)
-//    float zYB = texture(tex, posTex + vec2(0, -deltaY));
-//    
-//    //Focal lengths
-//    float fx = projection[0][0];
-//    float fy = projection[1][1];
-//    
-//    //Dimensions of viewport
-//    float vx = screenSize.x;
-//    float vy = screenSize.y;
-//    
-//    //The of the following four values, only one is definitely needed
-//    //All four are being used to improve the approximation
-//    
-//    //z value of point at (x + 1, y + 1)
-//    float zTR = texture(tex, posTex + vec2(deltaX, deltaY));
-//    //z value of point at (x - 1, y + 1)
-//    float zTL = texture(tex, posTex + vec2(-deltaX, deltaY));
-//    //z value of point at (x + 1, y - 1)
-//    float zBR = texture(tex, posTex + vec2(deltaX, -deltaY));
-//    //z value of point at (x - 1, y - 1)
-//    float zBL = texture(tex, posTex + vec2(-deltaX, -deltaY));
-//        
+	vec2 normTex = posTex / screenSize;
+
+	//differential differences
+	float deltaX = 1.0f / screenSize.x;
+    float deltaY = 1.0f / screenSize.y;
+    
+    float particleDepth = texture(tex, posTex);
+    
+    //z value of point at (x,y)
+    float z = texture(tex, normTex);
+    //z value of point at (x + 1, y)
+    float zXR = texture(tex, normTex + vec2(deltaX, 0));
+    //z value of point at (x - 1, y)
+    float zXL = texture(tex, normTex + vec2(-deltaX, 0));
+    //z value of point at (x, y + 1)
+    float zYT = texture(tex, normTex + vec2(0, deltaY));
+    //z value of point at (x, y - 1)
+    float zYB = texture(tex, normTex + vec2(0, -deltaY));
+    
+    //Focal lengths
+    float fx = projection[0][0];
+    float fy = projection[1][1];
+    
+    //Dimensions of viewport
+    float vx = screenSize.x;
+    float vy = screenSize.y;
+    
+    //The of the following four values, only one is definitely needed
+    //All four are being used to improve the approximation
+
+    //z value of point at (x + 1, y + 1)
+    float zTR = texture(tex, normTex + vec2(deltaX, deltaY));
+    //z value of point at (x - 1, y + 1)
+    float zTL = texture(tex, normTex + vec2(-deltaX, deltaY));
+    //z value of point at (x + 1, y - 1)
+    float zBR = texture(tex, normTex + vec2(deltaX, -deltaY));
+    //z value of point at (x - 1, y - 1)
+    float zBL = texture(tex, normTex + vec2(-deltaX, -deltaY));
+//
 //    //first derivates of sides
 //    float dzXRdx = (zXR - z) / deltaX;
 //    float dzXLdx = (z - zXL) / deltaX;
@@ -118,7 +120,7 @@ void main() {
 //    if (particleDepth <= 0.0f) {
 //    	particleDepth = 0.0f;
 //    }
-//                        
+//    
 //    depth = particleDepth;
     depth = 0.0;
 }

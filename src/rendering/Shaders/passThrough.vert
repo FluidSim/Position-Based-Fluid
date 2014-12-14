@@ -1,13 +1,14 @@
-layout (location = 0) in vec2 screenPos
+#version 400
 
-//uniform sampler2D tex;
+in vec2 screenPos;
+
+uniform sampler2D tex;
 uniform mat4 projection;
 uniform vec2 screenSize;
 
 out vec2 posTex;
 
 void main() {
-//    posTex = screenPos;
-//    gl_Position = vec4(screenPos/screenSize, 0.0, 1.0);
     posTex = screenPos;
+    gl_Position = vec4(screenPos/screenSize, 0.0, 1.0);
 }
