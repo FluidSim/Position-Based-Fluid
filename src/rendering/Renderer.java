@@ -50,17 +50,17 @@ public class Renderer {
 
 		//Depth shader
 		ParticleShader particleShader = new ParticleShader();
-		particleShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleDepth.frag");
+		particleShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.initFields();
 		
 		//Thickness shader
 		//ThicknessShader thicknessShader = new ThicknessShader();
-		//thicknessShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleThickness.frag");
+		//thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
 		//thicknessShader.initFields();
 		
 		//Curvature shader
 		//CurvatureShader curvatureShader = new CurvatureShader();
-		//curvatureShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/curvatureFlow.frag");
+		//curvatureShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/curvatureFlow.frag");
 		//curvatureShader.initFields();
 		
 		glEnable(GL_DEPTH_TEST);
