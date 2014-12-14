@@ -1,4 +1,4 @@
-in ivec2 posTex;
+in vec2 posTex;
 
 uniform sampler2D tex;
 uniform mat4 projection;
@@ -7,18 +7,24 @@ uniform vec2 screenSize;
 layout (location = 0) out float depth;
 
 void main() {
+	posTex = posTex / screenSize;
+	
+	//differential differences
+	float deltaX = 1.0f / screenSize.x;
+    float deltaY = 1.0f / screenSize.y;
+    
     float particleDepth = texture(tex, posTex);
     
     //z value of point at (x,y)
     float z = texture(tex, posTex);
     //z value of point at (x + 1, y)
-    float zXR = texture(tex, posTex + ivec2(1,0));
+    float zXR = texture(tex, posTex + vec2(deltaX, 0));
     //z value of point at (x - 1, y)
-    float zXL = texture(tex, posTex + ivec2(-1,0));
+    float zXL = texture(tex, posTex + vec2(-deltaX, 0));
     //z value of point at (x, y + 1)
-    float zYT = texture(tex, posTex + ivec2(0,1));
+    float zYT = texture(tex, posTex + vec2(0, deltaY));
     //z value of point at (x, y - 1)
-    float zYB = texture(tex, posTex + ivec2(1,-1));
+    float zYB = texture(tex, posTex + vec2(0, -deltaY));
     
     //Focal lengths
     float fx = projection[0][0];
@@ -32,19 +38,14 @@ void main() {
     //All four are being used to improve the approximation
     
     //z value of point at (x + 1, y + 1)
-    float zTR = 0;
+    float zTR = texture(tex, posTex + vec2(deltaX, deltaY);
     //z value of point at (x - 1, y + 1)
-    float zTL = 0;
+    float zTL = texture(tex, posTex + vec2(-deltaX, deltaY);;
     //z value of point at (x + 1, y - 1)
-    float zBR = 0;
+    float zBR = texture(tex, posTex + vec2(deltaX, -deltaY);;
     //z value of point at (x - 1, y - 1)
-    float zBL = 0;
-    
-    //differential distances
-    //TODO
-    float deltaX = 1;
-    float deltaY = 1;
-    
+    float zBL = texture(tex, posTex + vec2(-deltaX, -deltaY);;
+        
     //first derivates of sides
     float dzXRdx = (zXR - z) / (deltaX);
     float dzXLdx = (z - zXL) / (deltaX);
@@ -107,5 +108,10 @@ void main() {
     //Finally we have an H value
     //Possibly have a catch for D = 0
     float  H = (Cy * Ex + Cx * Ey) / (2 * (pow(D, 1.5f)));
+    
+    if (particleDepth <= 0.0f) {
+    	depth = 0.0f;
+    } else {
+    	
     
 }
