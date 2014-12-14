@@ -1,6 +1,7 @@
 package rendering.Containers;
 
 import rendering.RenderUtility;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -12,6 +13,8 @@ import static org.lwjgl.opengl.GL40.*;
  
 public abstract class ShaderHelper {
 	public int program;
+	public int fbo;
+	public int tex;
 		
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
 		program = glCreateProgram();
@@ -29,6 +32,14 @@ public abstract class ShaderHelper {
 		}
 		
 		glValidateProgram(program);
+	}
+	
+	public void initTexture(int width, int height){
+		tex = glGenTextures();
+		glBindTexture(GL_TEXTURE, tex);
+		glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 	
 	public abstract void initFields();

@@ -9,7 +9,10 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.*;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
+
+import org.lwjgl.BufferUtils;
 
 import rendering.RenderUtility;
 import egl.math.Vector3;
@@ -22,7 +25,7 @@ public class ParticleDepth extends ShaderHelper {
 	public int color;
 	public int depth;
 	
-	public int fbo;
+	public int depthBuffer;
 
 	@Override
 	public void initFields() {
@@ -34,7 +37,18 @@ public class ParticleDepth extends ShaderHelper {
 		glBindFragDataLocation(program, 1, "depth");
 		color = glGetFragDataLocation(program, "outColor");
 		depth = glGetFragDataLocation(program, "depth");
+		
+		fbo = glGenFramebuffers();
+		glBindBuffer(GL_FRAMEBUFFER, fbo);
 	}
+	
+	public void initDepthBuffer(int width, int height) {
+		depthBuffer = glGenRenderbuffers();
+		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	}
+	
 	
 	/**
 	 * Create Vertex Array Object necessary to pass data to the shader

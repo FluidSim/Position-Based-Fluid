@@ -9,7 +9,7 @@ uniform mat4 projection;
 uniform vec2 screenSize;
 uniform vec3 lightPos;
 
-out vec3 outColor;
+layout (location = 0) out vec3 outColor;
 //out float depth;
 
 void main() {

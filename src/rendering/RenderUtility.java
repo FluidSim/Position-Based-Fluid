@@ -27,8 +27,7 @@ import egl.math.Vector3;
 
 public final class RenderUtility {
 
-	private RenderUtility() {
-	}
+	private RenderUtility() { }
 
 	/** Add a Vector3 as a uniform */
 	public static void addVector3(ShaderHelper shader, Vector3 V, String name) {

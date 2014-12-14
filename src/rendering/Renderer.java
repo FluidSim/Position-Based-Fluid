@@ -31,12 +31,12 @@ public class Renderer {
 	public void initGl() throws LWJGLException {
 		int width = 600;
 		int height = 600;
-		
+
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
 		Display.setTitle("Position Based Fluids");
 
-		//Deprecated functions will throw an error
+		// Deprecated functions will throw an error
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
 
 		glViewport(0, 0, width, height);
@@ -48,74 +48,87 @@ public class Renderer {
 		ArrayList<Vector3> points = new ArrayList<Vector3>();
 		resetPoints(points);
 
-		//Depth shader
+		int width = Display.getWidth();
+		int height = Display.getHeight();
+
+		// Depth shader
 		ParticleDepth particleShader = new ParticleDepth();
 		particleShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.initFields();
-		
-		//Thickness shader
-		//ThicknessShader thicknessShader = new ThicknessShader();
-		//thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
-		//thicknessShader.initFields();
-		
-		//Curvature shader
-		//CurvatureShader curvatureShader = new CurvatureShader();
-		//curvatureShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/curvatureFlow.frag");
-		//curvatureShader.initFields();
-		
+
+		// Thickness shader
+		// ThicknessShader thicknessShader = new ThicknessShader();
+		// thicknessShader.initProgram("src/rendering/Shaders/particle.vert",
+		// "src/rendering/Shaders/particleThickness.frag");
+		// thicknessShader.initFields();
+
+		// Curvature shader
+		// CurvatureShader curvatureShader = new CurvatureShader();
+		// curvatureShader.initProgram("src/rendering/Shaders/particle.vert",
+		// "src/rendering/Shaders/curvatureFlow.frag");
+		// curvatureShader.initFields();
+
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Create Camera
+		Vector3 eye = new Vector3(10f, 4f, -10f);
+		Vector3 target = new Vector3(10f, 2f, 0f);
+		Vector3 up = new Vector3(0, 1, 0);
+
+		float zNear = 1e-2f;
+		float zFar = 1e2f;
+
+		Matrix4 projection = Matrix4.createPerspectiveFOV((float) (60 * Math.PI / 180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+		Matrix4 mView = Matrix4.createLookAt(eye, target, up);
+
 		while (Display.isCloseRequested() == false) {
-			
-			//PARTICLE DEPTH
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+
+			// PARTICLE DEPTH
+			particleShader.initTexture(width, height);
+			particleShader.initDepthBuffer(width, height);
+
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, particleShader.tex, 0);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, particleShader.depthBuffer);
+
 			particleShader.particleDepthVAO(points);
 
 			// Enable point size on Mac
 			glEnable(0x8642);
-			
-			glDisable(GL_DEPTH_TEST);
-			//glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glUseProgram(particleShader.program);
 
-			// Create Camera
-			Vector3 eye = new Vector3(10f, 4f, -10f);
-			Vector3 target = new Vector3(10f, 2f, 0f);
-			Vector3 up = new Vector3(0, 1, 0);
-
-			float zNear = 1e-2f;
-			float zFar = 1e2f;
-
-			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (60*Math.PI/180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
-			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
-			
 			RenderUtility.addMatrix(particleShader, mView, "mView");
 			RenderUtility.addMatrix(particleShader, projection, "projection");
 			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
 
-			//Draw VAO
+			glBindFramebuffer(GL_FRAMEBUFFER, particleShader.fbo);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(0, 0, width, height);
+
+			// Draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
 
-			//Swap buffers and sync frame rate to 60 fps
+			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
 			Display.sync(60);
 
 			system.update();
-			
+
 			resetPoints(points);
+
+			// glDisable(GL_DEPTH_TEST);
+			// //glEnable(GL_BLEND);
+			// //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		Display.destroy();
 	}
-	
-	public void resetPoints(ArrayList<Vector3> points){
+
+	public void resetPoints(ArrayList<Vector3> points) {
 		points.clear();
-		for (Vector3 p: system.getPositions()){
+		for (Vector3 p : system.getPositions()) {
 			points.add(p.clone());
 		}
 	}
