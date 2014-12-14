@@ -38,35 +38,35 @@ void main() {
     //All four are being used to improve the approximation
     
     //z value of point at (x + 1, y + 1)
-    float zTR = texture(tex, posTex + vec2(deltaX, deltaY);
+    float zTR = texture(tex, posTex + vec2(deltaX, deltaY));
     //z value of point at (x - 1, y + 1)
-    float zTL = texture(tex, posTex + vec2(-deltaX, deltaY);;
+    float zTL = texture(tex, posTex + vec2(-deltaX, deltaY));
     //z value of point at (x + 1, y - 1)
-    float zBR = texture(tex, posTex + vec2(deltaX, -deltaY);;
+    float zBR = texture(tex, posTex + vec2(deltaX, -deltaY));
     //z value of point at (x - 1, y - 1)
-    float zBL = texture(tex, posTex + vec2(-deltaX, -deltaY);;
+    float zBL = texture(tex, posTex + vec2(-deltaX, -deltaY));
         
     //first derivates of sides
-    float dzXRdx = (zXR - z) / (deltaX);
-    float dzXLdx = (z - zXL) / (deltaX);
-    float dzYTdy = (zYT - z) / (deltaY);
-    float dzYBdy = (z - zYB) / (deltaY);
+    float dzXRdx = (zXR - z) / deltaX;
+    float dzXLdx = (z - zXL) / deltaX;
+    float dzYTdy = (zYT - z) / deltaY;
+    float dzYBdy = (z - zYB) / deltaY;
     
     //first derivatives of top right corner
-    float dzTRdx = (zTR - zYT) / (deltaX);
-    float dzTRdy = (zTR - zXR) / (deltaY);
+    float dzTRdx = (zTR - zYT) / deltaX;
+    float dzTRdy = (zTR - zXR) / deltaY;
     
     //first derivatives of top left corner
-    float dzTLdx = (zYT - zTL) / (deltaX);
-    float dzTLdy = (zTL - zXL) / (deltaY);
+    float dzTLdx = (zYT - zTL) / deltaX;
+    float dzTLdy = (zTL - zXL) / deltaY;
     
     //first derivatives of bottom right corner
-    float dzBRdx = (zBR - zYB) / (deltaX);
-    float dzBRdy = (zXR - zBR) / (deltaY);
+    float dzBRdx = (zBR - zYB) / deltaX;
+    float dzBRdy = (zXR - zBR) / deltaY;
     
     //first derivatives of bottom left corner
-    float dzBLdx = (zYB - zBL) / (deltaX);
-    float dzBLdy = (zXL - zBL) / (deltaY);
+    float dzBLdx = (zYB - zBL) / deltaX;
+    float dzBLdy = (zXL - zBL) / deltaY;
     
     //first derivatives at the middle (averaging the two sides)
     float dx = (dzXRdx + dzXLdx) / 2;
@@ -77,20 +77,20 @@ void main() {
     float dy2 = (dzYTdy - dzYBdy) / (2 * deltaY);
     
     //four mixed derivatives dxdy
-    float dxdyA = (dzTRdy - dzYTdy) / (deltaX);
-    float dxdyB = (dzYTdy - dzTLdy) / (deltaX);
-    float dxdyC = (dzBRdy - dzYTdy) / (deltaX);
-    float dxdyD = (dzYBdy - dzBLdy) / (deltaX);
+    float dxdyA = (dzTRdy - dzYTdy) / deltaX;
+    float dxdyB = (dzYTdy - dzTLdy) / deltaX;
+    float dxdyC = (dzBRdy - dzYTdy) / deltaX;
+    float dxdyD = (dzYBdy - dzBLdy) / deltaX;
     
     //four mixed derivatives dydx
-    float dydxA = (dzTRdx - dzXRdx) / (deltaY);
-    float dydxB = (dzTLdx - dzXLdx) / (deltaY);
-    float dydxC = (dzXRdx - dzBRdx) / (deltaY);
-    float dydxD = (dzXLdx - dzBLdx) / (deltaY);
+    float dydxA = (dzTRdx - dzXRdx) / deltaY;
+    float dydxB = (dzTLdx - dzXLdx) / deltaY;
+    float dydxC = (dzXRdx - dzBRdx) / deltaY;
+    float dydxD = (dzXLdx - dzBLdx) / deltaY;
     
     //Final mixed derivatives (averaged)
-    float dxdy = (dxdyA + dxdyB + dxdyC + dxdyD ) / (4);
-    float dydx = (dydxA + dydxB + dydxC + dydxD ) / (4);
+    float dxdy = (dxdyA + dxdyB + dxdyC + dxdyD ) / 4;
+    float dydx = (dydxA + dydxB + dydxC + dydxD ) / 4;
     
     //Constants
     float Cx =  2 / (vx * fx);
@@ -108,10 +108,16 @@ void main() {
     //Finally we have an H value
     //Possibly have a catch for D = 0
     float  H = (Cy * Ex + Cx * Ey) / (2 * (pow(D, 1.5f)));
+                        
+    if (posTex.x == 0.0 || posTex.y == 0.0 || posTex.x == 1.0 || posTex.y == 1.0){
+        H = 0.0;
+    }
     
+    particleDepth = particleDepth + H;
+                        
     if (particleDepth <= 0.0f) {
-    	depth = 0.0f;
-    } else {
-    	
-    
+    	particleDepth = 0.0f;
+    }
+                        
+    depth = particleDepth;
 }
