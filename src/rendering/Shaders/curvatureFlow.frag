@@ -4,16 +4,12 @@ uniform sampler2D texture;
 uniform mat4 projection;
 uniform vec3 screensize;
 
-void main() {
-    
-    //Values from projection matrices
-    float
-    
+void main() {    
     //z value of point at (x,y)
     float z = 0;
-    //z value of point at (x+1, y)
+    //z value of point at (x + 1, y)
     float zXR = 0;
-    //z value of point at (x-1, y)
+    //z value of point at (x - 1, y)
     float zXL = 0;
     //z value of point at (x, y + 1)
     float zYT = 0;
@@ -106,5 +102,5 @@ void main() {
     
     //Finally we have an H value
     //Possibly have a catch for D = 0
-    float  H = (Cy * Ex + Cx * Ey) / (2 * (pow (D, (3/2))));
+    float  H = (Cy * Ex + Cx * Ey) / (2 * (pow(D, 1.5f)));
 }

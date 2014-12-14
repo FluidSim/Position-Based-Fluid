@@ -69,11 +69,11 @@ public class ParticleSystem {
 	}
 
 	public void update() {
-		time++;
+		/*time++;
 		if (time > 70 && time < 90) {
 			//rangex = (float) (-Math.abs(Math.sin(time - Math.PI/2)*originalX*.5) + originalX);
 			rangex -= .5f;//*Math.signum(Math.sin(time/20.0 -100));
-		}
+		}*/
 		
 		/*if (time > 100 && !dropped) {
 			dropped = true;

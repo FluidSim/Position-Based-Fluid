@@ -77,7 +77,7 @@ public class Renderer {
 			glUseProgram(particleShader.program);
 
 			// Create Matrices
-			Vector3 eye = new Vector3(10f, 8f, -10f);
+			Vector3 eye = new Vector3(10f, 4f, -10f);
 			Vector3 target = new Vector3(10f, 0f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
 
