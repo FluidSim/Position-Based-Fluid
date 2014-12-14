@@ -52,20 +52,18 @@ public class Renderer {
 		int height = Display.getHeight();
 
 		// Depth shader
-		ParticleDepth particleShader = new ParticleDepth();
-		particleShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
-		particleShader.initFields();
+		ParticleDepth depthShader = new ParticleDepth();
+		depthShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
+		depthShader.initFields();
 
 		// Thickness shader
-		// ThicknessShader thicknessShader = new ThicknessShader();
-		// thicknessShader.initProgram("src/rendering/Shaders/particle.vert",
-		// "src/rendering/Shaders/particleThickness.frag");
-		// thicknessShader.initFields();
+		ThicknessShader thicknessShader = new ThicknessShader();
+		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
+		thicknessShader.initFields();
 
 		// Curvature shader
 		// CurvatureShader curvatureShader = new CurvatureShader();
-		// curvatureShader.initProgram("src/rendering/Shaders/particle.vert",
-		// "src/rendering/Shaders/curvatureFlow.frag");
+		//curvatureShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/curvatureFlow.frag");
 		// curvatureShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
@@ -83,33 +81,60 @@ public class Renderer {
 		Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 		while (Display.isCloseRequested() == false) {
+			//Particle Depth
+			glUseProgram(depthShader.program);
+			depthShader.initTexture(width, height, GL_R32F, GL_RED);
+			depthShader.initDepthBuffer(width, height);
 
-			// PARTICLE DEPTH
-			particleShader.initTexture(width, height);
-			particleShader.initDepthBuffer(width, height);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, particleShader.tex, 0);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, particleShader.depthBuffer);
-
-			particleShader.particleDepthVAO(points);
+			depthShader.particleDepthVAO(points);
 
 			// Enable point size on Mac
 			glEnable(0x8642);
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
 
-			glUseProgram(particleShader.program);
+			RenderUtility.addMatrix(depthShader, mView, "mView");
+			RenderUtility.addMatrix(depthShader, projection, "projection");
+			RenderUtility.addVector2(depthShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
+			RenderUtility.addVector3(depthShader, lightPosition, "lightPos");
 
-			RenderUtility.addMatrix(particleShader, mView, "mView");
-			RenderUtility.addMatrix(particleShader, projection, "projection");
-			RenderUtility.addVector2(particleShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
-			RenderUtility.addVector3(particleShader, lightPosition, "lightPos");
-
-			glBindFramebuffer(GL_FRAMEBUFFER, particleShader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glViewport(0, 0, width, height);
 
 			// Draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
-
+			
+			
+			//Particle Thickness
+			glUseProgram(thicknessShader.program);
+			thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
+			
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
+			
+			thicknessShader.particleThicknessVAO(points);
+			
+			RenderUtility.addMatrix(thicknessShader, mView, "mView");
+			RenderUtility.addMatrix(thicknessShader, projection, "projection");
+			RenderUtility.addVector2(thicknessShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
+			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(0, 0, width, height);
+			
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+			glDisable(GL_DEPTH_TEST);
+			
+			glDrawArrays(GL_POINTS, 0, points.size());
+			
+			//Particle curvature
+			
+			
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
 			Display.sync(60);
