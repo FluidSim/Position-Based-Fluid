@@ -9,7 +9,7 @@ public class ThicknessShader extends ShaderHelper {
 	public int mView;
 	
 	/** projection matrix */
-	public int mProj;
+	public int projection;
 	
 	public int screenSize;
 	

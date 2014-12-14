@@ -3,15 +3,12 @@ package rendering.Containers;
 import rendering.RenderUtility;
 import java.io.BufferedReader;
 import java.io.FileReader;
- 
-
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.*;
-
-import static org.lwjgl.opengl.GL20.*;
  
 public abstract class ShaderHelper {
 	public int program;

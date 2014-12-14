@@ -12,7 +12,9 @@ public class ParticleShader extends ShaderHelper {
 	public int position;
 	
 	/** model view matrix */
-	public int mViewProj;
+	public int mView;
+	
+	public int projection;
 	
 	public int screenSize;
 	
@@ -28,7 +30,8 @@ public class ParticleShader extends ShaderHelper {
 	@Override
 	public void initFields() {
 		position = glGetAttribLocation(program, "vertexPos");
-		mViewProj = glGetUniformLocation(program, "mViewProj");
+		mView = glGetUniformLocation(program, "mView");
+		projection = glGetUniformLocation(program, "projection");
 		screenSize = glGetUniformLocation(program, "screenSize");
 		glBindFragDataLocation(program, 0, "outColor");
 		glBindFragDataLocation(program, 1, "depth");
