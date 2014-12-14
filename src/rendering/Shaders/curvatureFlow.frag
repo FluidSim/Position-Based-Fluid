@@ -1,20 +1,24 @@
 in ivec2 posTex;
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 uniform mat4 projection;
 uniform vec2 screenSize;
 
-void main() {    
+layout (location = 0) out float depth;
+
+void main() {
+    float particleDepth = texture(tex, posTex);
+    
     //z value of point at (x,y)
-    float z = 0;
+    float z = texture(tex, posTex);
     //z value of point at (x + 1, y)
-    float zXR = 0;
+    float zXR = texture(tex, posTex + ivec2(1,0));
     //z value of point at (x - 1, y)
-    float zXL = 0;
+    float zXL = texture(tex, posTex + ivec2(-1,0));
     //z value of point at (x, y + 1)
-    float zYT = 0;
+    float zYT = texture(tex, posTex + ivec2(0,1));
     //z value of point at (x, y - 1)
-    float zYB = 0;
+    float zYB = texture(tex, posTex + ivec2(1,-1));
     
     //Focal lengths
     float fx = projection[0][0];
@@ -103,4 +107,5 @@ void main() {
     //Finally we have an H value
     //Possibly have a catch for D = 0
     float  H = (Cy * Ex + Cx * Ey) / (2 * (pow(D, 1.5f)));
+    
 }
