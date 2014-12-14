@@ -10,7 +10,7 @@ uniform vec2 screenSize;
 uniform vec3 lightPos;
 
 layout (location = 0) out vec3 outColor;
-//out float depth;
+layout (location = 1) out float depth;
 
 void main() {
 	//calculate normal

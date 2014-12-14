@@ -61,6 +61,11 @@ public final class RenderUtility {
 		int loc = glGetUniformLocation(shader.getProgram(), name);
 		glUniformMatrix4(loc, false, Mbuffer);
 	}
+	
+	/** Add a texture as a uniform */
+	public static void addTexture(ShaderHelper shader, int tex){
+		glUniform1i(tex, 0);
+	}
 
 	public static FloatBuffer createPositionBuffer(ArrayList<Vector3> points) {
 		float[] buffer = new float[points.size() * 3];
@@ -68,6 +73,25 @@ public final class RenderUtility {
 			buffer[3 * i] = (points.get(i).x);
 			buffer[3 * i + 1] = (points.get(i).y);
 			buffer[3 * i + 2] = (points.get(i).z);
+		}
+
+		// convert vertex array to buffer
+		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(buffer.length);
+		positionBuffer.put(buffer);
+		positionBuffer.flip();
+
+		return positionBuffer;
+	}
+	
+	public static FloatBuffer createScreenPosBuffer(int width, int height){
+		float[] buffer = new float[width*height*2];
+		int pos = 0;
+		for (int i = 0; i < width; i++){
+			for (int j = 0; j < height; j++){
+				buffer[pos] = i;
+				buffer[pos + 1] = j;
+				pos += 2;
+			}
 		}
 
 		// convert vertex array to buffer

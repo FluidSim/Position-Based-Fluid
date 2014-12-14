@@ -62,9 +62,9 @@ public class Renderer {
 		thicknessShader.initFields();
 
 		// Curvature shader
-		// CurvatureShader curvatureShader = new CurvatureShader();
-		//curvatureShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/curvatureFlow.frag");
-		// curvatureShader.initFields();
+		CurvatureShader curvatureShader = new CurvatureShader();
+		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
+		curvatureShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,7 +81,7 @@ public class Renderer {
 		Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 		while (Display.isCloseRequested() == false) {
-			//Particle Depth
+			// Particle Depth
 			glUseProgram(depthShader.program);
 			depthShader.initTexture(width, height, GL_R32F, GL_RED);
 			depthShader.initDepthBuffer(width, height);
@@ -107,34 +107,73 @@ public class Renderer {
 
 			// Draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
-			
-			
-			//Particle Thickness
+
+			// Particle Thickness
 			glUseProgram(thicknessShader.program);
 			thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
-			
+
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
-			
+
 			thicknessShader.particleThicknessVAO(points);
-			
+
 			RenderUtility.addMatrix(thicknessShader, mView, "mView");
 			RenderUtility.addMatrix(thicknessShader, projection, "projection");
-			RenderUtility.addVector2(thicknessShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
+			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
-			
+
 			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glViewport(0, 0, width, height);
-			
+
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDisable(GL_DEPTH_TEST);
-			
+
 			glDrawArrays(GL_POINTS, 0, points.size());
+
+			// Particle curvature
+			glUseProgram(curvatureShader.program);
+			curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
 			
-			//Particle curvature
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
 			
+			curvatureShader.curvatureVAO(width, height);
 			
+			RenderUtility.addTexture(curvatureShader, thicknessShader.tex);
+			RenderUtility.addMatrix(curvatureShader, projection, "projection");
+			RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(0, 0, width, height);
+			
+			glDisable(GL_BLEND);
+			glDisable(GL_DEPTH_TEST);
+			
+			glDrawArrays(GL_TRIANGLES, 0, width*height);
+			
+			for (int i = 0; i < 40; i++){
+				int oldTex = curvatureShader.tex;
+				
+				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
+				
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+				
+				curvatureShader.curvatureVAO(width, height);
+				
+				RenderUtility.addTexture(curvatureShader, oldTex);
+				RenderUtility.addMatrix(curvatureShader, projection, "projection");
+				RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
+				
+				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glViewport(0, 0, width, height);
+				
+				glDrawArrays(GL_TRIANGLES, 0, width*height);
+			}
+			
+			glEnable(GL_DEPTH_TEST);
+
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
 			Display.sync(60);
@@ -142,10 +181,6 @@ public class Renderer {
 			system.update();
 
 			resetPoints(points);
-
-			// glDisable(GL_DEPTH_TEST);
-			// //glEnable(GL_BLEND);
-			// //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		Display.destroy();
