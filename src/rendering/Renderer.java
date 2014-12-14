@@ -17,7 +17,7 @@ import org.lwjgl.opengl.PixelFormat;
 
 import physics.ParticleSystem;
 import rendering.Containers.CurvatureShader;
-import rendering.Containers.ParticleShader;
+import rendering.Containers.ParticleDepth;
 import rendering.Containers.ThicknessShader;
 import egl.math.Matrix4;
 import egl.math.Vector2;
@@ -49,7 +49,7 @@ public class Renderer {
 		resetPoints(points);
 
 		//Depth shader
-		ParticleShader particleShader = new ParticleShader();
+		ParticleDepth particleShader = new ParticleDepth();
 		particleShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
 		particleShader.initFields();
 		
@@ -67,6 +67,8 @@ public class Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		while (Display.isCloseRequested() == false) {
+			
+			//PARTICLE DEPTH
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			particleShader.particleDepthVAO(points);

@@ -14,13 +14,15 @@ import java.util.ArrayList;
 import rendering.RenderUtility;
 import egl.math.Vector3;
 
-public class ParticleShader extends ShaderHelper {
+public class ParticleDepth extends ShaderHelper {
 	public int position;
 	public int mView;
 	public int projection;
 	public int screenSize;
 	public int color;
 	public int depth;
+	
+	public int fbo;
 
 	@Override
 	public void initFields() {

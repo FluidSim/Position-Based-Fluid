@@ -19,7 +19,7 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 import physics.ParticleSystem;
-import rendering.Containers.ParticleShader;
+import rendering.Containers.ParticleDepth;
 import rendering.Containers.ShaderHelper;
 import egl.math.Matrix4;
 import egl.math.Vector2;

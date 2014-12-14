@@ -13,6 +13,8 @@ public class CurvatureShader extends ShaderHelper {
 	public int projection;
 	public int screenSize;
 	
+	public int fbo;
+	
 	@Override
 	public void initFields() {
 		position = glGetAttribLocation(program, "vertexPos");
