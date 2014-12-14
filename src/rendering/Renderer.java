@@ -10,9 +10,10 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL40.*;
 
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
@@ -61,10 +62,10 @@ public class Renderer {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		constructVertexArrayObject(points);
-
 		while (Display.isCloseRequested() == false) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
+			particleDepthVAO(points);
 
 			// Enable point size on Mac
 			glEnable(0x8642);
@@ -101,8 +102,6 @@ public class Renderer {
 			system.update();
 			
 			resetPoints(points);
-			
-			constructVertexArrayObject(points);
 		}
 
 		Display.destroy();
@@ -118,7 +117,7 @@ public class Renderer {
 	/**
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
-	private void constructVertexArrayObject(ArrayList<Vector3> points) {
+	private void particleDepthVAO(ArrayList<Vector3> points) {
 		// Create color and position buffers
 		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.3f, 0.3f, 1.0f, (points.size()));
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
