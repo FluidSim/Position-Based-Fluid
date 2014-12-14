@@ -81,7 +81,7 @@ public class Renderer {
 			glUseProgram(particleShader.program);
 
 			// Create Camera
-			Vector3 eye = new Vector3(10f, 4f, -5f);
+			Vector3 eye = new Vector3(10f, 4f, -10f);
 			Vector3 target = new Vector3(10f, 2f, 0f);
 			Vector3 up = new Vector3(0, 1, 0);
 
