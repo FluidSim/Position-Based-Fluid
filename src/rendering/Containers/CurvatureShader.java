@@ -1,21 +1,27 @@
 package rendering.Containers;
 
+import static org.lwjgl.opengl.GL20.glGetAttribLocation;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL30.glBindFragDataLocation;
+
+import java.util.ArrayList;
+
+import egl.math.Vector3;
+
 public class CurvatureShader extends ShaderHelper {
-	
-	/** vertex position */
 	public int position;
-	
-	/** projection matrix */
-	public int mProj;
-	
+	public int projection;
 	public int screenSize;
 	
-	/** terrain texture */
-	public int terrain;
-
 	@Override
 	public void initFields() {
-		// TODO Auto-generated method stub
+		position = glGetAttribLocation(program, "vertexPos");
+		projection = glGetUniformLocation(program, "projection");
+		screenSize = glGetUniformLocation(program, "screenSize");
+		glBindFragDataLocation(program, 0, "thickness");
+	}
+	
+	public void curvatureVAO(ArrayList<Vector3> points) {
 		
 	}
 }

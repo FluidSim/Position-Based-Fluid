@@ -2,7 +2,7 @@ in ivec2 posTex;
 
 uniform sampler2D texture;
 uniform mat4 projection;
-uniform vec3 screensize;
+uniform vec2 screenSize;
 
 void main() {    
     //z value of point at (x,y)
@@ -21,8 +21,8 @@ void main() {
     float fy = projection[1][1];
     
     //Dimensions of viewport
-    float vx = screensize[0];
-    float vy = screensize[1];
+    float vx = screenSize.x;
+    float vy = screenSize.y;
     
     //The of the following four values, only one is definitely needed
     //All four are being used to improve the approximation

@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL40.*;
 import org.lwjgl.opengl.PixelFormat;
 
 import physics.ParticleSystem;
+import rendering.Containers.CurvatureShader;
 import rendering.Containers.ParticleShader;
 import rendering.Containers.ThicknessShader;
 import egl.math.Matrix4;
@@ -56,6 +57,11 @@ public class Renderer {
 		//ThicknessShader thicknessShader = new ThicknessShader();
 		//thicknessShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/particleThickness.frag");
 		//thicknessShader.initFields();
+		
+		//Curvature shader
+		//CurvatureShader curvatureShader = new CurvatureShader();
+		//curvatureShader.initProgram("src/rendering/Shaders/particleDepth.vert", "src/rendering/Shaders/curvatureFlow.frag");
+		//curvatureShader.initFields();
 		
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
