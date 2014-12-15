@@ -54,13 +54,11 @@ public class ParticleDepth extends ShaderHelper {
 	 * Create Vertex Array Object necessary to pass data to the shader
 	 */
 	public void particleDepthVAO(ArrayList<Vector3> points) {
-		// Create color and position buffers
-		FloatBuffer colorBuffer = RenderUtility.createColorBuffer(0.3f, 0.3f, 1.0f, (points.size()));
+		// Create position buffer
 		FloatBuffer positionBuffer = RenderUtility.createPositionBuffer(points);
 
 		// create VBO's
 		int positionHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
-		int colorHandle = RenderUtility.bindBuffer(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
 
 		// Unbind VBO's
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -69,15 +67,10 @@ public class ParticleDepth extends ShaderHelper {
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
 
 		// Assign vertex buffer to slot 0 of VAO
 		glBindBuffer(GL_ARRAY_BUFFER, positionHandle);
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-		// Assign color buffer to slot 0 of VAO
-		glBindBuffer(GL_ARRAY_BUFFER, colorHandle);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
 		// Unbind VBO's
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

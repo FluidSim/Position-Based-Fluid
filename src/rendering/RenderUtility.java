@@ -65,8 +65,8 @@ public final class RenderUtility {
 	
 	/** Add a texture as a uniform */
 	public static void addTexture(ShaderHelper shader, int tex){
-		glUniform1i(tex, 0);
 		glActiveTexture(tex);
+		glUniform1i(tex, 0);
 	}
 
 	public static FloatBuffer createPositionBuffer(ArrayList<Vector3> points) {

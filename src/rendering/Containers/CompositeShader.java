@@ -74,15 +74,20 @@ public class CompositeShader extends ShaderHelper {
 
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
 
-		float[] vertices = new float[] { -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f };
+		float[] vertices = new float[] { 
+				-1.0f, 1.0f, 0.0f,
+				-1.0f, -1.0f, 0.0f, 
+				1.0f, 1.0f, 0.0f,
+				1.0f, -1.0f, 0.0f };
 		FloatBuffer verts = BufferUtils.createFloatBuffer(vertices.length);
 		int vbo = glGenBuffers();
+		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, verts, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(0);
 
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

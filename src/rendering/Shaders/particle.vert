@@ -1,7 +1,6 @@
 #version 400
 
-in vec3 vertexPos;
-in vec3 color;
+layout (location = 0) in vec3 vertexPos;
 
 uniform mat4 projection;
 uniform mat4 mView;
@@ -10,7 +9,6 @@ uniform vec3 lightPos;
 
 out vec3 pos;
 out float radius;
-out vec3 fragColor;
 
 void main() {
 	vec4 viewPos = mView * vec4(vertexPos, 1.0);
@@ -20,5 +18,4 @@ void main() {
     
     pos = viewPos.xyz;
     radius = gl_PointSize;
-    fragColor = color;
 }

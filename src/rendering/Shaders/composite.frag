@@ -9,7 +9,7 @@ uniform vec2 screenSize;
 uniform mat4 projection;
 uniform mat4 mView;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
 
 vec3 normalOf(vec2 posTex) {
     vec2 normTex = posTex / screenSize;
@@ -120,20 +120,21 @@ vec3 position(vec2 screenPos, float depth) {
 }
 
 void main() {
-    float depth = texture(depthImage,fPos/screenSize).x;
-    float thickness = texture(depthImage,fPos/screenSize).x;
-    
-    vec3 norm = normalize(normalOf(fPos));
-    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
-    vec3 pos = position(fPos, depth);
-    
-    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
-
-    if (thickness == 0.0){
-        fragColor = vec4(1.0,0.0,0.0,1.0);
-    }
-    else{
-        fragColor = vec4(0.0,1.0,0.0,1.0);
-//        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
-    }
+    fragColor = vec4(.3,.3,1.0,1.0);
+//    float depth = texture(depthImage,fPos/screenSize).x;
+//    float thickness = texture(depthImage,fPos/screenSize).x;
+//    
+//    vec3 norm = normalize(normalOf(fPos));
+//    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
+//    vec3 pos = position(fPos, depth);
+//    
+//    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
+//
+//    if (thickness == 0.0){
+//        fragColor = vec4(1.0,0.0,0.0,1.0);
+//    }
+//    else{
+//        fragColor = vec4(0.0,1.0,0.0,1.0);
+////        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
+//    }
 }

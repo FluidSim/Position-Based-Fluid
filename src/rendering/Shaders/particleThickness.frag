@@ -2,7 +2,6 @@
 
 in vec3 pos;
 in float radius;
-in vec3 fragColor;
 
 uniform mat4 mView;
 uniform mat4 projection;
@@ -22,17 +21,4 @@ void main() {
 	}
 	
 	thickness = 1.0 - r2;
-	
-	//Scale down alpha to make things more transparent
-	//alpha = alpha / 5;
-	
-	//normal.z = -sqrt(1.0 - r2);
-    
-    //vec3 lightDir = pos - lightPos;
-    //lightDir = normalize(lightDir);
-    //normal = normalize(normal);
-    //float diffuse = max(0.0, dot(normal, lightDir));
-    
-    //vec3 diffuseColor = diffuse * fragColor;
-	//outColor = vec4(diffuseColor, alpha);
 }
