@@ -39,7 +39,7 @@ public class ParticleDepth extends ShaderHelper {
 		depth = glGetFragDataLocation(program, "depth");
 		
 		fbo = glGenFramebuffers();
-		glBindBuffer(GL_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	}
 	
 	public void initDepthBuffer(int width, int height) {

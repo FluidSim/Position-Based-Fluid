@@ -56,10 +56,10 @@ public class CurvatureShader extends ShaderHelper {
 		glBindFragDataLocation(program, 0, "thickness");
 	
 		fbo1 = glGenFramebuffers();
-		glBindBuffer(GL_FRAMEBUFFER, fbo1);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo1);
 		
 		fbo2 = glGenFramebuffers();
-		glBindBuffer(GL_FRAMEBUFFER, fbo2);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo2);
 		
 		fbos = new int[] {fbo1, fbo2};
 	}

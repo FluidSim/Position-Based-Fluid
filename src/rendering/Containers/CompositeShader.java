@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glGetFragDataLocation;
+import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
 
@@ -45,7 +46,7 @@ public class CompositeShader extends ShaderHelper {
 		glBindFragDataLocation(program, 0, "fragColor");
 
 		fbo = glGenFramebuffers();
-		glBindBuffer(GL_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	}
 
 	public void compositeVAO(int width, int height) {
