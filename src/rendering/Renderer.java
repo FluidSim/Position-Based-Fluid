@@ -195,7 +195,7 @@ public class Renderer {
 			
 			glEnable(GL_DEPTH_TEST);
 			//Composite everything
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glUseProgram(compositeShader.program);
@@ -223,6 +223,8 @@ public class Renderer {
 			glEnable(GL_DEPTH_TEST);
 			
 			glViewport(0, 0, width, height);
+			
+			renderTexture(depthShader.tex);
 			
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
