@@ -198,6 +198,9 @@ public class Renderer {
 			glViewport(0, 0, width, height);
 			
 			glDrawArrays(GL_POINTS, 0, width * height);
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glViewport(0, 0, width, height);
 
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
