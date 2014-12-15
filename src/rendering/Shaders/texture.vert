@@ -1,7 +1,12 @@
 #version 400
 
+in vec3 pos;
+
 uniform sampler2D tex;
 
+out vec2 uv;
+
 void main() {
-    gl_FragColor = texture(tex,gl_FragCoord);
+    uv = pos.xy;
+    gl_Position = vec4(pos,1.0);
 }

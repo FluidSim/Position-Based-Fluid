@@ -1,9 +1,11 @@
 #version 400
 
-in vec3 pos;
+in vec2 uv;
 
 uniform sampler2D tex;
 
+out vec4 color;
+
 void main() {
-    gl_Position = vec4(pos,1.0);
+    color = texture(tex,gl_FragCoord.xy);
 }

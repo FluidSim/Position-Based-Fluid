@@ -1,7 +1,9 @@
 package rendering;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
@@ -78,7 +80,7 @@ public class Renderer {
 		
 		//Texture Shader
 		textureShader = new TextureShader();
-		textureShader.initProgram("src/rendering/Shaders/texture.vert", "scr/rendering/Shaders/texture.frag");
+		textureShader.initProgram("src/rendering/Shaders/texture.vert", "src/rendering/Shaders/texture.frag");
 		textureShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
@@ -147,6 +149,8 @@ public class Renderer {
 			glDisable(GL_DEPTH_TEST);
 
 			glBindVertexArray(thicknessShader.vao);
+		
+			glDrawBuffers(GL_COLOR_ATTACHMENT0);
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			glDisable(GL_BLEND);
@@ -224,7 +228,7 @@ public class Renderer {
 			
 			glViewport(0, 0, width, height);
 			
-			renderTexture(depthShader.tex);
+			renderTexture(thicknessShader.tex);
 			
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
@@ -239,6 +243,8 @@ public class Renderer {
 	}
 	
 	public void renderTexture(int texture){
+		glUseProgram(textureShader.program);
+		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glUniform1i(textureShader.texUniform, 0);
@@ -246,6 +252,8 @@ public class Renderer {
 		textureShader.textureVAO();
 		
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		glDisable(GL_DEPTH_TEST);
 		glBindVertexArray(textureShader.vao);
