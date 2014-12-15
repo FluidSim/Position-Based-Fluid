@@ -127,6 +127,9 @@ public class Renderer {
 		Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 		while (Display.isCloseRequested() == false) {
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
 			// Particle Depth
 			glUseProgram(depthShader.program);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
@@ -174,22 +177,12 @@ public class Renderer {
 
 			// Particle curvature
 			glUseProgram(curvatureShader.program);
-			// glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
-			//
-			// glActiveTexture(GL_TEXTURE0);
-			// glBindTexture(GL_TEXTURE_2D, depthShader.tex);
-			// glUniform1i(curvatureShader.texUniform, 0);
-			//
+
 			curvatureShader.curvatureVAO(width, height);
 
 			RenderUtility.addMatrix(curvatureShader, projection, "projection");
 			RenderUtility.addVector2(curvatureShader, new Vector2(width, height), "screenSize");
-			//
-			// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//
-			// glBindVertexArray(curvatureShader.vao);
-			// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			//
+
 			glDisable(GL_DEPTH_TEST);
 			glActiveTexture(GL_TEXTURE0);
 			glBindVertexArray(curvatureShader.vao);
@@ -199,8 +192,6 @@ public class Renderer {
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[1 - pingpong]);
-				// glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-				// GL_TEXTURE_2D, curvatureShader.texs[pingpong], 0);
 
 				glBindTexture(GL_TEXTURE_2D, curvatureShader.texs[pingpong]);
 				glUniform1i(curvatureShader.texUniform, 0);
@@ -213,6 +204,7 @@ public class Renderer {
 			}
 
 			glEnable(GL_DEPTH_TEST);
+			
 			// Composite everything
 			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
