@@ -95,8 +95,8 @@ public class Renderer {
 	}
 
 	public void initGl() throws LWJGLException {
-		width = 600;
-		height = 600;
+		width = 512;
+		height = 512;
 
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
@@ -140,9 +140,8 @@ public class Renderer {
 			glUseProgram(depthShader.program);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
 
-			System.out.println(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 			depthShader.particleDepthVAO(points);
-
+			
 			// Enable point size on Mac
 			glEnable(0x8642);
 			glDisable(GL_BLEND);
@@ -155,6 +154,7 @@ public class Renderer {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 			// Draw VAO
 			glBindVertexArray(depthShader.vao);
 			glDrawArrays(GL_POINTS, 0, points.size());
@@ -164,6 +164,8 @@ public class Renderer {
 			glUseProgram(thicknessShader.program);
 			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[0]);
 
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			
 			thicknessShader.particleThicknessVAO(points);
 
 			RenderUtility.addMatrix(thicknessShader, mView, "mView");
@@ -213,8 +215,8 @@ public class Renderer {
 			glEnable(GL_DEPTH_TEST);
 			
 			// Composite everything
-//			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
+//			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glUseProgram(compositeShader.program);
@@ -243,7 +245,7 @@ public class Renderer {
 
 			glViewport(0, 0, width, height);
 
-			//renderTexture(compositeShader.tex);
+			renderTexture(depthShader.tex);
 
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();

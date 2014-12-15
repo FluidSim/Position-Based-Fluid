@@ -121,7 +121,7 @@ vec3 position(vec2 screenPos, float depth) {
 
 void main() {
     float depth = texture(depthImage,fPos).x;
-    float thickness = texture(depthImage,fPos).x;
+    float thickness = texture(thicknessImage,fPos).x;
     
     vec3 norm = normalize(normalOf(fPos));
     vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
