@@ -124,7 +124,7 @@ void main() {
     float thickness = texture(thicknessImage,fPos).x;
     
     vec3 norm = normalize(normalOf(fPos));
-    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
+    vec3 lightDir = normalize(vec3(10.0f,30.0f,10.2f));
     vec3 pos = position(fPos, depth);
     
     vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
@@ -134,7 +134,7 @@ void main() {
     }
     else{
         fragColor = vec4(diffuse,1.0);
-//        fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
+        //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     
 }
