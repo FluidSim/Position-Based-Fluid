@@ -25,6 +25,7 @@ public class CompositeShader extends ShaderHelper {
 	public int screenSize;
 	public int color;
 	public int projection;
+	public int mView;
 
 	@Override
 	public void initFields() {
