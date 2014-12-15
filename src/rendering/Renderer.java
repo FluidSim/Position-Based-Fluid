@@ -136,7 +136,7 @@ public class Renderer {
 			
 			// Particle Depth
 			glUseProgram(depthShader.program);
-			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[0]);
 
 			depthShader.particleDepthVAO(points);
 			
@@ -144,7 +144,7 @@ public class Renderer {
 			glEnable(0x8642);
 			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
-			
+	
 			RenderUtility.addMatrix(depthShader, mView, "mView");
 			RenderUtility.addMatrix(depthShader, projection, "projection");
 			RenderUtility.addVector2(depthShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
@@ -155,13 +155,17 @@ public class Renderer {
 			glDrawBuffers(GL_COLOR_ATTACHMENT0);
 			// Draw VAO
 			glBindVertexArray(depthShader.vao);
+			glViewport(0, 0, width, height);
+
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			// Particle Thickness
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(thicknessShader.program);
-			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[0]);
+			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			
 			glDrawBuffers(GL_COLOR_ATTACHMENT0);
 			
 			thicknessShader.particleThicknessVAO(points);
@@ -222,7 +226,7 @@ public class Renderer {
 			compositeShader.compositeVAO(width, height);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, curvatureShader.tex);
+			glBindTexture(GL_TEXTURE_2D, curvatureShader.texs[0]);
 			glUniform1i(compositeShader.depthImage, 0);
 
 			glActiveTexture(GL_TEXTURE1);
