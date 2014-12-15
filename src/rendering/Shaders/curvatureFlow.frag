@@ -70,9 +70,9 @@ void main() {
     float dzBLdx = (zYB - zBL) / deltaX;
     float dzBLdy = (zXL - zBL) / deltaY;
     
-    //first derivatives at the middle (averaging the two sides)
-    float dx = (dzXRdx + dzXLdx) / 2;
-    float dy = (dzYTdy + dzYTdy) / 2;
+    //first derivatives at the middle
+    float dx = (zXR - zXL) / (2 * deltaX);
+    float dy = (zYT - zYB) / (2 * deltaY);
     
     //second derivates at middle
     float dx2 = (dzXRdx - dzXLdx) / (2 * deltaX);
@@ -81,7 +81,7 @@ void main() {
     //four mixed derivatives dxdy
     float dxdyA = (dzTRdy - dzYTdy) / deltaX;
     float dxdyB = (dzYTdy - dzTLdy) / deltaX;
-    float dxdyC = (dzBRdy - dzYTdy) / deltaX;
+    float dxdyC = (dzBRdy - dzYBdy) / deltaX;
     float dxdyD = (dzYBdy - dzBLdy) / deltaX;
 
     //four mixed derivatives dydx
