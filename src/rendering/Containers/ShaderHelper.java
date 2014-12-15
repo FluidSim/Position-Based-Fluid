@@ -40,7 +40,8 @@ public abstract class ShaderHelper {
 
 	public void initTexture(int width, int height, int format, int internalFormat) {
 		tex = glGenTextures();
-		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_TEXTURE_2D);
+		System.out.println(glGetError());
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);

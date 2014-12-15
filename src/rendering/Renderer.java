@@ -10,7 +10,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -99,7 +101,7 @@ public class Renderer {
 
 		// Deprecated functions will throw an error
 		Display.create(new PixelFormat(), new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true));
-
+		
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
