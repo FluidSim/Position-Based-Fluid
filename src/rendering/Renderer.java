@@ -1,5 +1,6 @@
 package rendering;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.*;
 
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.glu.GLU;
 
 import physics.ParticleSystem;
 import rendering.Containers.CompositeShader;
@@ -51,6 +53,7 @@ public class Renderer {
 		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
 		thicknessShader.initFields();
 		
+		
 		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
 		curvatureShader.initFields();
 
@@ -65,10 +68,9 @@ public class Renderer {
 		// Depth buffer
 		depthShader.initDepthBuffer(width, height);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
-		depthShader.initTexture(width, height, GL_RED, GL_R32F);
+		depthShader.initTexture(width, height, GL_RGBA, GL_RGBA32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
-		System.out.println(glGetError());
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);		
 		
 		// Thickness buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
@@ -78,7 +80,7 @@ public class Renderer {
 
 		// Curvature buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo1);
-		curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
+		curvatureShader.initTexture(width, height, GL_RGBA, GL_RGBA32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo2);
@@ -89,7 +91,7 @@ public class Renderer {
 		glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
 		compositeShader.initTexture(width,  height,  GL_RGBA, GL_RGBA32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, compositeShader.tex, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);		
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);	
 	}
 
 	public void initGl() throws LWJGLException {
@@ -106,8 +108,9 @@ public class Renderer {
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		initFramebuffers();
 		initShaderObjects();
+		initFramebuffers();
+		
 
 	}
 

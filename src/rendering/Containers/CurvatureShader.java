@@ -89,10 +89,11 @@ public class CurvatureShader extends ShaderHelper {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
-	public void initTexture(int width, int height, int internalFormat, int format) {
+	@Override
+	public void initTexture(int width, int height, int format, int internalFormat) {
 		tex1 = glGenTextures();
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE, tex1);
+		//glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, tex1);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -100,8 +101,8 @@ public class CurvatureShader extends ShaderHelper {
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_FLOAT, (ByteBuffer)null);
 		
 		tex2 = glGenTextures();
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE, tex2);
+		//glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, tex2);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

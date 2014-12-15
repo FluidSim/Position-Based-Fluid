@@ -14,6 +14,13 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glGetFragDataLocation;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL12.*;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -36,7 +43,7 @@ public class ThicknessShader extends ShaderHelper {
 		glBindFragDataLocation(program, 0, "thickness");
 		
 		fbo = glGenFramebuffers();
-		glBindBuffer(GL_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	}
 	
 	public void particleThicknessVAO(ArrayList<Vector3> points) {

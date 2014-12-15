@@ -22,13 +22,13 @@ public abstract class ShaderHelper {
 
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
 		program = glCreateProgram();
-
+		
 		int vertShader = compileShader(vertexShaderFile, GL_VERTEX_SHADER);
 		int fragShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
-
+		
 		glAttachShader(program, vertShader);
 		glAttachShader(program, fragShader);
-
+		
 		glLinkProgram(program);
 
 		if (glGetProgrami(program, GL_LINK_STATUS) == GL_FALSE) {
@@ -40,7 +40,7 @@ public abstract class ShaderHelper {
 
 	public void initTexture(int width, int height, int format, int internalFormat) {
 		tex = glGenTextures();
-		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -62,11 +62,11 @@ public abstract class ShaderHelper {
 	private int compileShader(String filename, int shaderType) {
 
 		int shader = glCreateShader(shaderType);
-
-		if (glGetShaderi(program, GL_LINK_STATUS) == GL_FALSE) {
-			throw new RuntimeException("Could not create shader.");
-		}
-
+		
+		//if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
+			//throw new RuntimeException("Could not create shader.");
+		//}
+		
 		String source = loadFile(filename);
 		glShaderSource(shader, source);
 		glCompileShader(shader);
