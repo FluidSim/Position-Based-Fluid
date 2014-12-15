@@ -23,7 +23,6 @@ public class ParticleDepth extends ShaderHelper {
 	public int mView;
 	public int projection;
 	public int screenSize;
-	public int color;
 	public int depth;
 	
 	public int depthBuffer;

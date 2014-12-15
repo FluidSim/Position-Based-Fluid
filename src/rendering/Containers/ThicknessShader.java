@@ -33,6 +33,7 @@ public class ThicknessShader extends ShaderHelper {
 	public int mView;
 	public int projection;
 	public int screenSize;
+	public int lightPos;
 
 	@Override
 	public void initFields() {
@@ -40,6 +41,7 @@ public class ThicknessShader extends ShaderHelper {
 		mView = glGetUniformLocation(program, "mView");
 		projection = glGetUniformLocation(program, "projection");
 		screenSize = glGetUniformLocation(program, "screenSize");
+		lightPos = glGetUniformLocation(program, "lightPos");
 		glBindFragDataLocation(program, 0, "thickness");
 		
 		fbo = glGenFramebuffers();
