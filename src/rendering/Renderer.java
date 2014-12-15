@@ -8,6 +8,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -16,6 +17,7 @@ import static org.lwjgl.opengl.GL40.*;
 import org.lwjgl.opengl.PixelFormat;
 
 import physics.ParticleSystem;
+import rendering.Containers.CompositeShader;
 import rendering.Containers.CurvatureShader;
 import rendering.Containers.ParticleDepth;
 import rendering.Containers.ThicknessShader;
@@ -51,25 +53,30 @@ public class Renderer {
 		int width = Display.getWidth();
 		int height = Display.getHeight();
 
-		// Depth shader
+		//Depth shader
 		ParticleDepth depthShader = new ParticleDepth();
 		depthShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
 		depthShader.initFields();
 
-		// Thickness shader
+		//Thickness shader
 		ThicknessShader thicknessShader = new ThicknessShader();
 		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
 		thicknessShader.initFields();
 
-		// Curvature shader
+		//Curvature shader
 		CurvatureShader curvatureShader = new CurvatureShader();
 		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
 		curvatureShader.initFields();
+		
+		//Composite Shader
+		CompositeShader compositeShader = new CompositeShader();
+		compositeShader.initProgram("src/rendering/Shaders/composite.vert", "src/rendering/Shaders/composite.frag");
+		compositeShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Create Camera
+		//Create Camera
 		Vector3 eye = new Vector3(10f, 4f, -10f);
 		Vector3 target = new Vector3(10f, 2f, 0f);
 		Vector3 up = new Vector3(0, 1, 0);
@@ -81,7 +88,7 @@ public class Renderer {
 		Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 		while (Display.isCloseRequested() == false) {
-			// Particle Depth
+			//Particle Depth
 			glUseProgram(depthShader.program);
 			depthShader.initTexture(width, height, GL_R32F, GL_RED);
 			depthShader.initDepthBuffer(width, height);
@@ -91,7 +98,7 @@ public class Renderer {
 
 			depthShader.particleDepthVAO(points);
 
-			// Enable point size on Mac
+			//Enable point size on Mac
 			glEnable(0x8642);
 			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
@@ -105,10 +112,10 @@ public class Renderer {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glViewport(0, 0, width, height);
 
-			// Draw VAO
+			//Draw VAO
 			glDrawArrays(GL_POINTS, 0, points.size());
 
-			// Particle Thickness
+			//Particle Thickness
 			glUseProgram(thicknessShader.program);
 			thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
 
@@ -131,7 +138,7 @@ public class Renderer {
 
 			glDrawArrays(GL_POINTS, 0, points.size());
 
-			// Particle curvature
+			//Particle curvature
 			glUseProgram(curvatureShader.program);
 			curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
 			
@@ -169,10 +176,26 @@ public class Renderer {
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glViewport(0, 0, width, height);
 				
-				glDrawArrays(GL_TRIANGLES, 0, width*height);
+				glDrawArrays(GL_TRIANGLES, 0, width * height);
 			}
 			
 			glEnable(GL_DEPTH_TEST);
+			
+			//Composite everything
+			glUseProgram(compositeShader.program);
+			
+			compositeShader.compositeVAO(width, height);
+			
+			RenderUtility.addTexture(compositeShader, depthShader.tex);
+			RenderUtility.addTexture(compositeShader, thicknessShader.tex);
+			RenderUtility.addVector2(compositeShader, new Vector2(width, height), "screenSize");
+			RenderUtility.addVector3(compositeShader, new Vector3(0.3f, 0.3f, 0.8f), "color");
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glViewport(0, 0, width, height);
+			
+			glDrawArrays(GL_POINTS, 0, width * height);
 
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
