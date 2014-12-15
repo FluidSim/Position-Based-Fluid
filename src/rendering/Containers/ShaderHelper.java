@@ -60,17 +60,16 @@ public abstract class ShaderHelper {
 	 * @param the name and path to the vertex shader
 	 */
 	private int compileShader(String filename, int shaderType) {
-
 		int shader = glCreateShader(shaderType);
-		
-		//if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-			//throw new RuntimeException("Could not create shader.");
-		//}
 		
 		String source = loadFile(filename);
 		glShaderSource(shader, source);
 		glCompileShader(shader);
-
+		
+		if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+			throw new RuntimeException("Could not create shader.");
+		}
+		
 		return shader;
 	}
 
