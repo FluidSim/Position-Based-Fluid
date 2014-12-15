@@ -68,7 +68,8 @@ public class Renderer {
 		depthShader.initTexture(width, height, GL_RED, GL_R32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
-
+		System.out.println(glGetError());
+		
 		// Thickness buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
 		thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
