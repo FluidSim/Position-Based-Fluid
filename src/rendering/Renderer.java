@@ -33,33 +33,28 @@ public class Renderer {
 
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 
-	public ParticleDepth depthShader;
-	public ThicknessShader thicknessShader;
-	public CurvatureShader curvatureShader;
-	public CompositeShader compositeShader;
-	public TextureShader textureShader;
+	public ParticleDepth depthShader = new ParticleDepth();
+	public ThicknessShader thicknessShader = new ThicknessShader();
+	public CurvatureShader curvatureShader = new CurvatureShader();
+	public CompositeShader compositeShader = new CompositeShader();
+	public TextureShader textureShader = new TextureShader();
 
 	public int width;
 	public int height;
 
 	public void initShaderObjects() {
-		depthShader = new ParticleDepth();
 		depthShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
 		depthShader.initFields();
 
-		thicknessShader = new ThicknessShader();
 		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
 		thicknessShader.initFields();
-
-		curvatureShader = new CurvatureShader();
+		
 		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
 		curvatureShader.initFields();
 
-		compositeShader = new CompositeShader();
 		compositeShader.initProgram("src/rendering/Shaders/composite.vert", "src/rendering/Shaders/composite.frag");
 		compositeShader.initFields();
 
-		textureShader = new TextureShader();
 		textureShader.initProgram("src/rendering/Shaders/texture.vert", "src/rendering/Shaders/texture.frag");
 		textureShader.initFields();
 	}
@@ -108,8 +103,8 @@ public class Renderer {
 		glViewport(0, 0, width, height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		initShaderObjects();
 		initFramebuffers();
+		initShaderObjects();
 
 	}
 
