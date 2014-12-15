@@ -30,7 +30,8 @@ public class CurvatureShader extends ShaderHelper {
 		projection = glGetUniformLocation(program, "projection");
 		screenSize = glGetUniformLocation(program, "screenSize");
 		glBindFragDataLocation(program, 0, "thickness");
-		fbo = glGenBuffers();
+	
+		fbo = glGenFramebuffers();
 		glBindBuffer(GL_FRAMEBUFFER, fbo);
 	}
 

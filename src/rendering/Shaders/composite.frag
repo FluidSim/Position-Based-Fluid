@@ -120,8 +120,8 @@ vec3 position(vec2 screenPos, float depth) {
 }
 
 void main() {
-    float depth = texture(depthImage,fPos/screenSize).x;
-    float thickness = texture(depthImage,fPos/screenSize).x;
+    float depth = texture(depthImage,fPos).x;
+    float thickness = texture(depthImage,fPos).x;
     
     vec3 norm = normalize(normalOf(fPos));
     vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
@@ -133,7 +133,8 @@ void main() {
         fragColor = vec4(1.0,0.0,0.0,1.0);
     }
     else{
-        fragColor = vec4(0.0,1.0,0.0,1.0);
-//        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
+        fragColor = vec4(diffuse,1.0);
+//        fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
+    
 }
