@@ -1,13 +1,12 @@
 #version 400
 
-in vec3 color;
 in vec2 pos;
 
+uniform vec3 color;
 uniform sampler2D depthImage;
 uniform sampler2D thicknessImage;
 uniform vec2 screenSize;
 
-out fColor;
 out fPos;
 
 void main() {
