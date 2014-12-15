@@ -140,7 +140,7 @@ public class Renderer {
 			float zNear = 1e-2f;
 			float zFar = 1e2f;
 
-			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (60 * Math.PI / 180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
+			Matrix4 projection = Matrix4.createPerspectiveFOV((float) (40 * Math.PI / 180), (float) Display.getWidth() / Display.getHeight(), zNear, zFar);
 			Matrix4 mView = Matrix4.createLookAt(eye, target, up);
 
 			depthShader.particleDepthVAO(points);
@@ -204,7 +204,7 @@ public class Renderer {
 			glBindVertexArray(curvatureShader.vao);
 
 			int pingpong = 0;
-			for (int i = 0; i < 40; i++) {
+			for (int i = 0; i < 50; i++) {
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[1 - pingpong]);

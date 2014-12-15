@@ -129,16 +129,23 @@ void main() {
     vec3 norm = normalize(normalOf(fPos));
     vec3 lightDir = normalize(vec3(1.0f,0.0f,-1.0f));
     vec3 pos = position(fPos, depth);
+    vec3 view = normalize(-pos);
+    float nDotV = -dot(norm, view);
+    //Reflectance at Normal
+    float reflectance = 0.96;
+    float R = reflectance + (1 - reflectance) * pow((1 - nDotV), 5);
     
-    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
-    diffuse = pow(diffuse,vec3(4.0,4.0,4.0));
+    vec3 H = normalize(lightDir + view);
+    
+    vec3 specular = max(0.0, dot(lightDir, H)) * vec3(1.0,1.0,1.0);
+    specular = pow(specular,vec3(5.0));
     vec4 particleColor = exp(-1*vec4(.1f,.1f,.02f,1.5f) * thickness);
 
     if (thickness == 0.0){
         fragColor = vec4(1.0);
     }
     else{
-        fragColor = particleColor + vec4(diffuse,0.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
+        fragColor = particleColor;//vec4(specular,1.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
         //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     

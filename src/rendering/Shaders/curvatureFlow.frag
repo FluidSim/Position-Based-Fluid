@@ -115,7 +115,7 @@ void main() {
         H = 0.0;
     }
     
-    particleDepth = particleDepth + H;
+    particleDepth = particleDepth + H*10;
                         
     if (particleDepth <= 1.0f) {
     	particleDepth = 1.0f;
