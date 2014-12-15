@@ -81,10 +81,10 @@ public class Renderer {
 		// Curvature buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo1);
 		curvatureShader.initTexture(width, height, GL_RGBA, GL_RGBA32F);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex1, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo2);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex2, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 
 		// Composite buffer
@@ -152,7 +152,7 @@ public class Renderer {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glDrawBuffers(GL_COLOR_ATTACHMENT0);
 			// Draw VAO
 			glBindVertexArray(depthShader.vao);
 			glDrawArrays(GL_POINTS, 0, points.size());
@@ -162,7 +162,7 @@ public class Renderer {
 			glUseProgram(thicknessShader.program);
 			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[0]);
 
-			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glDrawBuffers(GL_COLOR_ATTACHMENT0);
 			
 			thicknessShader.particleThicknessVAO(points);
 
