@@ -9,6 +9,8 @@ public class ParticleSystem {
 	private CellGrid grid;
 
 	private static final Vector3 GRAVITY = new Vector3(0f, -9.8f, 0f);
+	//Number of iterations to update pressure constraints (Macklin et al. used 4)
+	private static final int PRESSURE_ITERATIONS = 6;
 	// deltaT is the timestep
 	private float deltaT = 0.005f;
 	// H is radius of influence
@@ -114,7 +116,7 @@ public class ParticleSystem {
 		}
 
 		// while solver < iterations (they say that 2-4 is enough in the paper)
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < PRESSURE_ITERATIONS; i++) {
 			// Set lambda
 			for (Particle p : particles) {
 				ArrayList<Particle> neighbors = p.getNeighbors();
@@ -142,12 +144,10 @@ public class ParticleSystem {
 
 		for (Particle p : particles) {
 			imposeConstraints(p);
-			// set new velocity vi = (1/delta T) * (x*i - xi)
+			// set new velocity vi = (x*i - xi) /(deltaT) 
 			p.setVelocity(((p.getNewPos().clone()).sub(p.getOldPos().clone())).div(deltaT));
-
 			// apply vorticity confinement
 			p.getVelocity().add(vorticityForce(p).mul(deltaT));
-			
 			// apply XSPH viscosity
 			p.getVelocity().add(xsphViscosity(p));
 			// update position xi = x*i
@@ -162,11 +162,6 @@ public class ParticleSystem {
 
 	// Poly6 Kernel
 	private float WPoly6(Vector3 pi, Vector3 pj) {
-		// Check if particles are in the same place
-		/*if (pi.equalsApprox(pj)) {
-			pj.add((float) Math.random() * 1e-3f);
-		}*/
-
 		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
 		if (rLen > H || rLen == 0) {
@@ -177,11 +172,6 @@ public class ParticleSystem {
 
 	// Spiky Kernel
 	private Vector3 WSpiky(Vector3 pi, Vector3 pj) {
-		// Check if particles are in the same place
-		/*if (pi.equalsApprox(pj)) {
-			pj.add((float) Math.random() * 1e-3f);
-		}*/
-
 		Vector3 r = new Vector3(pi.clone().sub(pj.clone()));
 		float rLen = r.len();
 		if (rLen > H || rLen == 0) {
@@ -205,6 +195,7 @@ public class ParticleSystem {
 		return r.mul(coeff);
 	}
 
+	//Calculate the lambda value for pressure corrections
 	private float lambda(Particle p, ArrayList<Particle> neighbors) {
 		float densityConstraint = calcDensityConstraint(p, neighbors);
 		Vector3 gradientI = new Vector3(0f, 0f, 0f);
@@ -222,7 +213,7 @@ public class ParticleSystem {
 		sumGradients += gradientI.lenSq();
 		return ((-1f) * densityConstraint) / (sumGradients + EPSILON_LAMBDA);
 	}
-
+	//Returns density constraint of a particle
 	private float calcDensityConstraint(Particle p, ArrayList<Particle> neighbors) {
 		float sum = 0f;
 		for (Particle n : neighbors) {
@@ -231,7 +222,8 @@ public class ParticleSystem {
 
 		return (sum / REST_DENSITY) - 1;
 	}
-
+	
+	//Returns vorticity vector for a given particle
 	private Vector3 vorticity(Particle p) {
 		Vector3 vorticity = new Vector3(0, 0, 0);
 		Vector3 velocityDiff;
@@ -246,7 +238,7 @@ public class ParticleSystem {
 
 		return vorticity;
 	}
-
+	//Returns the eta vector that points in the direction of the corrective force
 	private Vector3 eta(Particle p, float vorticityMag) {
 		ArrayList<Particle> neighbors = p.getNeighbors();
 		Vector3 eta = new Vector3(0, 0, 0);
@@ -257,6 +249,7 @@ public class ParticleSystem {
 		return eta;
 	}
 
+	//Calculates vorticity force for a particle
 	private Vector3 vorticityForce(Particle p) {
 		Vector3 vorticity = vorticity(p);
 		if (vorticity.len() == 0) {
@@ -264,7 +257,6 @@ public class ParticleSystem {
 			return new Vector3 (0f, 0f, 0f);
 		}
 		Vector3 eta = eta(p, vorticity.len());
-		// Same epsilon?
 		Vector3 n = eta.clone().normalize();
 		return (n.cross(vorticity)).mul(EPSILON_VORTICITY);
 	}
@@ -288,6 +280,7 @@ public class ParticleSystem {
 		p.getNewPos().z = clampedConstraint(p.getNewPos().z, rangez);
 	}
 
+	
 	private float clampedConstraint(float x, float max) {
 		if (x < 0) {
 			return 0;
@@ -318,6 +311,7 @@ public class ParticleSystem {
 		return visc.mul(C);
 	}
 
+	//Tests if a particle is out of range of the box
 	private static boolean outOfRange(float x, float min, float max) {
 		return x < min || x >= max;
 	}
