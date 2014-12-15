@@ -144,7 +144,7 @@ public class Renderer {
 			glEnable(0x8642);
 			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
-
+			
 			RenderUtility.addMatrix(depthShader, mView, "mView");
 			RenderUtility.addMatrix(depthShader, projection, "projection");
 			RenderUtility.addVector2(depthShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
