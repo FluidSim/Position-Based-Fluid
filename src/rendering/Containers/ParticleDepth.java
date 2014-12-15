@@ -34,9 +34,7 @@ public class ParticleDepth extends ShaderHelper {
 		mView = glGetUniformLocation(program, "mView");
 		projection = glGetUniformLocation(program, "projection");
 		screenSize = glGetUniformLocation(program, "screenSize");
-		glBindFragDataLocation(program, 0, "outColor");
-		glBindFragDataLocation(program, 1, "depth");
-		color = glGetFragDataLocation(program, "outColor");
+		glBindFragDataLocation(program, 0, "depth");
 		depth = glGetFragDataLocation(program, "depth");
 		
 		fbo = glGenFramebuffers();
