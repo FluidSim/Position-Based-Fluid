@@ -33,11 +33,59 @@ public class Renderer {
 
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
 	
+	public ParticleDepth depthShader;
+	public ThicknessShader thicknessShader;
+	public CurvatureShader curvatureShader;
+	public CompositeShader compositeShader;
 	public TextureShader textureShader;
+	
+	public int width;
+	public int height;
+	
+	public void initShaderObjects() {
+		depthShader = new ParticleDepth();
+		depthShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
+		depthShader.initFields();
+		
+		thicknessShader = new ThicknessShader();
+		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
+		thicknessShader.initFields();
+		
+		curvatureShader = new CurvatureShader();
+		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
+		curvatureShader.initFields();
+		
+		compositeShader = new CompositeShader();
+		compositeShader.initProgram("src/rendering/Shaders/composite.vert", "src/rendering/Shaders/composite.frag");
+		compositeShader.initFields();
+		
+		textureShader = new TextureShader();
+		textureShader.initProgram("src/rendering/Shaders/texture.vert", "src/rendering/Shaders/texture.frag");
+		textureShader.initFields();
+	}
+	
+	public void initFramebuffers() {
+		//Depth buffer
+		depthShader.initDepthBuffer(width, height);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
+		depthShader.initTexture(width, height, GL_R32F, GL_RED);		
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
+		
+		//Thickness buffer
+		glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
+		thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
+
+		//Curvature buffer
+		glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+		curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+	}
 
 	public void initGl() throws LWJGLException {
-		int width = 600;
-		int height = 600;
+		width = 600;
+		height = 600;
 
 		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.setVSyncEnabled(true);
@@ -55,34 +103,6 @@ public class Renderer {
 		ArrayList<Vector3> points = new ArrayList<Vector3>();
 		resetPoints(points);
 
-		int width = Display.getWidth();
-		int height = Display.getHeight();
-
-		//Depth shader
-		ParticleDepth depthShader = new ParticleDepth();
-		depthShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleDepth.frag");
-		depthShader.initFields();
-
-		//Thickness shader
-		ThicknessShader thicknessShader = new ThicknessShader();
-		thicknessShader.initProgram("src/rendering/Shaders/particle.vert", "src/rendering/Shaders/particleThickness.frag");
-		thicknessShader.initFields();
-
-		//Curvature shader
-		CurvatureShader curvatureShader = new CurvatureShader();
-		curvatureShader.initProgram("src/rendering/Shaders/passThrough.vert", "src/rendering/Shaders/curvatureFlow.frag");
-		curvatureShader.initFields();
-		
-		//Composite Shader
-		CompositeShader compositeShader = new CompositeShader();
-		compositeShader.initProgram("src/rendering/Shaders/composite.vert", "src/rendering/Shaders/composite.frag");
-		compositeShader.initFields();
-		
-		//Texture Shader
-		textureShader = new TextureShader();
-		textureShader.initProgram("src/rendering/Shaders/texture.vert", "src/rendering/Shaders/texture.frag");
-		textureShader.initFields();
-
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -99,16 +119,8 @@ public class Renderer {
 
 		while (Display.isCloseRequested() == false) {
 			//Particle Depth
-			depthShader.initTexture(width, height, GL_R32F, GL_RED);
-			depthShader.initDepthBuffer(width, height);
-
-			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
-//			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 			glUseProgram(depthShader.program);
-			
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
 
 			depthShader.particleDepthVAO(points);
 
@@ -129,12 +141,9 @@ public class Renderer {
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			//Particle Thickness
-			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
-		
-//			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(thicknessShader.program);
-			thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
+			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
 
 			thicknessShader.particleThicknessVAO(points);
 
@@ -143,15 +152,11 @@ public class Renderer {
 			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
-
-			System.out.println(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDisable(GL_DEPTH_TEST);
 
 			glBindVertexArray(thicknessShader.vao);
-			
 			
 			glDrawArrays(GL_POINTS, 0, points.size());
 
@@ -160,13 +165,8 @@ public class Renderer {
 			
 			//Particle curvature
 			glUseProgram(curvatureShader.program);
-			curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
-			
-			glDisable(GL_DEPTH_TEST);
-			
 			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
-			
+						
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, depthShader.tex);
 			glUniform1i(curvatureShader.texUniform, 0);
@@ -181,11 +181,11 @@ public class Renderer {
 			glBindVertexArray(curvatureShader.vao);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			
-			for (int i = 0; i < 10; i++){
-				int oldTex = curvatureShader.tex;
+			glDisable(GL_DEPTH_TEST);
+			int pingpong = 0;
+			for (int i = 0; i < 10; i++) {
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				
-				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
-
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
 				

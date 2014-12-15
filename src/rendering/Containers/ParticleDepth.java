@@ -46,7 +46,6 @@ public class ParticleDepth extends ShaderHelper {
 		depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	}
 	
 	
