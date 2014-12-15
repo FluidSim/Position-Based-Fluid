@@ -133,7 +133,7 @@ void main() {
         fragColor = vec4(1.0,0.0,0.0,1.0);
     }
     else{
-//        fragColor = vec4(0.0,1.0,0.0,1.0);
-        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
+        fragColor = vec4(0.0,1.0,0.0,1.0);
+//        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
     }
 }

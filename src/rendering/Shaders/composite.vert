@@ -12,6 +12,6 @@ uniform mat4 mView;
 out vec2 fPos;
 
 void main() {
-    fPos = pos;
+    fPos = pos/2.0 + vec2(.5);
     gl_Position = vec4(pos,0.0,1.0);
 }

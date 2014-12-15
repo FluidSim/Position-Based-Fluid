@@ -60,6 +60,7 @@ public class CurvatureShader extends ShaderHelper {
 		
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
 
 		float[] vertices = new float[] { 
 		    -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f };
@@ -69,7 +70,6 @@ public class CurvatureShader extends ShaderHelper {
 		glBufferData(GL_ARRAY_BUFFER, verts, GL_STATIC_DRAW);
 		
 		glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(0);
 
 		glBindVertexArray(0);    
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
