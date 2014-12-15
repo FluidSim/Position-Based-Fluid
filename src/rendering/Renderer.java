@@ -157,7 +157,8 @@ public class Renderer {
 			glDisable(GL_BLEND);
 			glDisable(GL_DEPTH_TEST);
 			
-			glDrawArrays(GL_TRIANGLES, 0, width*height);
+			glBindVertexArray(curvatureShader.vao);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			
 			for (int i = 0; i < 10; i++){
 				int oldTex = curvatureShader.tex;
@@ -176,7 +177,8 @@ public class Renderer {
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glViewport(0, 0, width, height);
 				
-				glDrawArrays(GL_TRIANGLES, 0, width * height);
+				glBindVertexArray(curvatureShader.vao);
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			}
 			
 			glEnable(GL_DEPTH_TEST);
@@ -193,14 +195,12 @@ public class Renderer {
 			RenderUtility.addVector2(compositeShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(compositeShader, new Vector3(0.3f, 0.3f, 0.8f), "color");
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glViewport(0, 0, width, height);
 			
-			glDrawArrays(GL_POINTS, 0, width * height);
-			
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, width, height);
+			glBindVertexArray(compositeShader.vao);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();

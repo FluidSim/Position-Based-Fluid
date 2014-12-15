@@ -9,7 +9,7 @@ uniform vec2 screenSize;
 out float depth;
 
 void main() {
-	vec2 normTex = posTex / screenSize;
+	vec2 normTex = (posTex/2.0 + vec2(.5)) / screenSize;
 
 	//differential differences
 	float deltaX = 1.0f / screenSize.x;

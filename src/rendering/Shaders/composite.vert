@@ -1,6 +1,6 @@
 #version 400
 
-in vec2 pos;
+layout (location = 0) in vec2 pos;
 
 uniform vec3 color;
 uniform sampler2D depthImage;
@@ -13,5 +13,5 @@ out vec2 fPos;
 
 void main() {
     fPos = pos;
-    gl_Position = vec4(pos/screenSize,0.0,1.0);
+    gl_Position = vec4(pos,0.0,1.0);
 }
