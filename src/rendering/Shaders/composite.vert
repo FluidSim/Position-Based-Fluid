@@ -9,9 +9,9 @@ uniform vec2 screenSize;
 uniform mat4 projection;
 uniform mat4 mView;
 
-out vec3 fPos;
+out vec2 fPos;
 
 void main() {
-    fPos = pos/2.0 + vec3(.5);
+    fPos = (pos/2.0 + vec3(.5)).xy;
     gl_Position = vec4(pos,1.0);
 }

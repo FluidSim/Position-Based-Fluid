@@ -170,12 +170,6 @@ public class Renderer {
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
 				//glBindTexture?
 				
-//				curvatureShader.curvatureVAO(width, height);
-//				
-//				RenderUtility.addTexture(curvatureShader, oldTex);
-//				RenderUtility.addMatrix(curvatureShader, projection, "projection");
-//				RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
-				
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
@@ -184,7 +178,6 @@ public class Renderer {
 			}
 			
 			glEnable(GL_DEPTH_TEST);
-			
 			//Composite everything
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
