@@ -189,6 +189,7 @@ public class Renderer {
 			RenderUtility.addTexture(compositeShader, depthShader.tex);
 			RenderUtility.addTexture(compositeShader, thicknessShader.tex);
 			RenderUtility.addMatrix(compositeShader, projection, "projection");
+			RenderUtility.addMatrix(compositeShader, mView, "mView");
 			RenderUtility.addVector2(compositeShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(compositeShader, new Vector3(0.3f, 0.3f, 0.8f), "color");
 			

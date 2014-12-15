@@ -33,6 +33,7 @@ public class CompositeShader extends ShaderHelper {
 		color = glGetUniformLocation(program, "color");
 		screenSize = glGetUniformLocation(program, "screenSize");
 		projection = glGetUniformLocation(program, "projection");
+		mView = glGetUniformLocation(program, "mView");
 		glBindFragDataLocation(program, 0, "fragColor");
 		
 		fbo = glGenFramebuffers();
