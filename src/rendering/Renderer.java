@@ -149,6 +149,7 @@ public class Renderer {
 			RenderUtility.addMatrix(depthShader, projection, "projection");
 			RenderUtility.addVector2(depthShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(depthShader, lightPosition, "lightPos");
+			System.out.println(depthShader.color);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
