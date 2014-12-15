@@ -12,7 +12,7 @@ uniform mat4 mView;
 layout (location = 0) out vec4 fragColor;
 
 vec3 normalOf(vec2 posTex) {
-    vec2 normTex = posTex / screenSize;
+    vec2 normTex = posTex;
     
     //differential differences
     float deltaX = 1.0f / screenSize.x;
@@ -124,16 +124,16 @@ void main() {
     float thickness = texture(thicknessImage,fPos).x;
     
     vec3 norm = normalize(normalOf(fPos));
-    vec3 lightDir = normalize(vec3(10.0f,30.0f,10.2f));
+    vec3 lightDir = normalize(vec3(1.0f,0.0f,-1.0f));
     vec3 pos = position(fPos, depth);
     
-    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
+    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color * 2.0;
 
     if (thickness == 0.0){
-        fragColor = vec4(1.0,0.0,0.0,1.0);
+        fragColor = vec4(1.0);
     }
     else{
-        fragColor = vec4(diffuse,1.0);
+        fragColor = vec4(norm,1.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
         //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     

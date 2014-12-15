@@ -9,7 +9,7 @@ uniform vec2 screenSize;
 out float depth;
 
 void main() {
-	vec2 normTex = (posTex/2.0 + vec2(.5)) / screenSize;
+	vec2 normTex = (posTex/2.0 + vec2(.5));
 
 	//differential differences
 	float deltaX = 1.0f / screenSize.x;
@@ -111,14 +111,14 @@ void main() {
     //Possibly have a catch for D = 0
     float  H = (Cy * Ex + Cx * Ey) / (2 * (pow(D, 1.5f)));
                         
-    if (posTex.x == 0.0 || posTex.y == 0.0 || posTex.x == 1.0 || posTex.y == 1.0){
+    if (posTex.x == -1.0 || posTex.y == -1.0 || posTex.x == 1.0 || posTex.y == 1.0){
         H = 0.0;
     }
     
     particleDepth = particleDepth + H;
                         
-    if (particleDepth <= 0.0f) {
-    	particleDepth = 0.0f;
+    if (particleDepth <= 1.0f) {
+    	particleDepth = 1.0f;
     }
 
     depth = particleDepth;

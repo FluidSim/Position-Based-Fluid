@@ -199,7 +199,7 @@ public class Renderer {
 			glBindVertexArray(curvatureShader.vao);
 
 			int pingpong = 0;
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 15; i++) {
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbos[1 - pingpong]);

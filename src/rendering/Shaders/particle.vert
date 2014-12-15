@@ -14,7 +14,7 @@ void main() {
 	vec4 viewPos = mView * vec4(vertexPos, 1.0);
     float dist = length(viewPos);    
     gl_Position = projection * viewPos;
-    gl_PointSize = screenSize.y / (8.0 * gl_Position.z);
+    gl_PointSize = 3.0 * screenSize.y / (8.0 * gl_Position.z);
     
     pos = viewPos.xyz;
     radius = gl_PointSize;
