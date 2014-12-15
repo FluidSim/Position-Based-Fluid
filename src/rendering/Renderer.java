@@ -130,6 +130,8 @@ public class Renderer {
 			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
 			
+			
+			glActiveTexture(GL_TEXTURE0);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
 
 			glEnable(GL_BLEND);
@@ -142,40 +144,40 @@ public class Renderer {
 			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
 			
-			//Particle curvature
-			glUseProgram(curvatureShader.program);
-			curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
-			
-			glDisable(GL_DEPTH_TEST);
-			
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
-			
-			curvatureShader.curvatureVAO(width, height);
-			
-			RenderUtility.addTexture(curvatureShader, thicknessShader.tex);
-			RenderUtility.addMatrix(curvatureShader, projection, "projection");
-			RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
-			
-			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-			glBindVertexArray(curvatureShader.vao);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			
-			for (int i = 0; i < 10; i++){
-				int oldTex = curvatureShader.tex;
-				
-				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
-				
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
-				//glBindTexture?
-				
-				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				
-				glBindVertexArray(curvatureShader.vao);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			}
+//			//Particle curvature
+//			glUseProgram(curvatureShader.program);
+//			curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
+//			
+//			glDisable(GL_DEPTH_TEST);
+//			
+//			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+//			
+//			curvatureShader.curvatureVAO(width, height);
+//			
+//			RenderUtility.addTexture(curvatureShader, thicknessShader.tex);
+//			RenderUtility.addMatrix(curvatureShader, projection, "projection");
+//			RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
+//			
+//			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+//			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//			
+//			glBindVertexArray(curvatureShader.vao);
+//			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//			
+//			for (int i = 0; i < 10; i++){
+//				int oldTex = curvatureShader.tex;
+//				
+//				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
+//				
+//				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+//				//glBindTexture?
+//				
+//				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+//				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//				
+//				glBindVertexArray(curvatureShader.vao);
+//				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//			}
 			
 			glEnable(GL_DEPTH_TEST);
 			//Composite everything
