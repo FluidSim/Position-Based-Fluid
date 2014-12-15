@@ -159,7 +159,7 @@ public class Renderer {
 			
 			glDrawArrays(GL_TRIANGLES, 0, width*height);
 			
-			for (int i = 0; i < 10; i++){
+			for (int i = 0; i < 0; i++){
 				int oldTex = curvatureShader.tex;
 				
 				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
@@ -188,6 +188,7 @@ public class Renderer {
 			
 			RenderUtility.addTexture(compositeShader, depthShader.tex);
 			RenderUtility.addTexture(compositeShader, thicknessShader.tex);
+			RenderUtility.addMatrix(compositeShader, projection, "projection");
 			RenderUtility.addVector2(compositeShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(compositeShader, new Vector3(0.3f, 0.3f, 0.8f), "color");
 			

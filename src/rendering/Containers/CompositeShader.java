@@ -24,6 +24,7 @@ public class CompositeShader extends ShaderHelper {
 	public int thicknessImage;
 	public int screenSize;
 	public int color;
+	public int projection;
 
 	@Override
 	public void initFields() {
@@ -31,6 +32,7 @@ public class CompositeShader extends ShaderHelper {
 		thicknessImage = glGetUniformLocation(program, "thicknessImage");
 		color = glGetUniformLocation(program, "color");
 		screenSize = glGetUniformLocation(program, "screenSize");
+		projection = glGetUniformLocation(program, "projection");
 		glBindFragDataLocation(program, 0, "fragColor");
 		
 		fbo = glGenFramebuffers();
