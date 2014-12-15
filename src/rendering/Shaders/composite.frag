@@ -73,9 +73,9 @@ vec3 normalOf(vec2 posTex) {
     float dzBLdx = (zYB - zBL) / deltaX;
     float dzBLdy = (zXL - zBL) / deltaY;
     
-    //first derivatives at the middle (averaging the two sides)
-    float dx = (dzXRdx + dzXLdx) / 2;
-    float dy = (dzYTdy + dzYTdy) / 2;
+    //first derivatives at the middle
+    float dx = (zXR - zXL) / (2 * deltaX);
+    float dy = (zYT - zYB) / (2 * deltaY);
     
     //second derivates at middle
     float dx2 = (dzXRdx - dzXLdx) / (2 * deltaX);
@@ -84,7 +84,7 @@ vec3 normalOf(vec2 posTex) {
     //four mixed derivatives dxdy
     float dxdyA = (dzTRdy - dzYTdy) / deltaX;
     float dxdyB = (dzYTdy - dzTLdy) / deltaX;
-    float dxdyC = (dzBRdy - dzYTdy) / deltaX;
+    float dxdyC = (dzBRdy - dzYBdy) / deltaX;
     float dxdyD = (dzYBdy - dzBLdy) / deltaX;
     
     //four mixed derivatives dydx
@@ -103,7 +103,6 @@ vec3 normalOf(vec2 posTex) {
     
     //D values
     float D = (Cy * Cy * dx * dx) + (Cx * Cx * dy * dy) + (Cx * Cx * Cy * Cy * z * z);
-    float sqrtD = sqrt(D);
     
     return inverse(mat3(mView)) * vec3(-Cy * dx, -Cx * dy, Cx * Cy * z) / sqrtD;
 }
@@ -133,7 +132,7 @@ void main() {
         fragColor = vec4(1.0);
     }
     else{
-        fragColor = vec4(norm,1.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
+        fragColor = vec4(pos,1.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
         //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     
