@@ -70,7 +70,7 @@ public class Renderer {
 		glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
 		depthShader.initTexture(width, height, GL_RGBA, GL_RGBA32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);		
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 		
 		// Thickness buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
@@ -91,7 +91,7 @@ public class Renderer {
 		glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
 		compositeShader.initTexture(width,  height,  GL_RGBA, GL_RGBA32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, compositeShader.tex, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);	
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 	}
 
 	public void initGl() throws LWJGLException {
@@ -110,8 +110,6 @@ public class Renderer {
 
 		initShaderObjects();
 		initFramebuffers();
-		
-
 	}
 
 	public void run() {
@@ -151,6 +149,7 @@ public class Renderer {
 			RenderUtility.addMatrix(depthShader, projection, "projection");
 			RenderUtility.addVector2(depthShader, new Vector2(Display.getWidth(), Display.getHeight()), "screenSize");
 			RenderUtility.addVector3(depthShader, lightPosition, "lightPos");
+			System.out.println(depthShader.color);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
