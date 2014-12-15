@@ -16,7 +16,8 @@ void main() {
     float thickness = texture(depthImage,fPos/screenSize).x;
     
     vec3 norm = normal(fPos);
-    norm = inverse(mat3(mView)) * norm;
+    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
+    vec3 pos = pos(fPos, depth);
     
     if (thickness == 0.0){
         fragColor = vec4(0.0,0.0,0.0,1.0);
@@ -120,5 +121,16 @@ vec3 normal(vec2 posTex) {
     float D = (Cy * Cy * dx * dx) + (Cx * Cx * dy * dy) + (Cx * Cx * Cy * Cy * z * z);
     float sqrtD = sqrt(D);
     
-    return vec3(-Cy * dx, -Cx * dy, Cx * Cy * z) / sqrtD;
+    return inverse(mat3(mView)) * vec3(-Cy * dx, -Cx * dy, Cx * Cy * z) / sqrtD;
+}
+
+vec3 pos(vec2 screenPos, float depth) {
+    //Focal lengths
+    float fx = projection[0][0];
+    float fy = projection[1][1];
+    
+    vec3 pos = screenPos/screenSize;
+    //Convert from [0,1] to [-1,1]
+    pos = (pos - vec3(.5)) * 2.0;
+    return inverse(mat3(mView)) * vec3(-fx*pos.x*depth, -fy*pos.y*depth, depth);
 }
