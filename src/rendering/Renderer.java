@@ -92,7 +92,8 @@ public class Renderer {
 			depthShader.initTexture(width, height, GL_R32F, GL_RED);
 			depthShader.initDepthBuffer(width, height);
 
-			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
+//			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			glUseProgram(depthShader.program);
 			
@@ -119,6 +120,7 @@ public class Renderer {
 
 			//Particle Thickness
 			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
+//			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(thicknessShader.program);
 			thicknessShader.initTexture(width, height, GL_RED, GL_R32F);
@@ -129,6 +131,11 @@ public class Renderer {
 			RenderUtility.addMatrix(thicknessShader, projection, "projection");
 			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
+			
+			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, depthShader.tex);
+			glUniform1i(compositeShader.tex, 0);
 			
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
 
@@ -170,7 +177,8 @@ public class Renderer {
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
 				//glBindTexture?
 				
-				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+//				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
 				glBindVertexArray(curvatureShader.vao);

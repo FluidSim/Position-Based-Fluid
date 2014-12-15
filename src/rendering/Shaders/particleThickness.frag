@@ -20,5 +20,5 @@ void main() {
 		discard;
 	}
 	
-	thickness = 1.0 - r2;
+    thickness = 1.0 - r2;
 }

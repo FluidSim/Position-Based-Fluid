@@ -8,8 +8,10 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glGetAttribLocation;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.glBindFragDataLocation;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glGetFragDataLocation;
 
@@ -32,6 +34,9 @@ public class ThicknessShader extends ShaderHelper {
 		projection = glGetUniformLocation(program, "projection");
 		screenSize = glGetUniformLocation(program, "screenSize");
 		glBindFragDataLocation(program, 0, "thickness");
+		
+		fbo = glGenFramebuffers();
+		glBindBuffer(GL_FRAMEBUFFER, fbo);
 	}
 	
 	public void particleThicknessVAO(ArrayList<Vector3> points) {
