@@ -44,7 +44,7 @@ public class ParticleSystem {
 	public ParticleSystem(float deltaT, boolean randomStart) {
 		this.deltaT = deltaT;
 		if (!randomStart) {
-			for (int i = 3; i < 6; i++) {
+			for (int i = 3; i < 8; i++) {
 				for (int j = 15; j < 250; j++) {
 					for (int k = 3; k < 6; k++) {
 						particles.add(new Particle(new Vector3(i, j, k), 1f));

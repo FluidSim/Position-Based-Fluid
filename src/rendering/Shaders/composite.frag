@@ -123,19 +123,22 @@ vec3 position(vec2 screenPos, float depth) {
 void main() {
     float depth = texture(depthImage,fPos).x;
     float thickness = texture(thicknessImage,fPos).x;
+    thickness = thickness/1.0;
+    thickness = pow(thickness, 1.0);
     
     vec3 norm = normalize(normalOf(fPos));
     vec3 lightDir = normalize(vec3(1.0f,0.0f,-1.0f));
     vec3 pos = position(fPos, depth);
     
-    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color * 2.0;
-    vec4 particleColor = exp(-1*vec4(.3f,.6f,.05f,3.0f) * thickness);
+    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
+    diffuse = pow(diffuse,vec3(4.0,4.0,4.0));
+    vec4 particleColor = exp(-1*vec4(.1f,.1f,.02f,2.0f) * thickness);
 
     if (thickness == 0.0){
         fragColor = vec4(1.0);
     }
     else{
-        fragColor = particleColor;//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
+        fragColor = particleColor + vec4(diffuse,0.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
         //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     
