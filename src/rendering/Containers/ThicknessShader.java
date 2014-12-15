@@ -43,7 +43,7 @@ public class ThicknessShader extends ShaderHelper {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		// Create VA0
-		int vao = glGenVertexArrays();
+		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		glEnableVertexAttribArray(0);
 		

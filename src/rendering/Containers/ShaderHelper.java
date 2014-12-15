@@ -16,6 +16,7 @@ public abstract class ShaderHelper {
 	public int program;
 	public int fbo;
 	public int tex;
+	public int vao;
 
 	public void initProgram(String vertexShaderFile, String fragmentShaderFile) {
 		program = glCreateProgram();

@@ -113,6 +113,7 @@ public class Renderer {
 			glViewport(0, 0, width, height);
 
 			//Draw VAO
+			glBindVertexArray(depthShader.vao);
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			//Particle Thickness
@@ -136,6 +137,7 @@ public class Renderer {
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDisable(GL_DEPTH_TEST);
 
+			glBindVertexArray(thicknessShader.vao);
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			//Particle curvature
