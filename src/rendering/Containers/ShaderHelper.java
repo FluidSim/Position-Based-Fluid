@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL12.*;
 
 public abstract class ShaderHelper {
 	public int program;
@@ -40,12 +41,12 @@ public abstract class ShaderHelper {
 	public void initTexture(int width, int height, int internalFormat, int format) {
 		tex = glGenTextures();
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE, tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_FLOAT, (ByteBuffer)null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_FLOAT, (ByteBuffer)null);
 		//glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 	}
 

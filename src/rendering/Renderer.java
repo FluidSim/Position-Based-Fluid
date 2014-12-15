@@ -63,7 +63,7 @@ public class Renderer {
 		// Depth buffer
 		depthShader.initDepthBuffer(width, height);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
-		depthShader.initTexture(width, height, GL_R32F, GL_RED);
+		depthShader.initTexture(width, height, GL_RED, GL_R32F);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthShader.tex, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthShader.depthBuffer);
 
@@ -134,6 +134,7 @@ public class Renderer {
 			glUseProgram(depthShader.program);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthShader.fbo);
 
+			System.out.println(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 			depthShader.particleDepthVAO(points);
 
 			// Enable point size on Mac
@@ -206,7 +207,8 @@ public class Renderer {
 			glEnable(GL_DEPTH_TEST);
 			
 			// Composite everything
-			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
+//			glBindFramebuffer(GL_FRAMEBUFFER, compositeShader.fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glUseProgram(compositeShader.program);
@@ -235,7 +237,7 @@ public class Renderer {
 
 			glViewport(0, 0, width, height);
 
-			renderTexture(compositeShader.tex);
+			//renderTexture(compositeShader.tex);
 
 			// Swap buffers and sync frame rate to 60 fps
 			Display.update();
