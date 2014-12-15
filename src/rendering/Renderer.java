@@ -159,7 +159,7 @@ public class Renderer {
 			
 			glDrawArrays(GL_TRIANGLES, 0, width*height);
 			
-			for (int i = 0; i < 0; i++){
+			for (int i = 0; i < 10; i++){
 				int oldTex = curvatureShader.tex;
 				
 				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);

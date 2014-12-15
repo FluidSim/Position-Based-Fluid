@@ -11,25 +11,7 @@ uniform mat4 mView;
 
 out vec4 fragColor;
 
-void main() {
-    float depth = texture(depthImage,fPos/screenSize).x;
-    float thickness = texture(depthImage,fPos/screenSize).x;
-    
-    vec3 norm = normalize(normal(fPos));
-    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
-    vec3 pos = position(fPos, depth);
-    
-    float diffuse = max(0.0, dot(lightDir, norm)) * color;
-    
-    if (thickness == 0.0){
-        fragColor = vec4(0.0,0.0,0.0,1.0);
-    }
-    else{
-        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
-    }
-}
-
-vec3 normal(vec2 posTex) {
+vec3 normalOf(vec2 posTex) {
     vec2 normTex = posTex / screenSize;
     
     //differential differences
@@ -74,7 +56,7 @@ vec3 normal(vec2 posTex) {
     float dzXLdx = (z - zXL) / deltaX;
     float dzYTdy = (zYT - z) / deltaY;
     float dzYBdy = (z - zYB) / deltaY;
-
+    
     //first derivatives of top right corner
     float dzTRdx = (zTR - zYT) / deltaX;
     float dzTRdy = (zTR - zXR) / deltaY;
@@ -131,8 +113,26 @@ vec3 position(vec2 screenPos, float depth) {
     float fx = projection[0][0];
     float fy = projection[1][1];
     
-    vec3 pos = screenPos/screenSize;
+    vec2 pos = screenPos/screenSize;
     //Convert from [0,1] to [-1,1]
-    pos = (pos - vec3(.5)) * 2.0;
+    pos = (pos - vec2(.5)) * 2.0;
     return inverse(mat3(mView)) * vec3(-fx*pos.x*depth, -fy*pos.y*depth, depth);
+}
+
+void main() {
+    float depth = texture(depthImage,fPos/screenSize).x;
+    float thickness = texture(depthImage,fPos/screenSize).x/100;
+    
+    vec3 norm = normalize(normalOf(fPos));
+    vec3 lightDir = normalize(vec3(-1.0f,3.0f,-1.2f));
+    vec3 pos = position(fPos, depth);
+    
+    vec3 diffuse = max(0.0, dot(lightDir, norm)) * color;
+
+    if (thickness == 0.0){
+        fragColor = vec4(0.0,0.0,0.0,1.0);
+    }
+    else{
+        fragColor = vec4(exp(-1*diffuse*thickness),1.0);
+    }
 }
