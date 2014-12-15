@@ -7,10 +7,9 @@ uniform sampler2D depthImage;
 uniform sampler2D thicknessImage;
 uniform vec2 screenSize;
 
-out fPos;
+out vec2 fPos;
 
 void main() {
-    fColor = color;
     fPos = pos;
     gl_Position = vec4(pos/screenSize,0.0,1.0);
 }
