@@ -104,6 +104,8 @@ vec3 normalOf(vec2 posTex) {
     //D values
     float D = (Cy * Cy * dx * dx) + (Cx * Cx * dy * dy) + (Cx * Cx * Cy * Cy * z * z);
     
+    float sqrtD = sqrt(D);
+    
     return inverse(mat3(mView)) * vec3(-Cy * dx, -Cx * dy, Cx * Cy * z) / sqrtD;
 }
 
@@ -127,12 +129,13 @@ void main() {
     vec3 pos = position(fPos, depth);
     
     vec3 diffuse = max(0.0, dot(lightDir, norm)) * color * 2.0;
+    vec4 particleColor = exp(-1*vec4(.3f,.6f,.05f,3.0f) * thickness);
 
     if (thickness == 0.0){
         fragColor = vec4(1.0);
     }
     else{
-        fragColor = vec4(pos,1.0);//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
+        fragColor = particleColor;//vec4(diffuse,1.0);//vec4(diffuse,1.0) * 10;
         //fragColor = vec4(exp(-1*diffuse*thickness/10.0),1.0);
     }
     
