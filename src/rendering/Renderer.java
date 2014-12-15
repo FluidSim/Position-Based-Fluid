@@ -130,6 +130,7 @@ public class Renderer {
 
 			//Particle Thickness
 			glBindFramebuffer(GL_FRAMEBUFFER, thicknessShader.fbo);
+		
 //			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glUseProgram(thicknessShader.program);
@@ -141,16 +142,17 @@ public class Renderer {
 			RenderUtility.addMatrix(thicknessShader, projection, "projection");
 			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
-			
+
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
 
+			System.out.println(glCheckFramebufferStatus(GL_FRAMEBUFFER));
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDisable(GL_DEPTH_TEST);
 
 			glBindVertexArray(thicknessShader.vao);
-		
-			glDrawBuffers(GL_COLOR_ATTACHMENT0);
+			
+			
 			glDrawArrays(GL_POINTS, 0, points.size());
 
 			glDisable(GL_BLEND);
