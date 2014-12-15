@@ -20,6 +20,7 @@ import physics.ParticleSystem;
 import rendering.Containers.CompositeShader;
 import rendering.Containers.CurvatureShader;
 import rendering.Containers.ParticleDepth;
+import rendering.Containers.TextureShader;
 import rendering.Containers.ThicknessShader;
 import egl.math.Matrix4;
 import egl.math.Vector2;
@@ -29,6 +30,8 @@ public class Renderer {
 	public static ParticleSystem system = new ParticleSystem(.1f, false);
 
 	public static final Vector3 lightPosition = new Vector3(10, 10, 10);
+	
+	public TextureShader textureShader;
 
 	public void initGl() throws LWJGLException {
 		int width = 600;
@@ -72,6 +75,11 @@ public class Renderer {
 		CompositeShader compositeShader = new CompositeShader();
 		compositeShader.initProgram("src/rendering/Shaders/composite.vert", "src/rendering/Shaders/composite.frag");
 		compositeShader.initFields();
+		
+		//Texture Shader
+		textureShader = new TextureShader();
+		textureShader.initProgram("src/rendering/Shaders/texture.vert", "scr/rendering/Shaders/texture.frag");
+		textureShader.initFields();
 
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -132,11 +140,6 @@ public class Renderer {
 			RenderUtility.addVector2(thicknessShader, new Vector2(width, height), "screenSize");
 			RenderUtility.addVector3(thicknessShader, lightPosition, "lightPos");
 			
-			
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, depthShader.tex);
-			glUniform1i(compositeShader.tex, 0);
-			
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, thicknessShader.tex, 0);
 
 			glEnable(GL_BLEND);
@@ -155,15 +158,18 @@ public class Renderer {
 			
 			glDisable(GL_DEPTH_TEST);
 			
+			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, depthShader.tex);
+			glUniform1i(curvatureShader.texUniform, 0);
 			
 			curvatureShader.curvatureVAO(width, height);
 			
-			RenderUtility.addTexture(curvatureShader, depthShader.tex);
 			RenderUtility.addMatrix(curvatureShader, projection, "projection");
 			RenderUtility.addVector2(curvatureShader, new Vector2(width, height) , "screenSize");
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			glBindVertexArray(curvatureShader.vao);
@@ -173,12 +179,14 @@ public class Renderer {
 				int oldTex = curvatureShader.tex;
 				
 				curvatureShader.initTexture(width, height, GL_RED, GL_R32F);
-				
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
-				//glBindTexture?
-				
+
 				glBindFramebuffer(GL_FRAMEBUFFER, curvatureShader.fbo);
-//				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, curvatureShader.tex, 0);
+				
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, oldTex);
+				glUniform1i(curvatureShader.texUniform, 0);
+				
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
 				glBindVertexArray(curvatureShader.vao);
@@ -195,7 +203,7 @@ public class Renderer {
 			compositeShader.compositeVAO(width, height);
 			
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, curvatureShader.tex);
+			glBindTexture(GL_TEXTURE_2D, depthShader.tex); // should be curvature in final product
 			glUniform1i(compositeShader.depthImage, 0);
 			
 			glActiveTexture(GL_TEXTURE1);
@@ -226,6 +234,20 @@ public class Renderer {
 		}
 
 		Display.destroy();
+	}
+	
+	public void renderTexture(int texture){
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glUniform1i(textureShader.texUniform, 0);
+		
+		textureShader.textureVAO();
+		
+		glBindFramebuffer(GL_FRAMEBUFFER,0);
+		
+		glDisable(GL_DEPTH_TEST);
+		glBindVertexArray(textureShader.vao);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	public void resetPoints(ArrayList<Vector3> points) {

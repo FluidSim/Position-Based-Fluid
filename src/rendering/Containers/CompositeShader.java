@@ -36,7 +36,7 @@ public class CompositeShader extends ShaderHelper {
 
 	@Override
 	public void initFields() {
-		depthImage = glGetAttribLocation(program, "depthImage");
+		depthImage = glGetUniformLocation(program, "depthImage");
 		thicknessImage = glGetUniformLocation(program, "thicknessImage");
 		color = glGetUniformLocation(program, "color");
 		screenSize = glGetUniformLocation(program, "screenSize");
