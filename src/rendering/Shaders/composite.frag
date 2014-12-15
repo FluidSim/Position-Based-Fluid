@@ -1,6 +1,6 @@
 #version 400
 
-in vec2 fPos;
+in vec3 fPos;
 
 uniform vec3 color;
 uniform sampler2D depthImage;
@@ -9,7 +9,7 @@ uniform vec2 screenSize;
 uniform mat4 projection;
 uniform mat4 mView;
 
-layout (location = 0) out vec4 fragColor;
+layout (location = 0) out vec3 fragColor;
 
 vec3 normalOf(vec2 posTex) {
     vec2 normTex = posTex / screenSize;
@@ -120,7 +120,7 @@ vec3 position(vec2 screenPos, float depth) {
 }
 
 void main() {
-    fragColor = vec4(.3,.3,1.0,1.0);
+    fragColor = vec3(.3,.3,1.0);
 //    float depth = texture(depthImage,fPos/screenSize).x;
 //    float thickness = texture(depthImage,fPos/screenSize).x;
 //    
