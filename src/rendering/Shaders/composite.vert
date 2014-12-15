@@ -7,6 +7,7 @@ uniform sampler2D depthImage;
 uniform sampler2D thicknessImage;
 uniform vec2 screenSize;
 uniform mat4 projection;
+uniform mat4 mView;
 
 out vec2 fPos;
 

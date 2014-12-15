@@ -7,12 +7,16 @@ uniform sampler2D depthImage;
 uniform sampler2D thicknessImage;
 uniform vec2 screenSize;
 uniform mat4 projection;
+uniform mat4 mView;
 
 out vec4 fragColor;
 
 void main() {
     float depth = texture(depthImage,fPos/screenSize).x;
     float thickness = texture(depthImage,fPos/screenSize).x;
+    
+    vec3 norm = normal(fPos);
+    norm = inverse(mat3(mView)) * norm;
     
     if (thickness == 0.0){
         fragColor = vec4(0.0,0.0,0.0,1.0);
